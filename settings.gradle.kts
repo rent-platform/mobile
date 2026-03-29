@@ -21,4 +21,8 @@ dependencyResolutionManagement {
 
 rootProject.name = "RentPlatform"
 include(":app")
- 
+include(":core:common")
+include(":core:ui")
+include(":core:network")
+include(":feature:auth")
+include(":feature:marketplace")
