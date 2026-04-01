@@ -14,23 +14,3 @@ data class RegistrationUiState(
     val passwordError: String? = null,
     val confirmPasswordError: String? = null
 )
-
-//События пользователя
-sealed interface RegistrationEvent {
-    data class PhoneChanged(val value: String) : RegistrationEvent
-    data class FullNameChanged(val value: String) : RegistrationEvent
-    data class PasswordChanged(val value: String) : RegistrationEvent
-    data class ConfirmPasswordChanged(val value: String) : RegistrationEvent
-
-    data object TogglePasswordVisibility : RegistrationEvent
-    data object ToggleConfirmPasswordVisibility : RegistrationEvent
-
-    data object ContinueClicked : RegistrationEvent
-    data object BackClicked : RegistrationEvent
-}
-
-//Одноразовые действия
-sealed interface RegistrationAction {
-    data object NavigateToCatalog : RegistrationAction
-    data object NavigateBack : RegistrationAction
-}

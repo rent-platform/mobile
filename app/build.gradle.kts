@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.example.rentplatform"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.rentplatform"
@@ -40,6 +40,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":feature:auth"))
+    implementation(project(":core:ui"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
