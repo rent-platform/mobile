@@ -1,33 +1,53 @@
 package com.example.auth.presentation.registration
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.runtime.collectAsState
 
 @Composable
 fun RegistrationRoute(
     onNavigateBack: () -> Unit,
     onNavigateToCatalog: () -> Unit
 ) {
-    var uiState by remember { mutableStateOf(RegistrationUiState()) }
+    val viewModel: RegistrationViewModel = viewModel()
+    val uiState by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.actions.collect { action ->
+            when (action) {
+                RegistrationAction.NavigateToCatalog -> onNavigateToCatalog()
+                is RegistrationAction.ShowError -> {
+                    // можно показать snackbar
+                }
+            }
+        }
+    }
 
     RegistrationScreen(
         uiState = uiState,
-        onPhoneChanged = { uiState = uiState.copy(phone = it) },
-        onFullNameChanged = { uiState = uiState.copy(fullName = it) },
-        onPasswordChanged = { uiState = uiState.copy(password = it) },
-        onConfirmPasswordChanged = { uiState = uiState.copy(confirmPassword = it) },
+        onPhoneChanged = {
+            viewModel.onEvent(RegistrationEvent.PhoneChanged(it))
+        },
+        onFullNameChanged = {
+            viewModel.onEvent(RegistrationEvent.FullNameChanged(it))
+        },
+        onPasswordChanged = {
+            viewModel.onEvent(RegistrationEvent.PasswordChanged(it))
+        },
+        onConfirmPasswordChanged = {
+            viewModel.onEvent(RegistrationEvent.ConfirmPasswordChanged(it))
+        },
         onTogglePasswordVisibility = {
-            uiState = uiState.copy(isPasswordVisible = !uiState.isPasswordVisible)
+            viewModel.onEvent(RegistrationEvent.TogglePasswordVisibility)
         },
         onToggleConfirmPasswordVisibility = {
-            uiState = uiState.copy(
-                isConfirmPasswordVisible = !uiState.isConfirmPasswordVisible
-            )
+            viewModel.onEvent(RegistrationEvent.ToggleConfirmPasswordVisibility)
         },
-        onContinueClick = onNavigateToCatalog,
+        onContinueClick = {
+            viewModel.onEvent(RegistrationEvent.ContinueClicked)
+        },
         onBackClick = onNavigateBack
     )
 }

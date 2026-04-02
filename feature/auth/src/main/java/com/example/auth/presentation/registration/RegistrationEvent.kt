@@ -10,5 +10,4 @@ sealed interface RegistrationEvent {
     data object ToggleConfirmPasswordVisibility : RegistrationEvent
 
     data object ContinueClicked : RegistrationEvent
-    data object BackClicked : RegistrationEvent
 }
