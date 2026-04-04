@@ -18,6 +18,11 @@ class RegistrationViewModel : ViewModel() {
     private val _actions = MutableSharedFlow<RegistrationAction>()
     val actions = _actions.asSharedFlow()
 
+    private val fullNameRegex =
+        Regex("^[а-яёА-ЯЁa-zA-Z]+(?:[ -][а-яёА-ЯЁa-zA-Z]+)*$")
+
+    private val passwordRegex = Regex("^[A-Za-z\\d@#$%^&+=!]{6,20}$")
+
     fun onEvent(event: RegistrationEvent) {
         when (event) {
             is RegistrationEvent.PhoneChanged -> {
@@ -82,9 +87,12 @@ class RegistrationViewModel : ViewModel() {
     private fun updateButtonState() { //Доступ к кнопке
         val state = _uiState.value
 
+        val isNameFilledCorrectly =
+            state.fullName.trim().length in 2..50
+
         val isFormFilled =
             state.phone.isNotBlank() &&
-                    state.fullName.isNotBlank() &&
+                    isNameFilledCorrectly &&
                     state.password.isNotBlank() &&
                     state.confirmPassword.isNotBlank()
 
@@ -95,15 +103,26 @@ class RegistrationViewModel : ViewModel() {
 
     private fun submit() {
         val state = _uiState.value
+        val trimmedName = state.fullName.trim()
 
         val phoneError =
             if (state.phone.length != 10) "Введите номер полностью" else null
 
         val fullNameError =
-            if (state.fullName.isBlank()) "Введите имя пользователя" else null
+            when {
+                trimmedName.length < 2 -> "Имя должно содержать минимум 2 символа"
+                trimmedName.length > 50 -> "Имя не должно быть длиннее 50 символов"
+                !fullNameRegex.matches(trimmedName) ->
+                    "Имя может содержать только буквы, пробелы и дефис"
+                else -> null
+            }
 
         val passwordError =
-            if (state.password.length < 6) "Пароль должен быть не менее 6 символов" else null
+            when{
+                state.password.length < 6 -> "Пароль должен быть не менее 6 символов"
+                !passwordRegex.matches(state.password) -> "Пароль может содержать только латинские буквы и спец.символы"
+                else -> null
+            }
 
         val confirmPasswordError =
             when {

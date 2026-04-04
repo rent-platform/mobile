@@ -159,6 +159,7 @@ fun RegistrationScreen(
         )
 
         Spacer(modifier = Modifier.height(16.dp))
+
         //Подтверждение пароля
         OutlinedTextField(
             value = uiState.confirmPassword,
@@ -217,30 +218,6 @@ fun RegistrationScreen(
                 style = MaterialTheme.typography.titleMedium
             )
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun RegistationTest(){
-    RentPlatformTheme {
-        RegistrationScreen(
-            uiState = RegistrationUiState(
-                phone = "9961234567",
-                fullName = "Александр",
-                password = "12345678",
-                confirmPassword = "12345678",
-                isContinueEnabled = true
-            ),
-            onPhoneChanged = {},
-            onFullNameChanged = {},
-            onPasswordChanged = {},
-            onConfirmPasswordChanged = {},
-            onContinueClick = {},
-            onBackClick = {},
-            onTogglePasswordVisibility = {},
-            onToggleConfirmPasswordVisibility = {}
-        )
     }
 }
 
