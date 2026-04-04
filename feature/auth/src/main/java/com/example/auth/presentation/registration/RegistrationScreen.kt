@@ -32,6 +32,8 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
+import com.example.ui.components.RentPhoneTextField
+import com.example.ui.transformations.PhoneNumberVisualTransformation
 
 @Composable
 fun RegistrationScreen(
@@ -70,31 +72,11 @@ fun RegistrationScreen(
         )
         Spacer(modifier = Modifier.height(28.dp))
         //Номер телефона
-        OutlinedTextField(
+        RentPhoneTextField(
             value = uiState.phone,
-            onValueChange = { input ->
-                val digits = input.filter { it.isDigit() }.take(10)
-                onPhoneChanged(digits)
-            },
-            modifier = Modifier.fillMaxWidth(),
-            label = { Text("Номер телефона") },
-            prefix = { Text("+7 ") },
-            placeholder = { Text("996 123-45-67") },
-            singleLine = true,
-            isError = uiState.phoneError != null,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-            visualTransformation = PhoneNumberVisualTransformation(),
-            supportingText = {
-                uiState.phoneError?.let {
-                    Text(text = it, color = MaterialTheme.colorScheme.error)
-                }
-            },
-            shape = RoundedCornerShape(16.dp),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = MaterialTheme.colorScheme.primary,
-                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
-                errorBorderColor = MaterialTheme.colorScheme.error
-            )
+            onValueChange = onPhoneChanged,
+            label = "Номер телефона",
+            errorText = uiState.phoneError
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -218,49 +200,5 @@ fun RegistrationScreen(
                 style = MaterialTheme.typography.titleMedium
             )
         }
-    }
-}
-
-class PhoneNumberVisualTransformation : VisualTransformation {
-    override fun filter(text: AnnotatedString): TransformedText {
-        val digits = text.text.take(10)
-
-        val formatted = buildString {
-            digits.forEachIndexed { index, char ->
-                append(char)
-                when (index) {
-                    2 -> if (index != digits.lastIndex) append(" ")
-                    5 -> if (index != digits.lastIndex) append("-")
-                    7 -> if (index != digits.lastIndex) append("-")
-                }
-            }
-        }
-
-        val offsetMapping = object : OffsetMapping {
-            override fun originalToTransformed(offset: Int): Int {
-                return when {
-                    offset <= 3 -> offset
-                    offset <= 6 -> offset + 1
-                    offset <= 8 -> offset + 2
-                    offset <= 10 -> offset + 3
-                    else -> formatted.length
-                }
-            }
-
-            override fun transformedToOriginal(offset: Int): Int {
-                return when {
-                    offset <= 3 -> offset
-                    offset <= 7 -> offset - 1
-                    offset <= 10 -> offset - 2
-                    offset <= 13 -> offset - 3
-                    else -> digits.length
-                }.coerceIn(0, digits.length)
-            }
-        }
-
-        return TransformedText(
-            text = AnnotatedString(formatted),
-            offsetMapping = offsetMapping
-        )
     }
 }
