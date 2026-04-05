@@ -53,6 +53,10 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.9.4")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.4")
 
+    //Навигация
+    implementation("androidx.navigation:navigation-compose:2.9.7")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
+
     debugImplementation(libs.androidx.ui.tooling)
 
     implementation(libs.androidx.core.ktx)

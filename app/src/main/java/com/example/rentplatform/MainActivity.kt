@@ -11,7 +11,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.auth.presentation.authorization.AuthorizationRoute
 import com.example.auth.presentation.registration.RegistrationRoute
+import com.example.rentplatform.navigation.AppNavHost
 import com.example.ui.theme.RentPlatformTheme
 
 class MainActivity : ComponentActivity() {
@@ -20,10 +22,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             RentPlatformTheme {
-                RegistrationRoute(
-                    onNavigateBack = {},
-                    onNavigateToCatalog = {}
-                )
+                AppNavHost()
             }
         }
     }
