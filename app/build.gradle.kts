@@ -43,6 +43,7 @@ android {
 dependencies {
     implementation(project(":feature:auth"))
     implementation(project(":core:ui"))
+    implementation(project(":feature:marketplace"))
 
     //Навигация
     implementation(libs.androidx.navigation.compose)

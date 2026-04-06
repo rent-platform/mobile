@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.auth.presentation.authorization.AuthorizationRoute
 import com.example.auth.presentation.registration.RegistrationRoute
+import com.example.marketplace.presentation.catalog.CatalogScreen
 
 @Composable
 fun AppNavHost() {
@@ -15,19 +16,22 @@ fun AppNavHost() {
 
     NavHost(
         navController = navController,
-        startDestination = AuthorizationDestination
-//        startDestination = CatalogDestination
+        startDestination = CatalogDestination
     ) {
-//        composable<CatalogDestination> {
-//        }
+        composable<CatalogDestination> {
+            CatalogScreen()
+        }
 
         composable<AuthorizationDestination> {
             AuthorizationRoute(
                 onNavigateToRegistration = {
                     navController.navigate(RegistrationDestination)
                 },
-                onNavigateToCatalog = {
-//                    navController.popBackStack() !Подумать куда возврат сделаю!
+                onAuthSuccess = {
+                    navController.popBackStack(
+                        route = AuthorizationDestination,
+                        inclusive = true
+                    )
                 }
             )
         }
@@ -37,8 +41,11 @@ fun AppNavHost() {
                 onNavigateBack = {
                     navController.popBackStack()
                 },
-                onNavigateToCatalog = {
-//                    navController.navigate(CatalogDestination)
+                onAuthSuccess = {
+                    navController.popBackStack(
+                        route = AuthorizationDestination,
+                        inclusive = true
+                    )
                 }
             )
         }

@@ -9,7 +9,7 @@ import androidx.compose.runtime.collectAsState
 @Composable
 fun RegistrationRoute(
     onNavigateBack: () -> Unit,
-    onNavigateToCatalog: () -> Unit
+    onAuthSuccess: () -> Unit
 ) {
     val viewModel: RegistrationViewModel = viewModel()
     val uiState by viewModel.uiState.collectAsState()
@@ -17,7 +17,7 @@ fun RegistrationRoute(
     LaunchedEffect(Unit) {
         viewModel.actions.collect { action ->
             when (action) {
-                RegistrationAction.NavigateToCatalog -> onNavigateToCatalog()
+                RegistrationAction.NavigateToCatalog -> onAuthSuccess()
                 is RegistrationAction.ShowError -> {
                     // можно показать snackbar
                 }

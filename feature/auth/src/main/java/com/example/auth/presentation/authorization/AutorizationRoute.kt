@@ -8,7 +8,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun AuthorizationRoute(
-    onNavigateToCatalog: () -> Unit,
+    onAuthSuccess: () -> Unit,
     onNavigateToRegistration: () -> Unit
 ) {
     val viewModel: AutorizationViewModel = viewModel()
@@ -17,7 +17,7 @@ fun AuthorizationRoute(
     LaunchedEffect(Unit) {
         viewModel.actions.collect { action ->
             when (action) {
-                AuthorizationAction.NavigateToCatalog -> onNavigateToCatalog()
+                AuthorizationAction.NavigateToCatalog -> onAuthSuccess
                 AuthorizationAction.NavigateToRegistration -> onNavigateToRegistration()
                 is AuthorizationAction.ShowError -> {
                     // Позже можно показать Snackbar
