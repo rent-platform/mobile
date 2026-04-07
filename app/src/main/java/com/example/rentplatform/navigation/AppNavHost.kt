@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.auth.presentation.authorization.AuthorizationRoute
 import com.example.auth.presentation.registration.RegistrationRoute
+import com.example.marketplace.presentation.catalog.CatalogRoute
 import com.example.marketplace.presentation.catalog.CatalogScreen
 
 @Composable
@@ -19,7 +20,15 @@ fun AppNavHost() {
         startDestination = CatalogDestination
     ) {
         composable<CatalogDestination> {
-            CatalogScreen()
+            CatalogRoute(
+                onNavigateToSearch = {
+                },
+                onNavigateToFilters = {
+                },
+                onNavigateToNotifications = {
+
+                }
+            )
         }
 
         composable<AuthorizationDestination> {
