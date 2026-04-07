@@ -35,6 +35,7 @@ fun CatalogRoute(
         },
         onNotificationsClick = {
             viewModel.onEvent(CatalogEvent.NotificationsClicked)
-        }
+        },
+        onCategoryClick = {}
     )
 }

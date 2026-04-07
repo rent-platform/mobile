@@ -2,5 +2,25 @@ package com.example.marketplace.presentation.catalog
 
 data class CatalogUiState(
     val searchText: String = "",
-    val isLoading: Boolean = false
+    val popularCategories: List<CatalogCategoryUi> = emptyList(),
+    val promo: CatalogPromoUi = CatalogPromoUi(),
+    val recommendedItems: List<CatalogItemUi> = emptyList()
+)
+
+data class CatalogCategoryUi(
+    val id: Long,
+    val name: String
+)
+
+data class CatalogPromoUi(
+    val title: String = "Арендай",
+    val subtitle: String = "Безопасные сделки, удобный поиск и простой путь от выбора вещи до аренды"
+)
+
+data class CatalogItemUi(
+    val id: String,
+    val title: String,
+    val priceLabel: String = "",
+    val location: String = "",
+    val imageUrl: String? = null
 )
