@@ -22,9 +22,13 @@ captures/
 # Logs
 *.log
 
+*.jpg
+
 # Signing
 *.jks
 *.keystore
 
 # Google services
 google-services.json
+
+feature/marketplace/src/main/java/com/example/marketplace/data/mock/

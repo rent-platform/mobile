@@ -10,7 +10,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 fun CatalogRoute(
     onNavigateToSearch: () -> Unit,
     onNavigateToFilters: () -> Unit,
-    onNavigateToNotifications: () -> Unit
+    onNavigateToNotifications: () -> Unit,
+    onNavigateToItemDetails: (String) -> Unit
 ) {
     val viewModel: CatalogViewModel = viewModel()
     val uiState by viewModel.uiState.collectAsState()
@@ -21,6 +22,9 @@ fun CatalogRoute(
                 CatalogAction.NavigateToSearch -> onNavigateToSearch()
                 CatalogAction.NavigateToFilters -> onNavigateToFilters()
                 CatalogAction.NavigateToNotifications -> onNavigateToNotifications()
+                is CatalogAction.NavigateToItemDetails -> {
+                    onNavigateToItemDetails(action.itemId)
+                }
             }
         }
     }
@@ -36,6 +40,14 @@ fun CatalogRoute(
         onNotificationsClick = {
             viewModel.onEvent(CatalogEvent.NotificationsClicked)
         },
-        onCategoryClick = {}
+        onCategoryClick = { categoryId ->
+            viewModel.onEvent(CatalogEvent.CategoryClicked(categoryId))
+        },
+        onItemClick = { itemId ->
+            viewModel.onEvent(CatalogEvent.ItemClicked(itemId))
+        },
+        onFavoriteClick = { itemId ->
+            viewModel.onEvent(CatalogEvent.FavoriteClicked(itemId))
+        }
     )
 }

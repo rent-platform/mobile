@@ -20,7 +20,8 @@ data class CatalogPromoUi(
 data class CatalogItemUi(
     val id: String,
     val title: String,
-    val priceLabel: String = "",
+    val pricePerDay: Long? = null,
     val location: String = "",
-    val imageUrl: String? = null
+    val imageUrl: Int? = null,
+    val isFavorite: Boolean = false
 )

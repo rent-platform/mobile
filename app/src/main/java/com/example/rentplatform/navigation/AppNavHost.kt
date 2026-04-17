@@ -1,7 +1,6 @@
 package com.example.rentplatform.navigation
 
 
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -9,7 +8,6 @@ import androidx.navigation.compose.rememberNavController
 import com.example.auth.presentation.authorization.AuthorizationRoute
 import com.example.auth.presentation.registration.RegistrationRoute
 import com.example.marketplace.presentation.catalog.CatalogRoute
-import com.example.marketplace.presentation.catalog.CatalogScreen
 
 @Composable
 fun AppNavHost() {
@@ -26,8 +24,8 @@ fun AppNavHost() {
                 onNavigateToFilters = {
                 },
                 onNavigateToNotifications = {
-
-                }
+                },
+                onNavigateToItemDetails = {}
             )
         }
 
