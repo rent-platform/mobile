@@ -56,7 +56,6 @@ fun CatalogScreen(
 ) {
     Column(modifier = Modifier
         .fillMaxSize()
-        .statusBarsPadding()
     ) {
         MarketplaceSearchBar(
             searchText = uiState.searchText,
@@ -64,7 +63,6 @@ fun CatalogScreen(
             onFilterClick = onFilterClick,
             onNotificationsClick = onNotificationsClick,
             modifier = Modifier
-                .padding(top = 16.dp)
                 .padding(horizontal = 16.dp)
         )
 

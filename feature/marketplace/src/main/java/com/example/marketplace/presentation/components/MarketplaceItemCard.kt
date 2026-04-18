@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.marketplace.presentation.catalog.CatalogItemUi
 import java.text.DecimalFormat
@@ -114,8 +115,8 @@ fun MarketplaceItemCard(
                         Text(
                             text = formatPricePerDay(price),
                             modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
-                            style = MaterialTheme.typography.titleSmall,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                            style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                     }
                 }
@@ -139,5 +140,5 @@ private fun formatPricePerDay(price: Long): String {
     }
 
     val formatter = DecimalFormat("#,###", symbols)
-    return "${formatter.format(price)} ₽ / день"
+    return "${formatter.format(price)}\u202F ₽\u202F/\u202Fдень"
 }
