@@ -1,0 +1,9 @@
+package com.example.marketplace.presentation.itemdetails
+
+sealed interface ItemDetailsEvent {
+    data object OnBackClick : ItemDetailsEvent
+    data object OnShareClick : ItemDetailsEvent
+    data object OnRentClick : ItemDetailsEvent
+    data object OnFavoriteClick : ItemDetailsEvent
+    data object OnRetryClick : ItemDetailsEvent
+}

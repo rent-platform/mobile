@@ -28,8 +28,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.marketplace.presentation.catalog.CatalogItemUi
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
+import com.example.marketplace.presentation.components.formatPricePerDay
 
 @Composable
 fun MarketplaceItemCard(
@@ -132,13 +131,4 @@ fun MarketplaceItemCard(
             }
         }
     }
-}
-
-private fun formatPricePerDay(price: Long): String {
-    val symbols = DecimalFormatSymbols().apply {
-        groupingSeparator = ' '
-    }
-
-    val formatter = DecimalFormat("#,###", symbols)
-    return "${formatter.format(price)}\u202F ₽\u202F/\u202Fдень"
 }

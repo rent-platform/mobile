@@ -33,6 +33,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import com.example.ui.components.RentPhoneTextField
+import com.example.ui.components.RentPrimaryButton
 import com.example.ui.transformations.PhoneNumberVisualTransformation
 
 @Composable
@@ -182,23 +183,13 @@ fun RegistrationScreen(
 
         Spacer(modifier = Modifier.weight(1f))
 
-        Button(
+        RentPrimaryButton(
+            text = "Зарегистрироваться",
             onClick = onContinueClick,
+            enabled = uiState.isContinueEnabled,
             modifier = Modifier
-                .fillMaxWidth()
                 .navigationBarsPadding()
                 .imePadding()
-                .height(54.dp),
-            enabled = uiState.isContinueEnabled,
-            shape = RoundedCornerShape(16.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary
-            )
-        ) {
-            Text(
-                text = "Зарегистрироваться",
-                style = MaterialTheme.typography.titleMedium
-            )
-        }
+        )
     }
 }

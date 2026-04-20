@@ -33,6 +33,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.ui.components.RentPhoneTextField
+import com.example.ui.components.RentPrimaryButton
 import com.example.ui.theme.RentPlatformTheme
 
 @Composable
@@ -117,24 +118,14 @@ fun AuthorizationScreen(
 
         Spacer(modifier = Modifier.weight(1f))
 
-        Button(
+        RentPrimaryButton(
+            text = "Войти",
             onClick = onLoginClick,
+            enabled = uiState.isLoginEnabled,
             modifier = Modifier
-                .fillMaxWidth()
                 .navigationBarsPadding()
                 .imePadding()
-                .height(54.dp),
-            enabled = uiState.isLoginEnabled,
-            shape = RoundedCornerShape(16.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary
-            )
-        ) {
-            Text(
-                text = "Войти",
-                style = MaterialTheme.typography.titleMedium
-            )
-        }
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
