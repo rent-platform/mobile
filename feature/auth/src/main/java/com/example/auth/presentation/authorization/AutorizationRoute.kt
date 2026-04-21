@@ -17,10 +17,10 @@ fun AuthorizationRoute(
     LaunchedEffect(Unit) {
         viewModel.actions.collect { action ->
             when (action) {
-                AuthorizationAction.NavigateToCatalog -> onAuthSuccess
+                AuthorizationAction.NavigateToCatalog -> onAuthSuccess()
                 AuthorizationAction.NavigateToRegistration -> onNavigateToRegistration()
                 is AuthorizationAction.ShowError -> {
-                    // Позже можно показать Snackbar
+                    // Позже Snackbar
                 }
             }
         }
@@ -28,8 +28,8 @@ fun AuthorizationRoute(
 
     AuthorizationScreen(
         uiState = uiState,
-        onPhoneChanged = {
-            viewModel.onEvent(AuthorizationEvent.PhoneChanged(it))
+        onLoginChanged = {
+            viewModel.onEvent(AuthorizationEvent.LoginChanged(it))
         },
         onPasswordChanged = {
             viewModel.onEvent(AuthorizationEvent.PasswordChanged(it))

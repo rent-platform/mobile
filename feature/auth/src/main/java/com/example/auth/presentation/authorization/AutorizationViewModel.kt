@@ -12,6 +12,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class AutorizationViewModel: ViewModel() {
+    private val emailRegex =
+        Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")
+
     private val _uiState = MutableStateFlow(AuthorizationUiState())
     val uiState: StateFlow<AuthorizationUiState> = _uiState.asStateFlow()
 
@@ -20,12 +23,11 @@ class AutorizationViewModel: ViewModel() {
 
     fun onEvent(event: AuthorizationEvent) {
         when (event) {
-            is AuthorizationEvent.PhoneChanged -> {
-                val digits = event.value.filter { it.isDigit() }.take(10)
+            is AuthorizationEvent.LoginChanged -> {
                 _uiState.update {
                     it.copy(
-                        phone = digits,
-                        phoneError = null
+                        login = event.value,
+                        loginError = null
                     )
                 }
                 updateLoginButtonState()
@@ -62,31 +64,29 @@ class AutorizationViewModel: ViewModel() {
     private fun updateLoginButtonState() {
         val state = _uiState.value
 
-        val isPhoneValid = state.phone.length == 10
-        val isPasswordFilled = state.password.isNotBlank()
-
         _uiState.update {
-            it.copy(isLoginEnabled = isPhoneValid && isPasswordFilled)
+            it.copy(
+                isLoginEnabled = state.login.isNotBlank() && state.password.isNotBlank()
+            )
         }
     }
 
     private fun submit() {
         val state = _uiState.value
 
-        val phoneError =
-            if (state.phone.length != 10) "Введите номер полностью" else null
+        val loginError = validateLogin(state.login)
 
         val passwordError =
             if (state.password.isBlank()) "Введите пароль" else null
 
         _uiState.update {
             it.copy(
-                phoneError = phoneError,
+                loginError = loginError,
                 passwordError = passwordError
             )
         }
 
-        val hasErrors = listOf(phoneError, passwordError).any { it != null }
+        val hasErrors = listOf(loginError, passwordError).any { it != null }
         if (hasErrors) return
 
         login()
@@ -98,7 +98,7 @@ class AutorizationViewModel: ViewModel() {
 
             try {
                 // Временная заглушка.
-                // Потом здесь будет repository.login(phone, password)
+                // val result = repository.login(login, password, rememberMe = false)
                 val isSuccess = true
 
                 if (isSuccess) {
@@ -108,7 +108,7 @@ class AutorizationViewModel: ViewModel() {
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            passwordError = "Неверный номер телефона или пароль"
+                            passwordError = "Неверный телефон/email или пароль"
                         )
                     }
                 }
@@ -118,6 +118,38 @@ class AutorizationViewModel: ViewModel() {
                     AuthorizationAction.ShowError("Ошибка сети. Попробуйте ещё раз")
                 )
             }
+        }
+    }
+
+    private fun validateLogin(value: String): String? {
+        val input = value.trim()
+
+        if (input.isBlank()) {
+            return "Введите телефон или email"
+        }
+
+        return if (input.contains("@")) {
+            validateEmail(input)
+        } else {
+            validatePhone(input)
+        }
+    }
+
+    private fun validateEmail(email: String): String? {
+        return if (!emailRegex.matches(email)) {
+            "Введите корректный email"
+        } else {
+            null
+        }
+    }
+
+    private fun validatePhone(phone: String): String? {
+        val digits = phone.filter { it.isDigit() }
+
+        return when {
+            digits.length == 10 -> null
+            digits.length == 11 && (digits.startsWith("7") || digits.startsWith("8")) -> null
+            else -> "Введите корректный номер телефона"
         }
     }
 }
