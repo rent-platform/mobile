@@ -10,3 +10,11 @@ object AuthorizationDestination
 
 @Serializable
 object RegistrationDestination
+
+@Serializable
+data class ItemDetailsDestination(
+    val itemId: String
+)
+
+@Serializable
+object MainShellDestination

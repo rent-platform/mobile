@@ -1,23 +1,28 @@
 package com.example.marketplace.presentation.itemdetails
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Share
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -26,10 +31,16 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.ui.components.RentPrimaryButton
 import com.example.marketplace.presentation.components.formatPricePerDay
 
@@ -87,9 +98,98 @@ fun ItemDetailsScreen(
             else -> {
                 LazyColumn(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding)
+                        .fillMaxSize(),
+                    contentPadding = PaddingValues(
+                        bottom = innerPadding.calculateBottomPadding()
+                    )
                 ) {
+                    item {
+                        ItemImagesPager(
+                            imageResIds = uiState.imageResIds
+                        )
+                    }
+
+                    item {
+                        Column(
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Text(
+                                text = uiState.title,
+                                style = MaterialTheme.typography.headlineSmall
+                            )
+
+                            uiState.pricePerDay?.let { price ->
+                                Text(
+                                    text = formatPricePerDay(price),
+                                    style = MaterialTheme.typography.titleMedium.copy(
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 24.sp
+                                    ),
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun ItemImagesPager(
+    imageResIds: List<Int>,
+    modifier: Modifier = Modifier
+) {
+    if (imageResIds.isEmpty()) return
+
+    val pagerState = rememberPagerState(
+        initialPage = 0,
+        pageCount = { imageResIds.size }
+    )
+
+    val screenHeight = LocalConfiguration.current.screenHeightDp.dp
+    val pagerHeight = screenHeight * 0.38f
+
+    Box(modifier = modifier.fillMaxWidth()) {
+        HorizontalPager(
+            state = pagerState,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(pagerHeight)
+        ) { page ->
+            Image(
+                painter = painterResource(id = imageResIds[page]),
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp)),
+                contentScale = ContentScale.Crop
+            )
+        }
+
+        if (imageResIds.size > 1) {
+            Row(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 12.dp),
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                repeat(imageResIds.size) { index ->
+                    Surface(
+                        modifier = Modifier.size(
+                            width = if (pagerState.currentPage == index) 18.dp else 8.dp,
+                            height = 8.dp
+                        ),
+                        shape = RoundedCornerShape(50),
+                        color = if (pagerState.currentPage == index) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.surfaceVariant
+                        }
+                    ) {}
                 }
             }
         }
@@ -124,11 +224,16 @@ private fun ItemDetailsScreenPreview() {
             uiState = ItemDetailsUiState(
                 isLoading = false,
                 title = "Палатка туристическая 3-местная",
-                description = "Удобная палатка для походов и кемпинга. В комплекте чехол, дуги и колышки.",
+                description = "Удобная палатка для походов и кемпинга.",
                 pricePerDay = 1500,
                 depositAmount = 5000,
                 location = "Алматы, Ауэзовский район",
-                ownerName = "Алексей Иванов"
+                ownerName = "Алексей Иванов",
+                imageResIds = listOf(
+                    com.example.marketplace.R.drawable.pocofon,
+                    com.example.marketplace.R.drawable.bike,
+                    com.example.marketplace.R.drawable.soup
+                )
             ),
             onEvent = {}
         )

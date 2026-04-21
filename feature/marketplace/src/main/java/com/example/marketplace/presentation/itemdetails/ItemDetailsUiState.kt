@@ -1,6 +1,7 @@
 package com.example.marketplace.presentation.itemdetails
 
 data class ItemDetailsUiState(
+    val id: String = "",
     val isLoading: Boolean = false,
     val title: String = "",
     val description: String = "",
@@ -13,5 +14,6 @@ data class ItemDetailsUiState(
     val ownerRating: Float? = null,
     val reviewsCount: Int = 0,
     val isFavorite: Boolean = false,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    val imageResIds: List<Int> = emptyList()
 )

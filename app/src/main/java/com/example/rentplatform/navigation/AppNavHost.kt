@@ -1,5 +1,7 @@
 package com.example.rentplatform.navigation
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -12,92 +14,117 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.NavHostController
+import androidx.navigation.toRoute
 import com.example.auth.presentation.authorization.AuthorizationRoute
 import com.example.auth.presentation.registration.RegistrationRoute
 import com.example.marketplace.presentation.catalog.CatalogRoute
+import com.example.marketplace.presentation.itemdetails.ItemDetailsRoute
 
 @Composable
 fun AppNavHost() {
+    val rootNavController = rememberNavController()
+
+    NavHost(
+        navController = rootNavController,
+        startDestination = MainShellDestination
+    ) {
+        composable<MainShellDestination> {
+            MainShell(
+                onNavigateToItemDetails = { itemId ->
+                    rootNavController.navigate(ItemDetailsDestination(itemId))
+                }
+            )
+        }
+
+        composable<ItemDetailsDestination> { backStackEntry ->
+            val destination = backStackEntry.toRoute<ItemDetailsDestination>()
+
+            ItemDetailsRoute(
+                itemId = destination.itemId,
+                onBackClick = {
+                    rootNavController.popBackStack()
+                },
+                onShareClick = { itemTitle ->
+                    // share intent
+                },
+                onRentClick = { itemTitle ->
+                    // переход на бронирование / авторизацию
+                }
+            )
+        }
+    }
+}
+
+@Composable
+private fun MainShell(
+    onNavigateToItemDetails: (String) -> Unit
+) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
-    val showBottomBar = currentDestination
-        ?.hierarchy
-        ?.any {
-            it.hasRoute<CatalogDestination>() ||
-                    it.hasRoute<AuthorizationDestination>() ||
-                    it.hasRoute<RegistrationDestination>()
-        } == true
-
-    Scaffold(
-        bottomBar = {
-            if (showBottomBar) {
-                AppBottomBar(
-                    currentDestination = currentDestination,
-                    onCatalogClick = {
-                        navController.navigate(CatalogDestination) {
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
-                            }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    },
-                    onProfileClick = {
-                        navController.navigate(AuthorizationDestination) {
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
-                            }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    }
-                )
-            }
-        }
-    ) { innerPadding ->
-        NavHost(
-            navController = navController,
-            startDestination = CatalogDestination,
-            modifier = Modifier.padding(innerPadding)
+    Scaffold { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = paddingValues.calculateTopPadding())
         ) {
-            composable<CatalogDestination> {
-                CatalogRoute(
-                    onNavigateToSearch = {},
-                    onNavigateToFilters = {},
-                    onNavigateToNotifications = {},
-                    onNavigateToItemDetails = {}
-                )
+            NavHost(
+                modifier = Modifier.weight(1f),
+                navController = navController,
+                startDestination = CatalogDestination
+            ) {
+                composable<CatalogDestination> {
+                    CatalogRoute(
+                        onNavigateToSearch = {},
+                        onNavigateToFilters = {},
+                        onNavigateToNotifications = {},
+                        onNavigateToItemDetails = { itemId ->
+                            onNavigateToItemDetails(itemId)
+                        }
+                    )
+                }
+
+                composable<AuthorizationDestination> {
+                    AuthorizationRoute(
+                        onNavigateToRegistration = {
+                            navController.navigate(RegistrationDestination)
+                        },
+                        onAuthSuccess = {
+                            navController.popBackStack()
+                        }
+                    )
+                }
+
+                composable<RegistrationDestination> {
+                    RegistrationRoute(
+                        onNavigateBack = {
+                            navController.popBackStack()
+                        },
+                        onAuthSuccess = {
+                            navController.popBackStack()
+                        }
+                    )
+                }
             }
 
-            composable<AuthorizationDestination> {
-                AuthorizationRoute(
-                    onNavigateToRegistration = {
-                        navController.navigate(RegistrationDestination)
-                    },
-                    onAuthSuccess = {
-                        navController.popBackStack(
-                            route = AuthorizationDestination,
-                            inclusive = true
-                        )
-                    }
-                )
-            }
-
-            composable<RegistrationDestination> {
-                RegistrationRoute(
-                    onNavigateBack = {
-                        navController.popBackStack()
-                    },
-                    onAuthSuccess = {
-                        navController.popBackStack(
-                            route = AuthorizationDestination,
-                            inclusive = true
-                        )
-                    }
-                )
-            }
+            AppBottomBar(
+                currentDestination = currentDestination,
+                onCatalogClick = {
+                    navController.navigateToTopLevel(CatalogDestination)
+                },
+                onProfileClick = {
+                    navController.navigateToTopLevel(AuthorizationDestination)
+                }
+            )
         }
+    }
+}
+
+private fun NavHostController.navigateToTopLevel(route: Any) {
+    navigate(route) {
+        popUpTo(graph.findStartDestination().id)
+        launchSingleTop = true
     }
 }
