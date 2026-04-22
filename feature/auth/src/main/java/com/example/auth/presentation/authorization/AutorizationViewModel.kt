@@ -2,6 +2,8 @@ package com.example.auth.presentation.authorization
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.auth.data.toServerPhoneRu
+import com.example.auth.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -10,8 +12,12 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
+import java.io.IOException
 
-class AutorizationViewModel: ViewModel() {
+class AutorizationViewModel(
+    private val authRepository: AuthRepository
+) : ViewModel() {
     private val emailRegex =
         Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")
 
@@ -50,7 +56,9 @@ class AutorizationViewModel: ViewModel() {
             }
 
             AuthorizationEvent.LoginClicked -> {
-                submit()
+                if(submit()) {
+                    login()
+                }
             }
 
             AuthorizationEvent.RegisterClicked -> {
@@ -71,7 +79,7 @@ class AutorizationViewModel: ViewModel() {
         }
     }
 
-    private fun submit() {
+    private fun submit(): Boolean {
         val state = _uiState.value
 
         val loginError = validateLogin(state.login)
@@ -87,38 +95,7 @@ class AutorizationViewModel: ViewModel() {
         }
 
         val hasErrors = listOf(loginError, passwordError).any { it != null }
-        if (hasErrors) return
-
-        login()
-    }
-
-    private fun login() {
-        viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
-
-            try {
-                // Временная заглушка.
-                // val result = repository.login(login, password, rememberMe = false)
-                val isSuccess = true
-
-                if (isSuccess) {
-                    _uiState.update { it.copy(isLoading = false) }
-                    _actions.emit(AuthorizationAction.NavigateToCatalog)
-                } else {
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            passwordError = "Неверный телефон/email или пароль"
-                        )
-                    }
-                }
-            } catch (e: Exception) {
-                _uiState.update { it.copy(isLoading = false) }
-                _actions.emit(
-                    AuthorizationAction.ShowError("Ошибка сети. Попробуйте ещё раз")
-                )
-            }
-        }
+        return !hasErrors
     }
 
     private fun validateLogin(value: String): String? {
@@ -151,5 +128,51 @@ class AutorizationViewModel: ViewModel() {
             digits.length == 11 && (digits.startsWith("7") || digits.startsWith("8")) -> null
             else -> "Введите корректный номер телефона"
         }
+    }
+
+    private fun login() {
+        viewModelScope.launch {
+            val state = _uiState.value
+            _uiState.update { it.copy(isLoading = true) }
+
+            val normalizedLogin = normalizeLogin(state.login)
+
+            authRepository.login(
+                login = normalizedLogin,
+                password = state.password,
+                rememberMe = false
+            ).onSuccess {
+                _uiState.update { it.copy(isLoading = false) }
+                _actions.emit(AuthorizationAction.AuthSuccess)
+            }.onFailure { throwable ->
+                _uiState.update { it.copy(isLoading = false) }
+
+                val message = when (throwable) {
+                    is HttpException -> {
+                        when (throwable.code()) {
+                            400, 401 -> "Неверный логин или пароль"
+                            403 -> "Доступ запрещён"
+                            409 -> "Конфликт данных"
+                            else -> "Ошибка сервера. Попробуйте позже"
+                        }
+                    }
+
+                    is IOException -> "Ошибка сети. Проверьте подключение"
+                    else -> "Не удалось выполнить вход"
+                }
+
+                _actions.emit(AuthorizationAction.ShowError(message))
+            }
+        }
+    }
+}
+
+private fun normalizeLogin(value: String): String {
+    val trimmed = value.trim()
+
+    return if (trimmed.contains("@")) {
+        trimmed.lowercase()
+    } else {
+        trimmed.toServerPhoneRu()
     }
 }

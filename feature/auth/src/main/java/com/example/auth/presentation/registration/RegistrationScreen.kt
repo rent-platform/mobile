@@ -1,7 +1,6 @@
 package com.example.auth.presentation.registration
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,12 +12,9 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -27,14 +23,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import com.example.ui.theme.RentPlatformTheme
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.OffsetMapping
-import androidx.compose.ui.text.input.TransformedText
 import com.example.ui.components.RentPhoneTextField
 import com.example.ui.components.RentPrimaryButton
-import com.example.ui.transformations.PhoneNumberVisualTransformation
 
 @Composable
 fun RegistrationScreen(
@@ -83,7 +73,7 @@ fun RegistrationScreen(
         Spacer(modifier = Modifier.height(16.dp))
         //Имя пользователя
         OutlinedTextField(
-            value = uiState.fullName,
+            value = uiState.nickname,
             onValueChange = onFullNameChanged,
             modifier = Modifier.fillMaxWidth(),
             label = { Text("Имя пользователя") },

@@ -18,7 +18,7 @@ class RegistrationViewModel : ViewModel() {
     private val _actions = MutableSharedFlow<RegistrationAction>()
     val actions = _actions.asSharedFlow()
 
-    private val fullNameRegex =
+    private val nickNameRegex =
         Regex("^[а-яёА-ЯЁa-zA-Z]+(?:[ -][а-яёА-ЯЁa-zA-Z]+)*$")
 
     private val passwordRegex = Regex("^[A-Za-z\\d@#$%^&+=!]{6,20}$")
@@ -39,7 +39,7 @@ class RegistrationViewModel : ViewModel() {
             is RegistrationEvent.FullNameChanged -> {
                 _uiState.update {
                     it.copy(
-                        fullName = event.value,
+                        nickname = event.value,
                         fullNameError = null
                     )
                 }
@@ -80,6 +80,7 @@ class RegistrationViewModel : ViewModel() {
 
             RegistrationEvent.ContinueClicked -> {
                 submit()
+
             }
         }
     }
@@ -88,7 +89,7 @@ class RegistrationViewModel : ViewModel() {
         val state = _uiState.value
 
         val isNameFilledCorrectly =
-            state.fullName.trim().length in 2..50
+            state.nickname.trim().length in 2..50
 
         val isFormFilled =
             state.phone.isNotBlank() &&
@@ -103,7 +104,7 @@ class RegistrationViewModel : ViewModel() {
 
     private fun submit() {
         val state = _uiState.value
-        val trimmedName = state.fullName.trim()
+        val trimmedName = state.nickname.trim()
 
         val phoneError =
             if (state.phone.length != 10) "Введите номер полностью" else null
@@ -112,7 +113,7 @@ class RegistrationViewModel : ViewModel() {
             when {
                 trimmedName.length < 2 -> "Имя должно содержать минимум 2 символа"
                 trimmedName.length > 50 -> "Имя не должно быть длиннее 50 символов"
-                !fullNameRegex.matches(trimmedName) ->
+                !nickNameRegex.matches(trimmedName) ->
                     "Имя может содержать только буквы, пробелы и дефис"
                 else -> null
             }

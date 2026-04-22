@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.jetbrains.kotlin.serialization)
 }
 
 android {
@@ -56,6 +57,19 @@ dependencies {
     //Навигация
     implementation("androidx.navigation:navigation-compose:2.9.7")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
+
+    //Сеть
+    implementation(libs.retrofit.core)
+    implementation(libs.retrofit.converter.kotlinxserialization)
+    implementation(libs.okhttp.core)
+    implementation(libs.okhttp.logginginterceptor)
+
+    //Coin
+    implementation(platform(libs.koin.bom))
+    implementation(libs.koin.core)
+    implementation(libs.koin.compose)
+
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
 
     debugImplementation(libs.androidx.ui.tooling)
 

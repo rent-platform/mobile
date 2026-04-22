@@ -33,6 +33,17 @@ android {
 }
 
 dependencies {
+    //Сеть
+    implementation(libs.retrofit.core)
+    implementation(libs.retrofit.converter.kotlinxserialization)
+    implementation(libs.okhttp.core)
+    implementation(libs.okhttp.logginginterceptor)
+
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
+
+    //DI
+    implementation(platform(libs.koin.bom))
+    implementation(libs.koin.core)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

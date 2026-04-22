@@ -32,6 +32,7 @@ import com.example.ui.components.RentPrimaryButton
 
 @Composable
 fun AuthorizationScreen(
+    modifier: Modifier = Modifier,
     uiState: AuthorizationUiState,
     onLoginChanged: (String) -> Unit,
     onPasswordChanged: (String) -> Unit,

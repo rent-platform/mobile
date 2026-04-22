@@ -2,7 +2,7 @@ package com.example.auth.presentation.registration
 
 data class RegistrationUiState(
     val phone: String = "",
-    val fullName: String = "",
+    val nickname: String = "",
     val password: String = "",
     val confirmPassword: String = "",
     val isPasswordVisible: Boolean = false,
