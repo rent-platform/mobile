@@ -8,13 +8,19 @@ import com.example.auth.data.repository.AuthRepositoryImpl
 import com.example.auth.domain.repository.AuthRepository
 import com.example.auth.presentation.authorization.AutorizationViewModel
 import com.example.auth.presentation.registration.RegistrationViewModel
-import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.dsl.module
 import retrofit2.Retrofit
+import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.qualifier.named
 
 val authModule = module {
-    single { get<Retrofit>().create(AuthApi::class.java) }
-    single { get<Retrofit>().create(UserApi::class.java) }
+    single<AuthApi> {
+        get<Retrofit>(named("mainRetrofit")).create(AuthApi::class.java)
+    }
+
+    single<UserApi> {
+        get<Retrofit>(named("mainRetrofit")).create(UserApi::class.java)
+    }
 
     single<TokenStorage> { DataStoreTokenStorage(get()) }
 
@@ -26,6 +32,15 @@ val authModule = module {
         )
     }
 
-    viewModelOf(::AutorizationViewModel)
-    viewModelOf(::RegistrationViewModel)
+    viewModel {
+        AutorizationViewModel(
+            authRepository = get()
+        )
+    }
+
+    viewModel {
+        RegistrationViewModel(
+            authRepository = get()
+        )
+    }
 }

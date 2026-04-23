@@ -78,9 +78,9 @@ fun RegistrationScreen(
             modifier = Modifier.fillMaxWidth(),
             label = { Text("Имя пользователя") },
             singleLine = true,
-            isError = uiState.fullNameError != null,
+            isError = uiState.nicknameError != null,
             supportingText = {
-                uiState.fullNameError?.let {
+                uiState.nicknameError?.let {
                     Text(text = it, color = MaterialTheme.colorScheme.error)
                 }
             },

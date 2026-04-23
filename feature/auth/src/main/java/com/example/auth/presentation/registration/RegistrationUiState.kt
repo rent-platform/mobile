@@ -10,7 +10,7 @@ data class RegistrationUiState(
     val isContinueEnabled: Boolean = false,
     val isLoading: Boolean = false,
     val phoneError: String? = null,
-    val fullNameError: String? = null,
+    val nicknameError: String? = null,
     val passwordError: String? = null,
     val confirmPasswordError: String? = null
 )

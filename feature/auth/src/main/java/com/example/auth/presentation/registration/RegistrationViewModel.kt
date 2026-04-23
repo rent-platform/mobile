@@ -2,6 +2,8 @@ package com.example.auth.presentation.registration
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.auth.data.toServerPhoneRu
+import com.example.auth.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -9,8 +11,10 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
+import java.io.IOException
 
-class RegistrationViewModel : ViewModel() {
+class RegistrationViewModel(private val authRepository: AuthRepository) : ViewModel() {
 
     private val _uiState = MutableStateFlow(RegistrationUiState())
     val uiState: StateFlow<RegistrationUiState> = _uiState.asStateFlow()
@@ -21,7 +25,7 @@ class RegistrationViewModel : ViewModel() {
     private val nickNameRegex =
         Regex("^[а-яёА-ЯЁa-zA-Z]+(?:[ -][а-яёА-ЯЁa-zA-Z]+)*$")
 
-    private val passwordRegex = Regex("^[A-Za-z\\d@#$%^&+=!]{6,20}$")
+    private val passwordRegex = Regex("^[A-Za-z\\d@#$%^&+=!]{8,20}$")
 
     fun onEvent(event: RegistrationEvent) {
         when (event) {
@@ -36,11 +40,11 @@ class RegistrationViewModel : ViewModel() {
                 updateButtonState()
             }
 
-            is RegistrationEvent.FullNameChanged -> {
+            is RegistrationEvent.NicknameChanged -> {
                 _uiState.update {
                     it.copy(
                         nickname = event.value,
-                        fullNameError = null
+                        nicknameError = null
                     )
                 }
                 updateButtonState()
@@ -79,8 +83,9 @@ class RegistrationViewModel : ViewModel() {
             }
 
             RegistrationEvent.ContinueClicked -> {
-                submit()
-
+                if (submit()) {
+                    register()
+                }
             }
         }
     }
@@ -102,7 +107,7 @@ class RegistrationViewModel : ViewModel() {
         }
     }
 
-    private fun submit() {
+    private fun submit(): Boolean {
         val state = _uiState.value
         val trimmedName = state.nickname.trim()
 
@@ -135,7 +140,7 @@ class RegistrationViewModel : ViewModel() {
         _uiState.update {
             it.copy(
                 phoneError = phoneError,
-                fullNameError = fullNameError,
+                nicknameError = fullNameError,
                 passwordError = passwordError,
                 confirmPasswordError = confirmPasswordError
             )
@@ -148,38 +153,71 @@ class RegistrationViewModel : ViewModel() {
             confirmPasswordError
         ).any { it != null }
 
-        if (hasErrors) return
-
-        checkPhoneAndContinue()
+        return !hasErrors
     }
 
-    private fun checkPhoneAndContinue() {
+    private fun register() {
         viewModelScope.launch {
+            val state = _uiState.value
+
             _uiState.update { it.copy(isLoading = true) }
 
-            try {
-                // Здесь будет вызов repository / network на проверку одинакового номера в БД
-                // val isPhoneAvailable = repository.isPhoneAvailable(_uiState.value.phone)
-                val isPhoneAvailable = true
+            val normalizedPhone = state.phone.toServerPhoneRu()
 
-                if (!isPhoneAvailable) {
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            phoneError = "Пользователь с таким номером уже существует"
+            authRepository.register(
+                phone = normalizedPhone,
+                nickname = state.nickname.trim(),
+                password = state.password,
+                confirmPassword = state.confirmPassword
+            ).onSuccess {
+                //Логиним после успешной регистрации
+                authRepository.login(
+                    login = normalizedPhone,
+                    password = state.password,
+                    rememberMe = false
+                ).onSuccess {
+                    _uiState.update { it.copy(isLoading = false) }
+                    _actions.emit(RegistrationAction.AuthSuccess)
+                }.onFailure {
+                    _uiState.update { it.copy(isLoading = false) }
+                    _actions.emit(
+                        RegistrationAction.ShowError(
+                            "Аккаунт создан, но автоматический вход не выполнен"
+                        )
+                    )
+                }
+            }.onFailure { throwable ->
+                _uiState.update { it.copy(isLoading = false) }
+
+                when (throwable) {
+                    is HttpException -> {
+                        when (throwable.code()) {
+                            400 -> _actions.emit(
+                                RegistrationAction.ShowError("Проверьте корректность данных")
+                            )
+                            409 -> {
+                                _uiState.update {
+                                    it.copy(phoneError = "Пользователь с такими данными уже существует")
+                                }
+                            }
+                            else -> _actions.emit(
+                                RegistrationAction.ShowError("Ошибка сервера. Попробуйте позже")
+                            )
+                        }
+                    }
+
+                    is IOException -> {
+                        _actions.emit(
+                            RegistrationAction.ShowError("Ошибка сети. Проверьте подключение")
                         )
                     }
-                    return@launch
+
+                    else -> {
+                        _actions.emit(
+                            RegistrationAction.ShowError("Не удалось выполнить регистрацию")
+                        )
+                    }
                 }
-
-                _uiState.update { it.copy(isLoading = false) }
-                _actions.emit(RegistrationAction.NavigateToCatalog)
-
-            } catch (e: Exception) {
-                _uiState.update { it.copy(isLoading = false) }
-                _actions.emit(
-                    RegistrationAction.ShowError("Ошибка сети. Попробуйте ещё раз")
-                )
             }
         }
     }

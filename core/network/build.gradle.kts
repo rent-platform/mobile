@@ -33,6 +33,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":feature:auth"))
     //Сеть
     implementation(libs.retrofit.core)
     implementation(libs.retrofit.converter.kotlinxserialization)

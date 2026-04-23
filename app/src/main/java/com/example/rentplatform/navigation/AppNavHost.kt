@@ -103,7 +103,8 @@ private fun MainShell(
                             navController.popBackStack()
                         },
                         onAuthSuccess = {
-                            navController.popBackStack()
+                            //Возврат пользователя до auth
+                            navController.popBackStack<AuthorizationDestination>(inclusive = true)
                         }
                     )
                 }
