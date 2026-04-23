@@ -44,6 +44,7 @@ dependencies {
     implementation(project(":feature:auth"))
     implementation(project(":core:ui"))
     implementation(project(":feature:marketplace"))
+    implementation(project(":feature:profile"))
     implementation(project(":core:network"))
 
     // Dependency Injection

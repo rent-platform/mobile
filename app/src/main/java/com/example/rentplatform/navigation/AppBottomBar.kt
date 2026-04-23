@@ -1,5 +1,6 @@
 package com.example.rentplatform.navigation
 
+import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
@@ -8,6 +9,8 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavDestination.Companion.hasRoute
@@ -18,7 +21,9 @@ fun AppBottomBar(
     onCatalogClick: () -> Unit,
     onProfileClick: () -> Unit,
 ) {
-    NavigationBar {
+    NavigationBar(modifier = Modifier.height(70.dp),
+
+        ) {
         NavigationBarItem(
             selected = currentDestination
                 ?.hierarchy
@@ -37,8 +42,7 @@ fun AppBottomBar(
             selected = currentDestination
                 ?.hierarchy
                 ?.any {
-                    it.hasRoute<AuthorizationDestination>() ||
-                            it.hasRoute<RegistrationDestination>()
+                    it.hasRoute<ProfileEntryDestination>()
                 } == true,
             onClick = onProfileClick,
             icon = {

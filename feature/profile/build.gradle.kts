@@ -5,8 +5,8 @@ plugins {
 }
 
 android {
-    namespace = "com.example.marketplace"
-    compileSdk = 35
+    namespace = "com.example.profile"
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 24
@@ -31,9 +31,6 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
-    buildFeatures{
-        compose = true
-    }
 }
 
 dependencies {
@@ -48,13 +45,9 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.9.4")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.4")
 
-    //Иконки
-    implementation("androidx.compose.material:material-icons-extended")
-
     implementation(libs.androidx.core.ktx)
-
-    debugImplementation(libs.androidx.ui.tooling)
-
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

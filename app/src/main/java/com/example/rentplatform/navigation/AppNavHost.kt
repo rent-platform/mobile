@@ -7,22 +7,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
 import androidx.navigation.toRoute
 import com.example.auth.presentation.authorization.AuthorizationRoute
 import com.example.auth.presentation.registration.RegistrationRoute
 import com.example.marketplace.presentation.catalog.CatalogRoute
 import com.example.marketplace.presentation.itemdetails.ItemDetailsRoute
+import com.example.profile.presentation.ProfileEntryRoute
 
 @Composable
-fun AppNavHost() {
+fun AppNavHost(isAuthorized: Boolean = false) {
     val rootNavController = rememberNavController()
 
     NavHost(
@@ -31,8 +30,12 @@ fun AppNavHost() {
     ) {
         composable<MainShellDestination> {
             MainShell(
+                isAuthorized = isAuthorized,
                 onNavigateToItemDetails = { itemId ->
                     rootNavController.navigate(ItemDetailsDestination(itemId))
+                },
+                onOpenAuthFlow = {
+                    rootNavController.navigate(AuthorizationDestination)
                 }
             )
         }
@@ -49,7 +52,34 @@ fun AppNavHost() {
                     // share intent
                 },
                 onRentClick = { itemTitle ->
-                    // переход на бронирование / авторизацию
+                    if (isAuthorized) {
+                        // переход на экран бронирования
+                    } else {
+                        rootNavController.navigate(AuthorizationDestination)
+                    }
+                }
+            )
+        }
+
+        composable<AuthorizationDestination> {
+            AuthorizationRoute(
+                onNavigateToRegistration = {
+                    rootNavController.navigate(RegistrationDestination)
+                },
+                onAuthSuccess = {
+                    rootNavController.popBackStack()
+                }
+            )
+        }
+
+        composable<RegistrationDestination> {
+            RegistrationRoute(
+                onNavigateBack = {
+                    rootNavController.popBackStack()
+                },
+                onAuthSuccess = {
+                    //Возврат пользователя до auth
+                    rootNavController.popBackStack<AuthorizationDestination>(inclusive = true)
                 }
             )
         }
@@ -58,7 +88,9 @@ fun AppNavHost() {
 
 @Composable
 private fun MainShell(
-    onNavigateToItemDetails: (String) -> Unit
+    isAuthorized: Boolean,
+    onNavigateToItemDetails: (String) -> Unit,
+    onOpenAuthFlow: () -> Unit
 ) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -86,26 +118,10 @@ private fun MainShell(
                     )
                 }
 
-                composable<AuthorizationDestination> {
-                    AuthorizationRoute(
-                        onNavigateToRegistration = {
-                            navController.navigate(RegistrationDestination)
-                        },
-                        onAuthSuccess = {
-                            navController.popBackStack()
-                        }
-                    )
-                }
-
-                composable<RegistrationDestination> {
-                    RegistrationRoute(
-                        onNavigateBack = {
-                            navController.popBackStack()
-                        },
-                        onAuthSuccess = {
-                            //Возврат пользователя до auth
-                            navController.popBackStack<AuthorizationDestination>(inclusive = true)
-                        }
+                composable<ProfileEntryDestination> {
+                    ProfileEntryRoute(
+                        isAuthorized = isAuthorized,
+                        onLoginClick = onOpenAuthFlow
                     )
                 }
             }
@@ -116,7 +132,7 @@ private fun MainShell(
                     navController.navigateToTopLevel(CatalogDestination)
                 },
                 onProfileClick = {
-                    navController.navigateToTopLevel(AuthorizationDestination)
+                    navController.navigateToTopLevel(ProfileEntryDestination)
                 }
             )
         }
@@ -125,7 +141,10 @@ private fun MainShell(
 
 private fun NavHostController.navigateToTopLevel(route: Any) {
     navigate(route) {
-        popUpTo(graph.findStartDestination().id)
+        popUpTo(graph.findStartDestination().id) {
+            saveState = true
+        }
         launchSingleTop = true
+        restoreState = true
     }
 }

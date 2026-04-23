@@ -18,3 +18,6 @@ data class ItemDetailsDestination(
 
 @Serializable
 object MainShellDestination
+
+@Serializable
+object ProfileEntryDestination
