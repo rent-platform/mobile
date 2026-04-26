@@ -40,6 +40,7 @@ android {
 dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:ui"))
+    implementation(project(":core:session"))
     //compoose
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))

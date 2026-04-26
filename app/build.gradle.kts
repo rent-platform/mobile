@@ -46,6 +46,7 @@ dependencies {
     implementation(project(":feature:marketplace"))
     implementation(project(":feature:profile"))
     implementation(project(":core:network"))
+    implementation(project(":core:session"))
 
     // Dependency Injection
     implementation(platform(libs.koin.bom))
