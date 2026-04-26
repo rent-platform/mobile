@@ -121,7 +121,31 @@ private fun MainShell(
                 composable<ProfileEntryDestination> {
                     ProfileEntryRoute(
                         isAuthorized = isAuthorized,
-                        onLoginClick = onOpenAuthFlow
+                        onLoginClick = onOpenAuthFlow,
+
+                        onEditProfileClick = {
+                            // navController.navigate(EditProfileDestination)
+                        },
+
+                        onRatingClick = {
+                            //navController.navigate(ProfileReviewsDestination)
+                        },
+
+                        onMyItemsClick = { status ->
+                            //navController.navigate(MyItemsDestination(status.backendValue))
+                        },
+
+                        onMyRentalsClick = {
+                            //navController.navigate(MyRentalsDestination)
+                        },
+
+                        onRentalHistoryClick = {
+                            //navController.navigate(RentalHistoryDestination)
+                        },
+
+                        onCreateItemClick = {
+                            //navController.navigate(CreateItemDestination)
+                        }
                     )
                 }
             }

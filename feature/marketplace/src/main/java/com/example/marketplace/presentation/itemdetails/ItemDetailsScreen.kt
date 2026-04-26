@@ -215,27 +215,3 @@ private fun RentBottomBar(
         )
     }
 }
-
-@Preview
-@Composable
-private fun ItemDetailsScreenPreview() {
-    MaterialTheme {
-        ItemDetailsScreen(
-            uiState = ItemDetailsUiState(
-                isLoading = false,
-                title = "Палатка туристическая 3-местная",
-                description = "Удобная палатка для походов и кемпинга.",
-                pricePerDay = 1500,
-                depositAmount = 5000,
-                location = "Алматы, Ауэзовский район",
-                ownerName = "Алексей Иванов",
-                imageResIds = listOf(
-                    com.example.marketplace.R.drawable.pocofon,
-                    com.example.marketplace.R.drawable.bike,
-                    com.example.marketplace.R.drawable.soup
-                )
-            ),
-            onEvent = {}
-        )
-    }
-}
