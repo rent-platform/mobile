@@ -12,7 +12,6 @@ import com.example.auth.domain.AuthorizedUser
 import com.example.auth.domain.User
 import com.example.auth.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 
 class AuthRepositoryImpl(
     private val authApi: AuthApi,
@@ -20,10 +19,7 @@ class AuthRepositoryImpl(
     private val tokenStorage: TokenStorage
 ) : AuthRepository {
 
-    override val isAuthorized: Flow<Boolean> =
-        flow {
-            emit(tokenStorage.getRefreshToken() != null)
-        }
+    override val isAuthorized: Flow<Boolean> = tokenStorage.isAuthorized
 
     override suspend fun register(
         phone: String,

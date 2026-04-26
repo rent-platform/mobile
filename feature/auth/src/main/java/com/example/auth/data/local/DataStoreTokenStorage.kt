@@ -5,6 +5,8 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.example.auth.domain.AuthTokens
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
@@ -17,6 +19,12 @@ class DataStoreTokenStorage(
         val REFRESH_TOKEN = stringPreferencesKey("refresh_token")
         val TOKEN_TYPE = stringPreferencesKey("token_type")
     }
+
+    override val isAuthorized: Flow<Boolean> = dataStore.data
+        .map { prefs ->
+            !prefs[REFRESH_TOKEN].isNullOrBlank()
+        }
+        .distinctUntilChanged()
 
     override suspend fun saveTokens(tokens: AuthTokens) {
         dataStore.edit { prefs ->

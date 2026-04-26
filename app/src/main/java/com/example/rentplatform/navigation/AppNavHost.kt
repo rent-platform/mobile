@@ -19,9 +19,17 @@ import com.example.auth.presentation.registration.RegistrationRoute
 import com.example.marketplace.presentation.catalog.CatalogRoute
 import com.example.marketplace.presentation.itemdetails.ItemDetailsRoute
 import com.example.profile.presentation.ProfileEntryRoute
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.auth.domain.repository.AuthRepository
+import org.koin.compose.koinInject
 
 @Composable
-fun AppNavHost(isAuthorized: Boolean = false) {
+fun AppNavHost() {
+    val authRepository: AuthRepository = koinInject()
+
+    val isAuthorized by authRepository.isAuthorized.collectAsStateWithLifecycle(
+        initialValue = false
+    )
     val rootNavController = rememberNavController()
 
     NavHost(
