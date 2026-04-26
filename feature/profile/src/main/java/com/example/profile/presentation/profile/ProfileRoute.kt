@@ -2,14 +2,12 @@ package com.example.profile.presentation.profile
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ProfileRoute(
-    viewModel: ProfileViewModel = viewModel(),
-
     onEditProfileClick: () -> Unit = {},
     onRatingClick: () -> Unit = {},
 
@@ -18,9 +16,12 @@ fun ProfileRoute(
     onMyRentalsClick: () -> Unit = {},
     onRentalHistoryClick: () -> Unit = {},
 
-    onCreateItemClick: () -> Unit = {}
+    onCreateItemClick: () -> Unit = {},
+
+    onLogoutClick: () -> Unit = {}
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val viewModel: ProfileViewModel = koinViewModel()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(viewModel) {
         viewModel.actions.collect { action ->
@@ -47,6 +48,10 @@ fun ProfileRoute(
 
                 ProfileAction.NavigateToCreateItem -> {
                     onCreateItemClick()
+                }
+
+                ProfileAction.Logout -> {
+                    onLogoutClick()
                 }
             }
         }
@@ -93,6 +98,10 @@ fun ProfileRoute(
 
         onCreateItemClick = {
             viewModel.onEvent(ProfileEvent.CreateItemClicked)
+        },
+
+        onLogoutClick = {
+            viewModel.onEvent(ProfileEvent.LogoutClicked)
         }
     )
 }

@@ -12,4 +12,5 @@ sealed interface ProfileEvent {
     object RentalHistoryClicked : ProfileEvent
     object CreateItemClicked : ProfileEvent
     object RefreshProfile : ProfileEvent
+    object LogoutClicked : ProfileEvent
 }

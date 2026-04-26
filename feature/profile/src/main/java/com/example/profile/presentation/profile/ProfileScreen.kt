@@ -36,7 +36,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ui.components.RentPrimaryButton
@@ -45,7 +44,6 @@ import com.example.ui.theme.ErrorRed
 import com.example.ui.theme.GreenContainer
 import com.example.ui.theme.GreenContainerText
 import com.example.ui.theme.GreenPrimary
-import com.example.ui.theme.RentPlatformTheme
 import com.example.ui.theme.SuccessGreen
 import com.example.ui.theme.TextPrimary
 import com.example.ui.theme.TextSecondary
@@ -69,7 +67,8 @@ fun ProfileScreen(
     onMyRentalsClick: () -> Unit = {},
     onHistoryClick: () -> Unit = {},
 
-    onCreateItemClick: () -> Unit = {}
+    onCreateItemClick: () -> Unit = {},
+    onLogoutClick: () -> Unit = {}
 ) {
     Column(
         modifier = modifier
@@ -106,7 +105,7 @@ fun ProfileScreen(
             ProfileNavigationRow(
                 title = "На модерации",
                 subtitle = "Ожидают проверки",
-                value = "1",
+                value = uiState.moderationItemsCount.toString(),
                 onClick = onModerationClick
             )
 
@@ -115,7 +114,7 @@ fun ProfileScreen(
             ProfileNavigationRow(
                 title = "Отклонённые",
                 subtitle = "Нужны исправления",
-                value = "1",
+                value = uiState.rejectedItemsCount.toString(),
                 onClick = onRejectedClick
             )
 
@@ -124,7 +123,7 @@ fun ProfileScreen(
             ProfileNavigationRow(
                 title = "Черновики",
                 subtitle = "Не опубликованы",
-                value = "2",
+                value = uiState.draftItemsCount.toString(),
                 onClick = onDraftClick
             )
 
@@ -133,7 +132,7 @@ fun ProfileScreen(
             ProfileNavigationRow(
                 title = "Архив",
                 subtitle = "Скрытые объявления",
-                value = "4",
+                value = uiState.archivedItemsCount.toString(),
                 onClick = onArchiveClick
             )
 
@@ -158,7 +157,7 @@ fun ProfileScreen(
             ProfileNavigationRow(
                 title = "История аренд",
                 subtitle = "Завершённые сделки",
-                value = "8",
+                value = uiState.rentalHistoryCount.toString(),
                 onClick = onHistoryClick
             )
         }
@@ -200,6 +199,15 @@ fun ProfileScreen(
             ProfileDetailRow(
                 title = "Обновлён",
                 value = uiState.updatedAt.orEmptyText()
+            )
+        }
+
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center
+        ) {
+            LogoutButton(
+                onClick = onLogoutClick
             )
         }
     }
@@ -569,6 +577,27 @@ private fun ProfileDetailRow(
         Text(
             text = value,
             color = TextPrimary,
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.SemiBold
+        )
+    }
+}
+
+@Composable
+private fun LogoutButton(
+    onClick: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .clip(MaterialTheme.shapes.medium)
+            .background(ErrorRed)
+            .clickable(onClick = onClick)
+            .padding(horizontal = 22.dp, vertical = 10.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = "Выйти из профиля",
+            color = WhiteBackground,
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.SemiBold
         )

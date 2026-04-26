@@ -4,6 +4,7 @@ import android.app.Application
 import com.example.auth.data.local.authStorageModule
 import com.example.auth.di.authModule
 import com.example.network.di.networkModule
+import com.example.profile.di.profileModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -19,7 +20,8 @@ class RentPlatformApp : Application() {
             modules(
                 networkModule,
                 authStorageModule,
-                authModule
+                authModule,
+                profileModule
             )
         }
     }

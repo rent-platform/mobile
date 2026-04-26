@@ -2,6 +2,7 @@ package com.example.profile.presentation.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.profile.domain.ProfileRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -10,13 +11,17 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class ProfileViewModel : ViewModel() {
+class ProfileViewModel(private val repository: ProfileRepository) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(mockProfileUiState())
+    private val _uiState = MutableStateFlow(emptyProfileUiState())
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
 
     private val _actions = MutableSharedFlow<ProfileAction>()
     val actions: SharedFlow<ProfileAction> = _actions.asSharedFlow()
+
+    init {
+        loadProfile()
+    }
 
     fun onEvent(event: ProfileEvent) {
         when (event) {
@@ -83,16 +88,30 @@ class ProfileViewModel : ViewModel() {
             ProfileEvent.RefreshProfile -> {
                 loadProfile()
             }
+
+            ProfileEvent.LogoutClicked -> {
+                logout()
+            }
         }
     }
 
     private fun loadProfile() {
-        // TODO: позже заменить на запрос в Repository:
-        // val user = profileRepository.getMe()
-        // val stats = profileRepository.getProfileStats()
-        // _uiState.value = mapper(user, stats)
+        viewModelScope.launch {
+            runCatching {
+                repository.getMyProfile()
+            }.onSuccess { profile ->
+                _uiState.value = profile
+            }.onFailure { error ->
+                error.printStackTrace()
 
-        _uiState.value = mockProfileUiState()
+                _uiState.value = mockProfileUiState().copy(
+                    fullName = "Ошибка загрузки профиля",
+                    nickname = error.message ?: "Не удалось получить /api/users/me",
+                    email = null,
+                    phone = null
+                )
+            }
+        }
     }
 
     private fun sendAction(action: ProfileAction) {
@@ -100,6 +119,43 @@ class ProfileViewModel : ViewModel() {
             _actions.emit(action)
         }
     }
+
+    private fun logout() {
+        viewModelScope.launch {
+            repository.logout()
+            _actions.emit(ProfileAction.Logout)
+        }
+    }
+}
+
+private fun emptyProfileUiState(): ProfileUiState {
+    return ProfileUiState(
+        fullName = "",
+        nickname = null,
+        avatarUrl = null,
+        bio = null,
+        phone = null,
+        email = null,
+        role = "user",
+        isPhoneVerified = false,
+        isEmailVerified = false,
+        isActive = false,
+        registeredAt = "",
+        updatedAt = null,
+
+        rating = "0.0",
+        reviewsCount = 0,
+
+        activeItemsCount = 0,
+        draftItemsCount = 0,
+        moderationItemsCount = 0,
+        rejectedItemsCount = 0,
+        archivedItemsCount = 0,
+
+        rentedOutCount = 0,
+        rentedCount = 0,
+        rentalHistoryCount = 0
+    )
 }
 
 private fun mockProfileUiState(): ProfileUiState {

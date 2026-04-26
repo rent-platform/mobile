@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.jetbrains.kotlin.serialization)
 }
 
 android {
@@ -44,6 +45,14 @@ dependencies {
     implementation(platform(libs.koin.bom))
     implementation(libs.koin.core)
     implementation(libs.koin.compose)
+
+    //Сеть
+    implementation(libs.retrofit.core)
+    implementation(libs.retrofit.converter.kotlinxserialization)
+    implementation(libs.okhttp.core)
+    implementation(libs.okhttp.logginginterceptor)
+
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)

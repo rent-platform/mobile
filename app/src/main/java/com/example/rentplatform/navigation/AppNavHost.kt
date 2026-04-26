@@ -153,6 +153,16 @@ private fun MainShell(
 
                         onCreateItemClick = {
                             //navController.navigate(CreateItemDestination)
+                        },
+
+                        onLogoutClick = {
+                            navController.navigate(ProfileEntryDestination) {
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = false
+                                }
+                                launchSingleTop = true
+                                restoreState = false
+                            }
                         }
                     )
                 }

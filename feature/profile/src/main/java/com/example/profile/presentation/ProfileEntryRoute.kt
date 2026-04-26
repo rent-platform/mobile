@@ -15,7 +15,8 @@ fun ProfileEntryRoute(
     onMyItemsClick: (ProfileItemsStatus) -> Unit = {},
     onMyRentalsClick: () -> Unit = {},
     onRentalHistoryClick: () -> Unit = {},
-    onCreateItemClick: () -> Unit = {}
+    onCreateItemClick: () -> Unit = {},
+    onLogoutClick: () -> Unit = {}
 ) {
     if (isAuthorized) {
         ProfileRoute(
@@ -24,7 +25,8 @@ fun ProfileEntryRoute(
             onMyItemsClick = onMyItemsClick,
             onMyRentalsClick = onMyRentalsClick,
             onRentalHistoryClick = onRentalHistoryClick,
-            onCreateItemClick = onCreateItemClick
+            onCreateItemClick = onCreateItemClick,
+            onLogoutClick = onLogoutClick
         )
     } else {
         GuestProfileRoute(
