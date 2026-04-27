@@ -6,6 +6,8 @@ import com.example.auth.domain.AuthTokens
 import com.example.auth.domain.User
 import com.example.auth.domain.UserRole
 
+private val ruPhoneRegex = Regex("""^(?:\+7|8)\d{10}$""")
+
 fun UserResponseDto.toDomain(): User {
     return User(
         id = id,
@@ -34,6 +36,15 @@ fun TokenResponseDto.toDomain(): AuthTokens {
 }
 
 fun String.toServerPhoneRu(): String {
-    val digits = filter(Char::isDigit).takeLast(10)
-    return "+7$digits"
+    val phone = trim()
+
+    require(ruPhoneRegex.matches(phone)) {
+        "Invalid phone number"
+    }
+
+    return if (phone.startsWith("8")) {
+        "+7${phone.drop(1)}"
+    } else {
+        phone
+    }
 }

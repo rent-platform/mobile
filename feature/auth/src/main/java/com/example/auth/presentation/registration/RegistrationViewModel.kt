@@ -174,7 +174,7 @@ class RegistrationViewModel(private val authRepository: AuthRepository) : ViewMo
                 authRepository.login(
                     login = normalizedPhone,
                     password = state.password,
-                    rememberMe = false
+                    rememberMe = true
                 ).onSuccess {
                     _uiState.update { it.copy(isLoading = false) }
                     _actions.emit(RegistrationAction.AuthSuccess)

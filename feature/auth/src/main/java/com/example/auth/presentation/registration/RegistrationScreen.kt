@@ -31,6 +31,7 @@ import com.example.ui.components.RentPrimaryButton
 
 @Composable
 fun RegistrationScreen(
+    modifier: Modifier = Modifier,
     uiState: RegistrationUiState,
     onPhoneChanged: (String) -> Unit,
     onFullNameChanged: (String) -> Unit,
@@ -43,9 +44,8 @@ fun RegistrationScreen(
 ) {
     val scrollState = rememberScrollState()
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
-            .statusBarsPadding()
             .navigationBarsPadding()
             .imePadding()
             .verticalScroll(scrollState)

@@ -121,12 +121,14 @@ class AutorizationViewModel(
     }
 
     private fun validatePhone(phone: String): String? {
-        val digits = phone.filter { it.isDigit() }
+        val trimmed = phone.trim()
 
         return when {
-            digits.length == 10 -> null
-            digits.length == 11 && (digits.startsWith("7") || digits.startsWith("8")) -> null
-            else -> "Введите корректный номер телефона"
+            trimmed.isBlank() -> "Введите номер телефона"
+            !Regex("""^(?:\+7|8)\d{10}$""").matches(trimmed) ->
+                "Введите номер в формате +7XXXXXXXXXX или 8XXXXXXXXXX"
+
+            else -> null
         }
     }
 
@@ -140,7 +142,7 @@ class AutorizationViewModel(
             authRepository.login(
                 login = normalizedLogin,
                 password = state.password,
-                rememberMe = false
+                rememberMe = true
             ).onSuccess {
                 _uiState.update { it.copy(isLoading = false) }
                 _actions.emit(AuthorizationAction.AuthSuccess)

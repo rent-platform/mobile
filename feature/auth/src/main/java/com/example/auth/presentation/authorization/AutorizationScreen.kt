@@ -42,9 +42,8 @@ fun AuthorizationScreen(
     onRegisterClick: () -> Unit
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
-            .statusBarsPadding()
             .navigationBarsPadding()
             .imePadding()
             .padding(horizontal = 20.dp, vertical = 18.dp),
