@@ -189,6 +189,7 @@ class EditProfileViewModel(
             runCatching {
                 repository.updateMyProfile(
                     fullName = trimmedFullName,
+                    nickname = trimmedNickname.ifBlank { null },
                     email = trimmedEmail.ifBlank { null },
                     bio = trimmedBio.ifBlank { null },
                     avatarUrl = currentState.avatarUrl

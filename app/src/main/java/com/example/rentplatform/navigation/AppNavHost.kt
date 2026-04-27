@@ -20,6 +20,7 @@ import com.example.marketplace.presentation.catalog.CatalogRoute
 import com.example.marketplace.presentation.itemdetails.ItemDetailsRoute
 import com.example.profile.presentation.ProfileEntryRoute
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.profile.presentation.editprofile.EditProfileRoute
 import com.example.session.SessionManager
 import org.koin.compose.koinInject
 
@@ -44,6 +45,9 @@ fun AppNavHost() {
                 },
                 onOpenAuthFlow = {
                     rootNavController.navigate(AuthorizationDestination)
+                },
+                onEditProfileClick = {
+                    rootNavController.navigate(EditProfileDestination)
                 }
             )
         }
@@ -91,6 +95,13 @@ fun AppNavHost() {
                 }
             )
         }
+        composable<EditProfileDestination> {
+            EditProfileRoute(
+                onNavigateBack = {
+                    rootNavController.popBackStack()
+                }
+            )
+        }
     }
 }
 
@@ -98,7 +109,8 @@ fun AppNavHost() {
 private fun MainShell(
     isAuthorized: Boolean,
     onNavigateToItemDetails: (String) -> Unit,
-    onOpenAuthFlow: () -> Unit
+    onOpenAuthFlow: () -> Unit,
+    onEditProfileClick: () -> Unit
 ) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -130,10 +142,7 @@ private fun MainShell(
                     ProfileEntryRoute(
                         isAuthorized = isAuthorized,
                         onLoginClick = onOpenAuthFlow,
-
-                        onEditProfileClick = {
-                            // navController.navigate(EditProfileDestination)
-                        },
+                        onEditProfileClick = onEditProfileClick,
 
                         onRatingClick = {
                             //navController.navigate(ProfileReviewsDestination)
