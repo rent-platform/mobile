@@ -21,3 +21,4 @@ object MainShellDestination
 
 @Serializable
 object ProfileEntryDestination
+

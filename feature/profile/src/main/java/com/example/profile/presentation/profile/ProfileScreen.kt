@@ -38,6 +38,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.profile.presentation.components.ProfileNavigationRow
 import com.example.ui.components.RentPrimaryButton
 import com.example.ui.theme.BorderLight
 import com.example.ui.theme.ErrorRed
@@ -447,63 +448,6 @@ private fun ProfileSection(
                 content = content
             )
         }
-    }
-}
-
-@Composable
-private fun ProfileNavigationRow(
-    title: String,
-    subtitle: String,
-    value: String,
-    onClick: () -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick)
-            .padding(vertical = 14.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Column(
-            modifier = Modifier.weight(1f)
-        ) {
-            Text(
-                text = title,
-                fontWeight = FontWeight.SemiBold,
-                color = TextPrimary,
-                style = MaterialTheme.typography.bodyLarge
-            )
-
-            Text(
-                text = subtitle,
-                color = TextSecondary,
-                style = MaterialTheme.typography.bodyMedium
-            )
-        }
-
-        Surface(
-            shape = CircleShape,
-            color = GreenContainer
-        ) {
-            Text(
-                text = value,
-                modifier = Modifier.padding(
-                    horizontal = 12.dp,
-                    vertical = 6.dp
-                ),
-                color = GreenContainerText,
-                fontWeight = FontWeight.SemiBold
-            )
-        }
-
-        Spacer(modifier = Modifier.width(12.dp))
-
-        Text(
-            text = "›",
-            color = GreenPrimary,
-            style = MaterialTheme.typography.headlineLarge,
-            fontWeight = FontWeight.Bold
-        )
     }
 }
 
