@@ -27,3 +27,6 @@ object EditProfileDestination
 
 @Serializable
 object ProfileSettingDestination
+
+@Serializable
+object ChangePasswordDestination

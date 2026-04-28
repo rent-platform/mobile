@@ -162,7 +162,7 @@ class RegistrationViewModel(private val authRepository: AuthRepository) : ViewMo
 
             _uiState.update { it.copy(isLoading = true) }
 
-            val normalizedPhone = state.phone.toServerPhoneRu()
+            val normalizedPhone = "+7${state.phone}"
 
             authRepository.register(
                 phone = normalizedPhone,

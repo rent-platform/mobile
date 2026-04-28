@@ -3,6 +3,7 @@ package com.example.profile.di
 import com.example.profile.data.remote.ProfileApi
 import com.example.profile.data.repository.ProfileRepositoryImpl
 import com.example.profile.domain.ProfileRepository
+import com.example.profile.presentation.changepassword.ChangePasswordViewModel
 import com.example.profile.presentation.editprofile.EditProfileViewModel
 import com.example.profile.presentation.profile.ProfileViewModel
 import com.example.profile.presentation.profilesettings.ProfileSettingsViewModel
@@ -36,6 +37,11 @@ val profileModule = module {
     }
     viewModel {
         ProfileSettingsViewModel(
+            repository = get()
+        )
+    }
+    viewModel {
+        ChangePasswordViewModel(
             repository = get()
         )
     }

@@ -15,6 +15,10 @@ class AuthSessionManager(
         authRepository.logout()
     }
 
+    override suspend fun clearSession() {
+        authRepository.clearLocalSession()
+    }
+
     override suspend fun getAccessToken(): String? {
         return authRepository.getAccessToken()
     }

@@ -9,6 +9,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun ProfileSettingsRoute(
     onNavigateBack: () -> Unit,
+    onChangePasswordClick: () -> Unit,
     onProfileDeleted: () -> Unit
 ) {
     val viewModel: ProfileSettingsViewModel = koinViewModel()
@@ -18,7 +19,7 @@ fun ProfileSettingsRoute(
         viewModel.actions.collect { action ->
             when (action) {
                 ProfileSettingsAction.NavigateToChangePassword -> {
-                    // Потом сюда подключишь экран смены пароля
+                    onChangePasswordClick()
                 }
 
                 ProfileSettingsAction.ProfileDeleted -> {
@@ -26,7 +27,7 @@ fun ProfileSettingsRoute(
                 }
 
                 is ProfileSettingsAction.ShowError -> {
-                    // Потом можно показать snackbar
+                    //показать snackbar
                 }
             }
         }

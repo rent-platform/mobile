@@ -52,13 +52,7 @@ class ProfileSettingsViewModel(
             )
 
             runCatching {
-                // Когда на backend будет endpoint удаления профиля,
-                // добавишь в ProfileRepository метод deleteProfile()
-                // и раскомментируешь:
-                //
-                // repository.deleteProfile()
-
-                repository.logout()
+                repository.deleteMyProfile()
             }.onSuccess {
                 _uiState.value = _uiState.value.copy(
                     isDeleting = false,

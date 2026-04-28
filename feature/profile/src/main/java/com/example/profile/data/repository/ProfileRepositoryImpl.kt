@@ -5,6 +5,7 @@ import com.example.profile.data.mapper.toProfileUiState
 import com.example.profile.data.mock.MockProfileExtra
 import com.example.profile.data.mock.MockProfileStats
 import com.example.profile.data.remote.ProfileApi
+import com.example.profile.data.remote.dto.ChangePasswordRequestDto
 import com.example.profile.data.remote.dto.UpdateProfileRequestDto
 import com.example.profile.domain.ProfileRepository
 import com.example.profile.presentation.profile.ProfileUiState
@@ -42,5 +43,29 @@ class ProfileRepositoryImpl(
         )
 
         return updatedUser.toProfileUiState()
+    }
+
+    override suspend fun changePassword(
+        currentPassword: String,
+        newPassword: String,
+        confirmNewPassword: String
+    ): String {
+        val response = api.changePassword(
+            request = ChangePasswordRequestDto(
+                currentPassword = currentPassword,
+                newPassword = newPassword,
+                confirmNewPassword = confirmNewPassword
+            )
+        )
+
+        return response.message
+    }
+
+    override suspend fun deleteMyProfile(): String {
+        val response = api.deleteMe()
+
+        sessionManager.clearSession()
+
+        return response.message
     }
 }

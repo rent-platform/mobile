@@ -20,6 +20,7 @@ import com.example.marketplace.presentation.catalog.CatalogRoute
 import com.example.marketplace.presentation.itemdetails.ItemDetailsRoute
 import com.example.profile.presentation.ProfileEntryRoute
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.profile.presentation.changepassword.ChangePasswordRoute
 import com.example.profile.presentation.editprofile.EditProfileRoute
 import com.example.profile.presentation.profilesettings.ProfileSettingsRoute
 import com.example.session.SessionManager
@@ -104,16 +105,32 @@ fun AppNavHost() {
                 }
             )
         }
-        composable<ProfileSettingDestination>{
+        composable<ProfileSettingDestination> {
             ProfileSettingsRoute(
                 onNavigateBack = {
                     rootNavController.popBackStack()
                 },
+                onChangePasswordClick = {
+                    rootNavController.navigate(ChangePasswordDestination)
+                },
                 onProfileDeleted = {
-                    rootNavController.popBackStack<MainShellDestination>(
-                        inclusive = true
-                    )
-                    rootNavController.navigate(AuthorizationDestination)
+                    rootNavController.navigate(MainShellDestination) {
+                        popUpTo(rootNavController.graph.id) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
+                }
+            )
+        }
+
+        composable<ChangePasswordDestination> {
+            ChangePasswordRoute(
+                onNavigateBack = {
+                    rootNavController.popBackStack()
+                },
+                onPasswordChanged = {
+                    rootNavController.popBackStack()
                 }
             )
         }

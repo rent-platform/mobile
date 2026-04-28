@@ -15,4 +15,12 @@ interface ProfileRepository {
         bio: String?,
         avatarUrl: String?
     ): ProfileUiState
+
+    suspend fun changePassword(
+        currentPassword: String,
+        newPassword: String,
+        confirmNewPassword: String
+    ): String
+
+    suspend fun deleteMyProfile(): String
 }
