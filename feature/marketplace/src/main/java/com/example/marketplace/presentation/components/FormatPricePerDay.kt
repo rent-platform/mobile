@@ -11,3 +11,7 @@ fun formatPricePerDay(price: Long): String {
     val formatter = DecimalFormat("#,###", symbols)
     return "${formatter.format(price)}\u202F ₽\u202F/\u202Fдень"
 }
+
+fun formatPricePerHour(price: Long): String {
+    return "%,d ₽ / час".format(price).replace(',', ' ')
+}

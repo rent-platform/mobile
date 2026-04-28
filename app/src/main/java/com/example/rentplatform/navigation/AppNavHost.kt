@@ -64,14 +64,23 @@ fun AppNavHost() {
                     rootNavController.popBackStack()
                 },
                 onShareClick = { itemTitle ->
-                    // share intent
+                    // share intent позже
                 },
                 onRentClick = { itemTitle ->
                     if (isAuthorized) {
-                        // переход на экран бронирования
+                        // переход на экран бронирования позже
                     } else {
                         rootNavController.navigate(AuthorizationDestination)
                     }
+                },
+                onSimilarItemClick = { similarItemId ->
+                    rootNavController.navigate(ItemDetailsDestination(similarItemId)) {
+                        launchSingleTop = true
+                    }
+                },
+                onSimilarSeeMoreClick = { categoryId ->
+                    // позже: rootNavController.navigate(SearchDestination(categoryId))
+                    // Сейчас SearchDestination ещё нет
                 }
             )
         }

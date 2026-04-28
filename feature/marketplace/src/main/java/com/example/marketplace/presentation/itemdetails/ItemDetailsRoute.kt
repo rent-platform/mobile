@@ -12,24 +12,44 @@ fun ItemDetailsRoute(
     onBackClick: () -> Unit,
     onShareClick: (String) -> Unit,
     onRentClick: (String) -> Unit,
+    onSimilarItemClick: (String) -> Unit,
+    onSimilarSeeMoreClick: (Long?) -> Unit,
     viewModel: ItemDetailsViewModel = viewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     LaunchedEffect(itemId) {
         viewModel.loadItem(itemId)
     }
 
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    LaunchedEffect(viewModel) {
+        viewModel.actions.collect { action ->
+            when (action) {
+                ItemDetailsAction.NavigateBack -> onBackClick()
+
+                is ItemDetailsAction.ShareItem -> {
+                    onShareClick(action.title)
+                }
+
+                is ItemDetailsAction.NavigateToRent -> {
+                    onRentClick(action.title)
+                }
+
+                is ItemDetailsAction.NavigateToItemDetails -> {
+                    onSimilarItemClick(action.itemId)
+                }
+
+                is ItemDetailsAction.NavigateToSimilarItems -> {
+                    onSimilarSeeMoreClick(action.categoryId)
+                }
+            }
+        }
+    }
 
     ItemDetailsScreen(
         uiState = uiState,
         onEvent = { event ->
-            when (event) {
-                ItemDetailsEvent.OnBackClick -> onBackClick()
-                ItemDetailsEvent.OnShareClick -> onShareClick(uiState.title)
-                ItemDetailsEvent.OnRentClick -> onRentClick(uiState.title)
-                ItemDetailsEvent.OnFavoriteClick -> viewModel.onFavoriteClick()
-                ItemDetailsEvent.OnRetryClick -> viewModel.onRetryClick(itemId)
-            }
+            viewModel.onEvent(event, itemId)
         }
     )
 }
