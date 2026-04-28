@@ -15,5 +15,8 @@ sealed interface ProfileAction {
     object NavigateToRentalHistory : ProfileAction
 
     object NavigateToCreateItem : ProfileAction
+
+    object NavigateToSetting : ProfileAction
+
     object Logout : ProfileAction
 }

@@ -1,8 +1,12 @@
 package com.example.profile.presentation.profile
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.koin.androidx.compose.koinViewModel
 
@@ -18,10 +22,28 @@ fun ProfileRoute(
 
     onCreateItemClick: () -> Unit = {},
 
+    onSettingClick: () -> Unit = {},
+
     onLogoutClick: () -> Unit = {}
 ) {
     val viewModel: ProfileViewModel = koinViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    DisposableEffect(lifecycleOwner, viewModel) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                viewModel.onEvent(ProfileEvent.RefreshProfile)
+            }
+        }
+
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
 
     LaunchedEffect(viewModel) {
         viewModel.actions.collect { action ->
@@ -48,6 +70,10 @@ fun ProfileRoute(
 
                 ProfileAction.NavigateToCreateItem -> {
                     onCreateItemClick()
+                }
+
+                ProfileAction.NavigateToSetting -> {
+                    onSettingClick()
                 }
 
                 ProfileAction.Logout -> {
@@ -98,6 +124,10 @@ fun ProfileRoute(
 
         onCreateItemClick = {
             viewModel.onEvent(ProfileEvent.CreateItemClicked)
+        },
+
+        onSettingClick = {
+            viewModel.onEvent(ProfileEvent.SettingClicked)
         },
 
         onLogoutClick = {

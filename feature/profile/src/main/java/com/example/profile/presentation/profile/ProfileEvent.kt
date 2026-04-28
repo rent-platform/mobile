@@ -1,6 +1,8 @@
 package com.example.profile.presentation.profile
 
 sealed interface ProfileEvent {
+    data object RefreshProfile : ProfileEvent
+
     object EditProfileClicked : ProfileEvent
     object RatingClicked : ProfileEvent
     object ActiveItemsClicked : ProfileEvent
@@ -11,6 +13,6 @@ sealed interface ProfileEvent {
     object MyRentalsClicked : ProfileEvent
     object RentalHistoryClicked : ProfileEvent
     object CreateItemClicked : ProfileEvent
-    object RefreshProfile : ProfileEvent
+    object SettingClicked : ProfileEvent
     object LogoutClicked : ProfileEvent
 }

@@ -21,6 +21,7 @@ import com.example.marketplace.presentation.itemdetails.ItemDetailsRoute
 import com.example.profile.presentation.ProfileEntryRoute
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.profile.presentation.editprofile.EditProfileRoute
+import com.example.profile.presentation.profilesettings.ProfileSettingsRoute
 import com.example.session.SessionManager
 import org.koin.compose.koinInject
 
@@ -48,7 +49,8 @@ fun AppNavHost() {
                 },
                 onEditProfileClick = {
                     rootNavController.navigate(EditProfileDestination)
-                }
+                },
+                onSettingClick = {rootNavController.navigate(ProfileSettingDestination)}
             )
         }
 
@@ -102,6 +104,19 @@ fun AppNavHost() {
                 }
             )
         }
+        composable<ProfileSettingDestination>{
+            ProfileSettingsRoute(
+                onNavigateBack = {
+                    rootNavController.popBackStack()
+                },
+                onProfileDeleted = {
+                    rootNavController.popBackStack<MainShellDestination>(
+                        inclusive = true
+                    )
+                    rootNavController.navigate(AuthorizationDestination)
+                }
+            )
+        }
     }
 }
 
@@ -110,7 +125,8 @@ private fun MainShell(
     isAuthorized: Boolean,
     onNavigateToItemDetails: (String) -> Unit,
     onOpenAuthFlow: () -> Unit,
-    onEditProfileClick: () -> Unit
+    onEditProfileClick: () -> Unit,
+    onSettingClick: () -> Unit
 ) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -143,6 +159,7 @@ private fun MainShell(
                         isAuthorized = isAuthorized,
                         onLoginClick = onOpenAuthFlow,
                         onEditProfileClick = onEditProfileClick,
+                        onSettingClick = onSettingClick,
 
                         onRatingClick = {
                             //navController.navigate(ProfileReviewsDestination)

@@ -24,3 +24,6 @@ object ProfileEntryDestination
 
 @Serializable
 object EditProfileDestination
+
+@Serializable
+object ProfileSettingDestination

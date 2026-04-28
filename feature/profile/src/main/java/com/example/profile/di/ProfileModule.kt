@@ -5,6 +5,7 @@ import com.example.profile.data.repository.ProfileRepositoryImpl
 import com.example.profile.domain.ProfileRepository
 import com.example.profile.presentation.editprofile.EditProfileViewModel
 import com.example.profile.presentation.profile.ProfileViewModel
+import com.example.profile.presentation.profilesettings.ProfileSettingsViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -30,6 +31,11 @@ val profileModule = module {
     }
     viewModel {
         EditProfileViewModel(
+            repository = get()
+        )
+    }
+    viewModel {
+        ProfileSettingsViewModel(
             repository = get()
         )
     }

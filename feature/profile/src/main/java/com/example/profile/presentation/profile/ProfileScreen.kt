@@ -39,6 +39,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.profile.presentation.components.ProfileNavigationRow
+import com.example.profile.presentation.components.ProfileOutlinedBlock
 import com.example.ui.components.RentPrimaryButton
 import com.example.ui.theme.BorderLight
 import com.example.ui.theme.ErrorRed
@@ -69,6 +70,7 @@ fun ProfileScreen(
     onHistoryClick: () -> Unit = {},
 
     onCreateItemClick: () -> Unit = {},
+    onSettingClick: () -> Unit = {},
     onLogoutClick: () -> Unit = {}
 ) {
     Column(
@@ -200,6 +202,15 @@ fun ProfileScreen(
             ProfileDetailRow(
                 title = "Обновлён",
                 value = uiState.updatedAt.orEmptyText()
+            )
+        }
+
+        ProfileOutlinedBlock {
+            ProfileNavigationRow(
+                title = "Настройки профиля",
+                subtitle = "Изменение пароля и настрйоки аккаунта",
+                value = null,
+                onClick = onSettingClick
             )
         }
 

@@ -16,6 +16,7 @@ fun ProfileEntryRoute(
     onMyRentalsClick: () -> Unit = {},
     onRentalHistoryClick: () -> Unit = {},
     onCreateItemClick: () -> Unit = {},
+    onSettingClick: () -> Unit = {},
     onLogoutClick: () -> Unit = {}
 ) {
     if (isAuthorized) {
@@ -26,6 +27,7 @@ fun ProfileEntryRoute(
             onMyRentalsClick = onMyRentalsClick,
             onRentalHistoryClick = onRentalHistoryClick,
             onCreateItemClick = onCreateItemClick,
+            onSettingClick = onSettingClick,
             onLogoutClick = onLogoutClick
         )
     } else {
