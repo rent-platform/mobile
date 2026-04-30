@@ -14,6 +14,8 @@ fun ItemDetailsRoute(
     onRentClick: (String) -> Unit,
     onSimilarItemClick: (String) -> Unit,
     onSimilarSeeMoreClick: (Long?) -> Unit,
+    onOwnerClick: (String) -> Unit,
+    onAskOwnerClick: (itemId: String, ownerId: String) -> Unit,
     viewModel: ItemDetailsViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -41,6 +43,13 @@ fun ItemDetailsRoute(
 
                 is ItemDetailsAction.NavigateToSimilarItems -> {
                     onSimilarSeeMoreClick(action.categoryId)
+                }
+                is ItemDetailsAction.NavigateToOwnerProfile -> {
+                    onOwnerClick(action.ownerId)
+                }
+
+                is ItemDetailsAction.NavigateToOwnerChat -> {
+                    onAskOwnerClick(action.itemId, action.ownerId)
                 }
             }
         }

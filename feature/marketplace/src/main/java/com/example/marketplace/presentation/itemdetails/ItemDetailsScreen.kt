@@ -71,6 +71,8 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.foundation.layout.width
 import com.example.marketplace.presentation.catalog.CatalogItemUi
 import com.example.marketplace.presentation.components.MarketplaceItemCard
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.runtime.LaunchedEffect
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -80,6 +82,11 @@ fun ItemDetailsScreen(
     modifier: Modifier = Modifier
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    val listState = rememberLazyListState()
+
+    LaunchedEffect(uiState.id) {
+        listState.scrollToItem(0)
+    }
 
     Scaffold(
         modifier = modifier,
@@ -132,6 +139,7 @@ fun ItemDetailsScreen(
 
             else -> {
                 LazyColumn(
+                    state = listState,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(top = innerPadding.calculateTopPadding()),
@@ -225,8 +233,11 @@ fun ItemDetailsScreen(
                             ownerName = uiState.ownerName,
                             ownerRating = uiState.ownerRating,
                             reviewsCount = uiState.reviewsCount,
+                            onOwnerClick = {
+                                onEvent(ItemDetailsEvent.OnOwnerClick)
+                            },
                             onAskOwnerClick = {
-                                // позже ItemDetailsEvent.OnAskOwnerClick
+                                onEvent(ItemDetailsEvent.OnAskOwnerClick)
                             },
                             modifier = Modifier.padding(
                                 horizontal = 16.dp,
@@ -415,21 +426,49 @@ private fun AvailabilityBlock(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Text(
-            text = "Доступность",
-            style = MaterialTheme.typography.titleMedium.copy(
-                fontWeight = FontWeight.SemiBold
-            ),
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.padding(horizontal = 16.dp)
-        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Доступность",
+                style = MaterialTheme.typography.titleMedium.copy(
+                    fontWeight = FontWeight.SemiBold
+                ),
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.weight(1f)
+            )
+
+            AvailabilityLegendItem(
+                color = Color(0xFFDDFBE9),
+                text = "доступно"
+            )
+
+            Box(modifier = Modifier.width(10.dp))
+
+            AvailabilityLegendItem(
+                color = Color(0xFFFCE1E1),
+                text = "занято"
+            )
+        }
+
+        val visibleAvailability = remember(availability) {
+            buildVisibleAvailability(availability)
+        }
+
+        if (visibleAvailability.isEmpty()) return
 
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
             contentPadding = PaddingValues(start = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(availability.take(8)) { day ->
+            items(
+                items = visibleAvailability,
+                key = { day -> day.date }
+            ) { day ->
                 AvailabilityDayCard(day = day)
             }
         }
@@ -458,27 +497,80 @@ private fun AvailabilityBlock(
     }
 }
 
+private fun buildVisibleAvailability(
+    availability: List<ItemAvailabilityDayUiState>,
+    daysCount: Int = 10
+): List<ItemAvailabilityDayUiState> {
+    val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+
+    val availabilityByDate = availability.associateBy { it.date }
+
+    val today = Calendar.getInstance().apply {
+        clearTime()
+    }
+
+    return List(daysCount) { index ->
+        val calendar = (today.clone() as Calendar).apply {
+            add(Calendar.DAY_OF_MONTH, index)
+        }
+
+        val date = dateFormat.format(calendar.time)
+
+        availabilityByDate[date] ?: ItemAvailabilityDayUiState(
+            date = date,
+            isAvailable = true
+        )
+    }
+}
+
+@Composable
+private fun AvailabilityLegendItem(
+    color: Color,
+    text: String,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .size(10.dp)
+                .clip(RoundedCornerShape(3.dp))
+                .background(color)
+        )
+
+        Text(
+            text = text,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+}
+
 @Composable
 private fun AvailabilityDayCard(
     day: ItemAvailabilityDayUiState,
     modifier: Modifier = Modifier
 ) {
-    val backgroundColor = if (day.isAvailable) {
-        Color(0xFFDDFBE9)
-    } else {
-        Color(0xFFFCE1E1)
+    val isPast = isPastDate(day.date)
+    val backgroundColor = when {
+        isPast -> MaterialTheme.colorScheme.surfaceVariant
+        day.isAvailable -> Color(0xFFDDFBE9)
+        else -> Color(0xFFFCE1E1)
     }
 
-    val textColor = if (day.isAvailable) {
-        Color(0xFF1F7A4D)
-    } else {
-        Color(0xFF7A2E2E)
+    val textColor = when {
+        isPast -> MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.55f)
+        day.isAvailable -> Color(0xFF1F7A4D)
+        else -> Color(0xFF7A2E2E)
     }
 
     Column(
         modifier = modifier
-            .size(width = 74.dp, height = 98.dp)
-            .clip(RoundedCornerShape(16.dp))
+            .size(width = 64.dp, height = 76.dp)
+            .clip(RoundedCornerShape(14.dp))
             .background(backgroundColor)
             .padding(vertical = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -503,14 +595,6 @@ private fun AvailabilityDayCard(
         Text(
             text = formatShortMonth(day.date),
             style = MaterialTheme.typography.labelSmall,
-            color = textColor
-        )
-
-        Text(
-            text = if (day.isAvailable) "свободен" else "занят",
-            style = MaterialTheme.typography.labelSmall.copy(
-                fontWeight = FontWeight.Medium
-            ),
             color = textColor
         )
     }
@@ -558,7 +642,10 @@ private fun AvailabilityCalendarContent(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                val canGoToPreviousMonth = canNavigateToPreviousMonth(calendar)
+
                 IconButton(
+                    enabled = canGoToPreviousMonth,
                     onClick = {
                         calendar = (calendar.clone() as Calendar).apply {
                             add(Calendar.MONTH, -1)
@@ -567,7 +654,12 @@ private fun AvailabilityCalendarContent(
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.KeyboardArrowLeft,
-                        contentDescription = "Предыдущий месяц"
+                        contentDescription = "Предыдущий месяц",
+                        tint = if (canGoToPreviousMonth) {
+                            MaterialTheme.colorScheme.onSurface
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.35f)
+                        }
                     )
                 }
 
@@ -625,6 +717,7 @@ private fun CalendarMonthGrid(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             listOf("Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс").forEach { day ->
+
                 Text(
                     text = day,
                     modifier = Modifier.weight(1f),
@@ -654,6 +747,7 @@ private fun CalendarMonthGrid(
                         CalendarDayCell(
                             dayNumber = formatDayNumber(date),
                             isAvailable = isAvailable,
+                            isPast = isPastDate(date),
                             modifier = Modifier.weight(1f)
                         )
                     }
@@ -667,18 +761,19 @@ private fun CalendarMonthGrid(
 private fun CalendarDayCell(
     dayNumber: String,
     isAvailable: Boolean,
+    isPast: Boolean,
     modifier: Modifier = Modifier
 ) {
-    val backgroundColor = if (isAvailable) {
-        Color(0xFFDDFBE9)
-    } else {
-        Color(0xFFFCE1E1)
+    val backgroundColor = when {
+        isPast -> MaterialTheme.colorScheme.surfaceVariant
+        isAvailable -> Color(0xFFDDFBE9)
+        else -> Color(0xFFFCE1E1)
     }
 
-    val textColor = if (isAvailable) {
-        Color(0xFF1F7A4D)
-    } else {
-        Color(0xFF7A2E2E)
+    val textColor = when {
+        isPast -> MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.55f)
+        isAvailable -> Color(0xFF1F7A4D)
+        else -> Color(0xFF7A2E2E)
     }
 
     Box(
@@ -743,13 +838,16 @@ private fun OwnerBlock(
     ownerName: String,
     ownerRating: Float?,
     reviewsCount: Int,
+    onOwnerClick: () -> Unit,
     onAskOwnerClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     if (ownerName.isBlank()) return
 
     Surface(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable(onClick = onOwnerClick),
         shape = RoundedCornerShape(20.dp),
         color = MaterialTheme.colorScheme.surface,
         tonalElevation = 0.dp,
@@ -971,6 +1069,47 @@ private fun buildCalendarMonthDays(calendar: Calendar): List<String?> {
 
     return result
 }
+private fun isPastDate(date: String): Boolean {
+    return runCatching {
+        val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val parsedDate = inputFormat.parse(date)
+
+        if (parsedDate == null) {
+            false
+        } else {
+            val dateCalendar = Calendar.getInstance().apply {
+                time = parsedDate
+                clearTime()
+            }
+
+            val todayCalendar = Calendar.getInstance().apply {
+                clearTime()
+            }
+
+            dateCalendar.before(todayCalendar)
+        }
+    }.getOrDefault(false)
+}
+
+private fun canNavigateToPreviousMonth(calendar: Calendar): Boolean {
+    val currentCalendar = Calendar.getInstance()
+
+    val selectedYear = calendar.get(Calendar.YEAR)
+    val selectedMonth = calendar.get(Calendar.MONTH)
+
+    val currentYear = currentCalendar.get(Calendar.YEAR)
+    val currentMonth = currentCalendar.get(Calendar.MONTH)
+
+    return selectedYear > currentYear ||
+            selectedYear == currentYear && selectedMonth > currentMonth
+}
+
+private fun Calendar.clearTime() {
+    set(Calendar.HOUR_OF_DAY, 0)
+    set(Calendar.MINUTE, 0)
+    set(Calendar.SECOND, 0)
+    set(Calendar.MILLISECOND, 0)
+}
 
 @Composable
 private fun RentBottomBar(
@@ -990,96 +1129,4 @@ private fun RentBottomBar(
                 .padding(horizontal = 16.dp, vertical = 12.dp)
         )
     }
-}
-
-@Preview(showBackground = true, heightDp = 2000)
-@Composable
-private fun ItemDetailsScreenPreview() {
-    RentPlatformTheme {
-        ItemDetailsScreen(
-            uiState = ItemDetailsUiState(
-                id = "0",
-                title = "Пукофон",
-                description = "Смартфон в хорошем состоянии, подойдёт для поездки или временного использования.",
-                pricePerDay = 999,
-                pricePerHour = 150,
-                depositAmount = 5000,
-                city = "Новосибирск",
-                pickupLocation = "ул. Ленина, 10",
-                ownerName = "Иван",
-                ownerRating = 4.8f,
-                reviewsCount = 12,
-                createdAt = "2026-04-28T09:59:44.133Z",
-                imageResIds = listOf(
-                    R.drawable.pocofon,
-                    R.drawable.pocofon,
-                    R.drawable.pocofon
-                ),
-                availability = previewAvailability(),
-                similarItems = previewSimilarItems()
-            ),
-            onEvent = {}
-        )
-    }
-}
-@Preview(showBackground = true, widthDp = 380)
-@Composable
-private fun AvailabilityCalendarContentPreview() {
-    RentPlatformTheme {
-        AvailabilityCalendarContent(
-            availability = previewAvailability(),
-            onDismiss = {},
-            modifier = Modifier.padding(16.dp),
-            initialCalendar = Calendar.getInstance().apply {
-                set(Calendar.YEAR, 2026)
-                set(Calendar.MONTH, Calendar.APRIL)
-                set(Calendar.DAY_OF_MONTH, 1)
-            }
-        )
-    }
-}
-private fun previewAvailability(): List<ItemAvailabilityDayUiState> {
-    return listOf(
-        ItemAvailabilityDayUiState(date = "2026-04-28", isAvailable = true),
-        ItemAvailabilityDayUiState(date = "2026-04-29", isAvailable = true),
-        ItemAvailabilityDayUiState(date = "2026-04-30", isAvailable = false),
-        ItemAvailabilityDayUiState(date = "2026-05-01", isAvailable = false),
-        ItemAvailabilityDayUiState(date = "2026-05-02", isAvailable = true),
-        ItemAvailabilityDayUiState(date = "2026-05-03", isAvailable = true),
-        ItemAvailabilityDayUiState(date = "2026-05-04", isAvailable = false),
-        ItemAvailabilityDayUiState(date = "2026-05-05", isAvailable = true)
-    )
-}
-private fun previewSimilarItems(): List<CatalogItemUi> {
-    return listOf(
-        CatalogItemUi(
-            id = "1",
-            title = "iPhone 13",
-            pricePerDay = 1200,
-            location = "Новосибирск",
-            imageUrl = R.drawable.pocofon
-        ),
-        CatalogItemUi(
-            id = "2",
-            title = "Samsung Galaxy S22",
-            pricePerDay = 1000,
-            location = "Новосибирск",
-            imageUrl = R.drawable.pocofon,
-            isFavorite = true
-        ),
-        CatalogItemUi(
-            id = "3",
-            title = "PowerBank 20000 mAh",
-            pricePerDay = 250,
-            location = "Новосибирск",
-            imageUrl = R.drawable.pocofon
-        ),
-        CatalogItemUi(
-            id = "4",
-            title = "Планшет Xiaomi Pad",
-            pricePerDay = 800,
-            location = "Новосибирск",
-            imageUrl = R.drawable.pocofon
-        )
-    )
 }

@@ -76,6 +76,26 @@ class ItemDetailsViewModel : ViewModel() {
                     )
                 )
             }
+            ItemDetailsEvent.OnOwnerClick -> {
+                val ownerId = _uiState.value.ownerId
+
+                if (ownerId.isNotBlank()) {
+                    sendAction(ItemDetailsAction.NavigateToOwnerProfile(ownerId))
+                }
+            }
+
+            ItemDetailsEvent.OnAskOwnerClick -> {
+                val ownerId = _uiState.value.ownerId
+
+                if (ownerId.isNotBlank()) {
+                    sendAction(
+                        ItemDetailsAction.NavigateToOwnerChat(
+                            itemId = itemId,
+                            ownerId = ownerId
+                        )
+                    )
+                }
+            }
         }
     }
 

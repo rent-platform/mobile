@@ -9,4 +9,6 @@ sealed interface ItemDetailsEvent {
     data class OnSimilarItemClick(val itemId: String) : ItemDetailsEvent
     data class OnSimilarFavoriteClick(val itemId: String) : ItemDetailsEvent
     data object OnSimilarSeeMoreClick : ItemDetailsEvent
+    data object OnOwnerClick : ItemDetailsEvent
+    data object OnAskOwnerClick : ItemDetailsEvent
 }

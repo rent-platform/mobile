@@ -14,6 +14,7 @@ data class ItemDetailsUiState(
     val depositAmount: Long? = null,
     val city: String = "",
     val pickupLocation: String? = null,
+    val ownerId: String = "",
     val ownerName: String = "",
     val ownerRating: Float? = null,
     val reviewsCount: Int = 0,

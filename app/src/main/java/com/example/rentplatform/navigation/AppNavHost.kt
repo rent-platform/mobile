@@ -74,13 +74,22 @@ fun AppNavHost() {
                     }
                 },
                 onSimilarItemClick = { similarItemId ->
-                    rootNavController.navigate(ItemDetailsDestination(similarItemId)) {
-                        launchSingleTop = true
-                    }
+                    rootNavController.navigate(ItemDetailsDestination(similarItemId))
                 },
                 onSimilarSeeMoreClick = { categoryId ->
                     // позже: rootNavController.navigate(SearchDestination(categoryId))
                     // Сейчас SearchDestination ещё нет
+                },
+                onOwnerClick = { ownerId ->
+                    // позже: rootNavController.navigate(OwnerProfileDestination(ownerId))
+                },
+
+                onAskOwnerClick = { itemId, ownerId ->
+                    if (isAuthorized) {
+                        // позже: rootNavController.navigate(ChatDestination(itemId = itemId, ownerId = ownerId))
+                    } else {
+                        rootNavController.navigate(AuthorizationDestination)
+                    }
                 }
             )
         }
