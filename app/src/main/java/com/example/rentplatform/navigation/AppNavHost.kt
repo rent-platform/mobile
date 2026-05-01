@@ -20,6 +20,7 @@ import com.example.marketplace.presentation.catalog.CatalogRoute
 import com.example.marketplace.presentation.itemdetails.ItemDetailsRoute
 import com.example.profile.presentation.ProfileEntryRoute
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.marketplace.presentation.rentrequest.RentRequestRoute
 import com.example.profile.presentation.changepassword.ChangePasswordRoute
 import com.example.profile.presentation.editprofile.EditProfileRoute
 import com.example.profile.presentation.profilesettings.ProfileSettingsRoute
@@ -66,9 +67,9 @@ fun AppNavHost() {
                 onShareClick = { itemTitle ->
                     // share intent позже
                 },
-                onRentClick = { itemTitle ->
+                onRentClick = { itemId ->
                     if (isAuthorized) {
-                        // переход на экран бронирования позже
+                        rootNavController.navigate(RentRequestDestination(itemId))
                     } else {
                         rootNavController.navigate(AuthorizationDestination)
                     }
@@ -148,6 +149,21 @@ fun AppNavHost() {
                     rootNavController.popBackStack()
                 },
                 onPasswordChanged = {
+                    rootNavController.popBackStack()
+                }
+            )
+        }
+
+        composable<RentRequestDestination> { backStackEntry ->
+            val destination = backStackEntry.toRoute<RentRequestDestination>()
+
+            RentRequestRoute(
+                itemId = destination.itemId,
+                onBackClick = {
+                    rootNavController.popBackStack()
+                },
+                onSubmitRentRequest = { itemId, ownerId, startDate, endDate ->
+                    // позже запрос в deal-service
                     rootNavController.popBackStack()
                 }
             )

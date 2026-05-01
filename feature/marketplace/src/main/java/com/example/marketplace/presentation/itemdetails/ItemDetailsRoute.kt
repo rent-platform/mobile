@@ -34,7 +34,7 @@ fun ItemDetailsRoute(
                 }
 
                 is ItemDetailsAction.NavigateToRent -> {
-                    onRentClick(action.title)
+                    onRentClick(action.itemId)
                 }
 
                 is ItemDetailsAction.NavigateToItemDetails -> {

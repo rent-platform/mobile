@@ -30,3 +30,8 @@ object ProfileSettingDestination
 
 @Serializable
 object ChangePasswordDestination
+
+@Serializable
+data class RentRequestDestination(
+    val itemId: String
+)

@@ -38,7 +38,11 @@ class ItemDetailsViewModel : ViewModel() {
             }
 
             ItemDetailsEvent.OnRentClick -> {
-                sendAction(ItemDetailsAction.NavigateToRent(_uiState.value.title))
+                sendAction(
+                    ItemDetailsAction.NavigateToRent(
+                        itemId = _uiState.value.id.ifBlank { itemId }
+                    )
+                )
             }
 
             ItemDetailsEvent.OnFavoriteClick -> {
