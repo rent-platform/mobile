@@ -45,6 +45,7 @@ dependencies {
     implementation(project(":core:ui"))
     implementation(project(":feature:marketplace"))
     implementation(project(":feature:profile"))
+    implementation(project(":feature:favorites"))
     implementation(project(":core:network"))
     implementation(project(":core:session"))
 

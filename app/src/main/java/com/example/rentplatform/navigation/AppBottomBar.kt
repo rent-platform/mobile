@@ -2,6 +2,7 @@ package com.example.rentplatform.navigation
 
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Icon
@@ -20,6 +21,7 @@ fun AppBottomBar(
     currentDestination: NavDestination?,
     onCatalogClick: () -> Unit,
     onProfileClick: () -> Unit,
+    onFavoriteClick: () -> Unit,
 ) {
     NavigationBar(modifier = Modifier.height(70.dp),
 
@@ -36,6 +38,22 @@ fun AppBottomBar(
                 )
             },
             label = { Text("Каталог") }
+        )
+
+        NavigationBarItem(
+            selected = currentDestination
+                ?.hierarchy
+                ?.any {
+                    it.hasRoute<FavoritesEntryDestination>()
+                } == true,
+            onClick = onFavoriteClick,
+            icon = {
+                Icon(
+                    imageVector = Icons.Outlined.Favorite,
+                    contentDescription = "Избранное"
+                )
+            },
+            label = { Text("Избранное") }
         )
 
         NavigationBarItem(

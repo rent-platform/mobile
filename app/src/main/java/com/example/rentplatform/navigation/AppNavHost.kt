@@ -20,6 +20,8 @@ import com.example.marketplace.presentation.catalog.CatalogRoute
 import com.example.marketplace.presentation.itemdetails.ItemDetailsRoute
 import com.example.profile.presentation.ProfileEntryRoute
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.favorites.presentation.FavoritesEntryRoute
+import com.example.favorites.presentation.favorites.FavoritesRoute
 import com.example.marketplace.presentation.rentrequest.RentRequestRoute
 import com.example.profile.presentation.changepassword.ChangePasswordRoute
 import com.example.profile.presentation.editprofile.EditProfileRoute
@@ -205,6 +207,16 @@ private fun MainShell(
                     )
                 }
 
+                composable< FavoritesEntryDestination> {
+                    FavoritesEntryRoute(
+                        isAuthorized = isAuthorized,
+                        onLoginClick = onOpenAuthFlow,
+                        onItemClick = { itemId ->
+                            navController.navigate(ItemDetailsDestination(itemId))
+                        }
+                    )
+                }
+
                 composable<ProfileEntryDestination> {
                     ProfileEntryRoute(
                         isAuthorized = isAuthorized,
@@ -252,6 +264,9 @@ private fun MainShell(
                 },
                 onProfileClick = {
                     navController.navigateToTopLevel(ProfileEntryDestination)
+                },
+                onFavoriteClick = {
+                    navController.navigateToTopLevel(FavoritesEntryDestination)
                 }
             )
         }

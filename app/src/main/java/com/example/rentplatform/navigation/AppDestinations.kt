@@ -35,3 +35,6 @@ object ChangePasswordDestination
 data class RentRequestDestination(
     val itemId: String
 )
+
+@Serializable
+object FavoritesEntryDestination

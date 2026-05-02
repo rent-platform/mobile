@@ -221,7 +221,7 @@ private fun RentCalendarDayCell(
 
     val backgroundColor = when {
         isSelectedEdge -> MaterialTheme.colorScheme.primary
-        isInSelectedRange -> MaterialTheme.colorScheme.primaryContainer
+        isInSelectedRange -> MaterialTheme.colorScheme.secondaryContainer
         isPast -> MaterialTheme.colorScheme.surfaceVariant
         !isAvailable -> Color(0xFFFCE1E1)
         else -> Color(0xFFDDFBE9)
@@ -229,7 +229,7 @@ private fun RentCalendarDayCell(
 
     val textColor = when {
         isSelectedEdge -> MaterialTheme.colorScheme.onPrimary
-        isInSelectedRange -> MaterialTheme.colorScheme.onPrimaryContainer
+        isInSelectedRange -> MaterialTheme.colorScheme.onSecondaryContainer
         isPast -> MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.55f)
         !isAvailable -> Color(0xFF7A2E2E)
         else -> Color(0xFF1F7A4D)
