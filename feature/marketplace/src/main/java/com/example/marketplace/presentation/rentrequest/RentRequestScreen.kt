@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -39,15 +38,20 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.marketplace.R
 import com.example.marketplace.presentation.components.RentAvailabilityCalendar
 import com.example.marketplace.presentation.components.RentCalendarDayUi
 import com.example.ui.components.RentPrimaryButton
-import com.example.ui.theme.RentPlatformTheme
 import java.text.SimpleDateFormat
 import java.util.Locale
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.text.TextRange
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -131,8 +135,17 @@ fun RentRequestScreen(
                             availability = uiState.availability,
                             selectedStartDate = uiState.selectedStartDate,
                             selectedEndDate = uiState.selectedEndDate,
+                            startDateInput = uiState.startDateInput,
+                            endDateInput = uiState.endDateInput,
+                            errorMessage = uiState.errorMessage,
                             onDateClick = { date ->
                                 onEvent(RentRequestEvent.OnDateClick(date))
+                            },
+                            onStartDateInputChange = { value ->
+                                onEvent(RentRequestEvent.OnStartDateInputChange(value))
+                            },
+                            onEndDateInputChange = { value ->
+                                onEvent(RentRequestEvent.OnEndDateInputChange(value))
                             }
                         )
                     }
@@ -251,7 +264,12 @@ private fun RentDateSelectionBlock(
     availability: List<RentCalendarDayUi>,
     selectedStartDate: String?,
     selectedEndDate: String?,
+    startDateInput: String,
+    endDateInput: String,
+    errorMessage: String?,
     onDateClick: (String) -> Unit,
+    onStartDateInputChange: (String) -> Unit,
+    onEndDateInputChange: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -267,7 +285,7 @@ private fun RentDateSelectionBlock(
         ) {
             Column(
                 modifier = Modifier.padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Text(
                     text = "Выберите даты аренды",
@@ -285,6 +303,39 @@ private fun RentDateSelectionBlock(
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    RentDateTextField(
+                        value = startDateInput,
+                        onValueChange = onStartDateInputChange,
+                        label = "Начало",
+                        modifier = Modifier.weight(1f)
+                    )
+
+                    RentDateTextField(
+                        value = endDateInput,
+                        onValueChange = onEndDateInputChange,
+                        label = "Окончание",
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+
+                Text(
+                    text = "Формат: 2026-05-02",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+                if (!errorMessage.isNullOrBlank()) {
+                    Text(
+                        text = errorMessage,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
             }
         }
 
@@ -295,6 +346,57 @@ private fun RentDateSelectionBlock(
             onDateClick = onDateClick
         )
     }
+}
+
+@Composable
+private fun RentDateTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+    modifier: Modifier = Modifier
+) {
+    var textFieldValue by remember {
+        mutableStateOf(
+            TextFieldValue(
+                text = value,
+                selection = TextRange(value.length)
+            )
+        )
+    }
+
+    LaunchedEffect(value) {
+        if (value != textFieldValue.text) {
+            textFieldValue = TextFieldValue(
+                text = value,
+                selection = TextRange(value.length)
+            )
+        }
+    }
+
+    OutlinedTextField(
+        value = textFieldValue,
+        onValueChange = { newValue ->
+            onValueChange(newValue.text)
+        },
+        modifier = modifier,
+        singleLine = true,
+        label = {
+            Text(text = label)
+        },
+        placeholder = {
+            Text(text = "гггг-мм-дд")
+        },
+        shape = RoundedCornerShape(14.dp),
+        textStyle = MaterialTheme.typography.bodyMedium,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Number,
+            imeAction = ImeAction.Next
+        ),
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant
+        )
+    )
 }
 
 @Composable
@@ -478,94 +580,4 @@ private fun parseDate(date: String): java.util.Date? {
 
 private fun formatMoney(value: Long): String {
     return "%,d".format(value).replace(',', ' ')
-}
-
-@Preview(showBackground = true, heightDp = 980)
-@Composable
-private fun RentRequestScreenPreview() {
-    RentPlatformTheme {
-        var uiState by remember {
-            mutableStateOf(
-                RentRequestUiState(
-                    itemId = "0",
-                    ownerId = "owner_ivan",
-                    title = "Пукофон",
-                    imageResId = R.drawable.pocofon,
-                    city = "Новосибирск",
-                    pickupLocation = "ул. Ленина, 10",
-                    pricePerDay = 999,
-                    pricePerHour = 150,
-                    depositAmount = 5000,
-                    selectedStartDate = "2026-05-02",
-                    selectedEndDate = "2026-05-05",
-                    availability = previewRentAvailability()
-                )
-            )
-        }
-
-        RentRequestScreen(
-            uiState = uiState,
-            onEvent = { event ->
-                when (event) {
-                    RentRequestEvent.OnBackClick -> Unit
-                    RentRequestEvent.OnSubmitClick -> Unit
-
-                    is RentRequestEvent.OnDateClick -> {
-                        uiState = uiState.selectDate(event.date)
-                    }
-                }
-            }
-        )
-    }
-}
-
-private fun RentRequestUiState.selectDate(date: String): RentRequestUiState {
-    return when {
-        selectedStartDate == null -> {
-            copy(
-                selectedStartDate = date,
-                selectedEndDate = null
-            )
-        }
-
-        selectedEndDate == null -> {
-            val start = parseDate(selectedStartDate)?.time
-            val clicked = parseDate(date)?.time
-
-            if (start != null && clicked != null && clicked < start) {
-                copy(
-                    selectedStartDate = date,
-                    selectedEndDate = null
-                )
-            } else {
-                copy(
-                    selectedEndDate = date
-                )
-            }
-        }
-
-        else -> {
-            copy(
-                selectedStartDate = date,
-                selectedEndDate = null
-            )
-        }
-    }
-}
-
-private fun previewRentAvailability(): List<RentCalendarDayUi> {
-    return listOf(
-        RentCalendarDayUi(date = "2026-05-01", isAvailable = true),
-        RentCalendarDayUi(date = "2026-05-02", isAvailable = true),
-        RentCalendarDayUi(date = "2026-05-03", isAvailable = true),
-        RentCalendarDayUi(date = "2026-05-04", isAvailable = true),
-        RentCalendarDayUi(date = "2026-05-05", isAvailable = true),
-        RentCalendarDayUi(date = "2026-05-06", isAvailable = false),
-        RentCalendarDayUi(date = "2026-05-07", isAvailable = false),
-        RentCalendarDayUi(date = "2026-05-08", isAvailable = true),
-        RentCalendarDayUi(date = "2026-05-09", isAvailable = true),
-        RentCalendarDayUi(date = "2026-05-10", isAvailable = true),
-        RentCalendarDayUi(date = "2026-05-11", isAvailable = false),
-        RentCalendarDayUi(date = "2026-05-12", isAvailable = true)
-    )
 }

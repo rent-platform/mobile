@@ -22,5 +22,8 @@ data class RentRequestUiState(
     val selectedStartDate: String? = null,
     val selectedEndDate: String? = null,
 
-    val availability: List<RentCalendarDayUi> = emptyList()
+    val availability: List<RentCalendarDayUi> = emptyList(),
+
+    val startDateInput: String = "",
+    val endDateInput: String = "",
 )
