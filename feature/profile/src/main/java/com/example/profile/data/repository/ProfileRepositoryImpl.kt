@@ -1,9 +1,6 @@
 package com.example.profile.data.repository
 
-import android.util.Log
 import com.example.profile.data.mapper.toProfileUiState
-import com.example.profile.data.mock.MockProfileExtra
-import com.example.profile.data.mock.MockProfileStats
 import com.example.profile.data.remote.ProfileApi
 import com.example.profile.data.remote.dto.ChangePasswordRequestDto
 import com.example.profile.data.remote.dto.UpdateProfileRequestDto

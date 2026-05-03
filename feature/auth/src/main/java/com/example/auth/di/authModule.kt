@@ -10,10 +10,10 @@ import com.example.auth.domain.repository.AuthRepository
 import com.example.auth.presentation.authorization.AutorizationViewModel
 import com.example.auth.presentation.registration.RegistrationViewModel
 import com.example.session.SessionManager
-import org.koin.dsl.module
-import retrofit2.Retrofit
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
+import org.koin.dsl.module
+import retrofit2.Retrofit
 
 val authModule = module {
     single<AuthApi> {

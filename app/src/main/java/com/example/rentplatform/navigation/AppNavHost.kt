@@ -21,7 +21,6 @@ import com.example.marketplace.presentation.itemdetails.ItemDetailsRoute
 import com.example.profile.presentation.ProfileEntryRoute
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.favorites.presentation.FavoritesEntryRoute
-import com.example.favorites.presentation.favorites.FavoritesRoute
 import com.example.marketplace.presentation.rentrequest.RentRequestRoute
 import com.example.profile.presentation.changepassword.ChangePasswordRoute
 import com.example.profile.presentation.editprofile.EditProfileRoute

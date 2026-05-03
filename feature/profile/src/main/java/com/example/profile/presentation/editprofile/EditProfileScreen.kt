@@ -17,9 +17,9 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -45,12 +45,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.ui.components.RentPrimaryButton
-import com.example.ui.theme.RentPlatformTheme
 import com.example.profile.presentation.components.ProfileNavigationRow
 import com.example.profile.presentation.components.ProfileOutlinedBlock
+import com.example.ui.components.RentPrimaryButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -339,29 +337,4 @@ private fun getAvatarLetter(
         .firstOrNull()
         ?.uppercaseChar()
         ?.toString()
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun EditProfileScreenPreview() {
-    RentPlatformTheme {
-        EditProfileScreen(
-            uiState = EditProfileUiState(
-                nickname = "ivan_rent",
-                fullName = "Иван Иванов",
-                email = "user@example.com",
-                bio = "Сдаю инструменты и иногда беру вещи в аренду."
-            ),
-            snackbarHostState = SnackbarHostState(),
-            onBackClick = {},
-            onGuestProfileClick = {},
-            onUploadAvatarClick = {},
-            onDeleteAvatarClick = {},
-            onNicknameChanged = {},
-            onFullNameChanged = {},
-            onEmailChanged = {},
-            onBioChanged = {},
-            onSaveClick = {}
-        )
-    }
 }
