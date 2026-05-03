@@ -46,6 +46,7 @@ dependencies {
     implementation(project(":feature:marketplace"))
     implementation(project(":feature:profile"))
     implementation(project(":feature:favorites"))
+    implementation(project(":feature:deals"))
     implementation(project(":core:network"))
     implementation(project(":core:session"))
 
@@ -57,6 +58,9 @@ dependencies {
     //Навигация
     implementation(libs.androidx.navigation.compose)
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
+
+    //Иконки для BottomBar навигации
+    implementation("androidx.compose.material:material-icons-extended")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

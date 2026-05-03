@@ -20,6 +20,7 @@ import com.example.marketplace.presentation.catalog.CatalogRoute
 import com.example.marketplace.presentation.itemdetails.ItemDetailsRoute
 import com.example.profile.presentation.ProfileEntryRoute
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.deals.presentation.DealsEntryRoute
 import com.example.favorites.presentation.FavoritesEntryRoute
 import com.example.marketplace.presentation.rentrequest.RentRequestRoute
 import com.example.profile.presentation.changepassword.ChangePasswordRoute
@@ -53,7 +54,13 @@ fun AppNavHost() {
                 onEditProfileClick = {
                     rootNavController.navigate(EditProfileDestination)
                 },
-                onSettingClick = {rootNavController.navigate(ProfileSettingDestination)}
+                onSettingClick = {rootNavController.navigate(ProfileSettingDestination)},
+                onNavigateToDealDetails = { dealId ->
+                    // rootNavController.navigate(DealDetailsDestination(dealId))
+                },
+                onNavigateToCreateListing = {
+                    // rootNavController.navigate(CreateListingDestination)
+                },
             )
         }
 
@@ -178,7 +185,9 @@ private fun MainShell(
     onNavigateToItemDetails: (String) -> Unit,
     onOpenAuthFlow: () -> Unit,
     onEditProfileClick: () -> Unit,
-    onSettingClick: () -> Unit
+    onSettingClick: () -> Unit,
+    onNavigateToDealDetails: (String) -> Unit,
+    onNavigateToCreateListing: () -> Unit,
 ) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -206,12 +215,12 @@ private fun MainShell(
                     )
                 }
 
-                composable< FavoritesEntryDestination> {
+                composable<FavoritesEntryDestination> {
                     FavoritesEntryRoute(
                         isAuthorized = isAuthorized,
                         onLoginClick = onOpenAuthFlow,
                         onItemClick = { itemId ->
-                            navController.navigate(ItemDetailsDestination(itemId))
+                            onNavigateToItemDetails(itemId)
                         }
                     )
                 }
@@ -254,6 +263,14 @@ private fun MainShell(
                         }
                     )
                 }
+                composable<DealsEntryDestination>{
+                    DealsEntryRoute(
+                        isAuthorized = isAuthorized,
+                        onLoginClick = onOpenAuthFlow,
+                        onNavigateToDealDetails = onNavigateToDealDetails,
+                        onNavigateToCreateListing = onNavigateToCreateListing
+                    )
+                }
             }
 
             AppBottomBar(
@@ -266,6 +283,9 @@ private fun MainShell(
                 },
                 onFavoriteClick = {
                     navController.navigateToTopLevel(FavoritesEntryDestination)
+                },
+                onDealsClick = {
+                    navController.navigateToTopLevel(DealsEntryDestination)
                 }
             )
         }

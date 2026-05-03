@@ -38,3 +38,6 @@ data class RentRequestDestination(
 
 @Serializable
 object FavoritesEntryDestination
+
+@Serializable
+object DealsEntryDestination

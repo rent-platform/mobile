@@ -22,12 +22,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CheckCircle
-import androidx.compose.material.icons.outlined.Login
 import androidx.compose.material.icons.outlined.ReceiptLong
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.ShoppingBag
 import androidx.compose.material.icons.outlined.Storefront
-import androidx.compose.material3.AssistChip
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -43,10 +41,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.ui.components.RentPrimaryButton
-import com.example.ui.theme.RentPlatformTheme
 
 @Composable
 fun DealsScreen(
@@ -71,9 +67,11 @@ fun DealsScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
-                .padding(horizontal = 20.dp)
-                .padding(top = 20.dp)
+                .padding(
+                    start = 20.dp,
+                    end = 20.dp,
+                    bottom = innerPadding.calculateBottomPadding()
+                )
         ) {
             Text(
                 text = "Сделки",
@@ -124,63 +122,6 @@ fun DealsScreen(
                     onDealClick = onDealClick
                 )
             }
-        }
-    }
-}
-
-@Composable
-fun UnauthorizedDealsScreen(
-    onLoginClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(horizontal = 24.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Surface(
-                modifier = Modifier.size(72.dp),
-                shape = RoundedCornerShape(24.dp),
-                color = MaterialTheme.colorScheme.primaryContainer
-            ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Icon(
-                        imageVector = Icons.Outlined.Login,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                        modifier = Modifier.size(34.dp)
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            Text(
-                text = "Войдите, чтобы видеть сделки",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = "После авторизации здесь появятся разделы «Я арендую» и «Я сдаю».",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            RentPrimaryButton(
-                text = "Авторизироваться",
-                onClick = onLoginClick
-            )
         }
     }
 }
@@ -533,20 +474,6 @@ private fun DealStatus.contentColor(): Color {
 }
 
 @Composable
-private fun DealStatusChip(
-    status: DealStatus,
-    modifier: Modifier = Modifier
-) {
-    AssistChip(
-        modifier = modifier,
-        onClick = {},
-        label = {
-            Text(text = status.title)
-        }
-    )
-}
-
-@Composable
 private fun DealsLoadingContent(
     modifier: Modifier = Modifier
 ) {
@@ -678,125 +605,4 @@ private fun DealsBottomBar(
                 .padding(top = 12.dp, bottom = 16.dp)
         )
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun DealsScreenRenterPreview() {
-    RentPlatformTheme {
-        DealsScreen(
-            uiState = DealsUiState(
-                selectedRole = DealRole.Renter,
-                renterDeals = previewDeals()
-            ),
-            onRoleClick = {},
-            onFilterClick = {},
-            onDealClick = {},
-            onCreateListingClick = {},
-            onRetryClick = {}
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun DealsScreenOwnerPreview() {
-    RentPlatformTheme {
-        DealsScreen(
-            uiState = DealsUiState(
-                selectedRole = DealRole.Owner,
-                selectedFilter = DealFilter.All,
-                ownerDeals = previewDeals()
-            ),
-            onRoleClick = {},
-            onFilterClick = {},
-            onDealClick = {},
-            onCreateListingClick = {},
-            onRetryClick = {}
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun DealsScreenEmptyPreview() {
-    RentPlatformTheme {
-        DealsScreen(
-            uiState = DealsUiState(
-                selectedRole = DealRole.Renter
-            ),
-            onRoleClick = {},
-            onFilterClick = {},
-            onDealClick = {},
-            onCreateListingClick = {},
-            onRetryClick = {}
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun UnauthorizedDealsScreenPreview() {
-    RentPlatformTheme {
-        UnauthorizedDealsScreen(
-            onLoginClick = {}
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun DealsScreenFilteredPreview() {
-    RentPlatformTheme {
-        DealsScreen(
-            uiState = DealsUiState(
-                selectedRole = DealRole.Owner,
-                selectedFilter = DealFilter.Active,
-                ownerDeals = previewDeals()
-            ),
-            onRoleClick = {},
-            onFilterClick = {},
-            onDealClick = {},
-            onCreateListingClick = {},
-            onRetryClick = {}
-        )
-    }
-}
-
-private fun previewDeals(): List<DealListItemUi> {
-    return listOf(
-        DealListItemUi(
-            id = "1",
-            itemId = "item-1",
-            title = "Дрель Bosch Professional",
-            dateRange = "03 мая 2026 — 06 мая 2026",
-            totalPrice = "1 500 ₽",
-            depositAmount = "3 000 ₽",
-            status = DealStatus.Pending,
-            pricingMode = DealPricingMode.Day,
-            imageResId = null
-        ),
-        DealListItemUi(
-            id = "2",
-            itemId = "item-2",
-            title = "Фотоаппарат Canon EOS с объективом",
-            dateRange = "10 мая 2026 — 12 мая 2026",
-            totalPrice = "2 800 ₽",
-            depositAmount = "5 000 ₽",
-            status = DealStatus.Confirmed,
-            pricingMode = DealPricingMode.Day,
-            imageResId = null
-        ),
-        DealListItemUi(
-            id = "3",
-            itemId = "item-3",
-            title = "Проектор Xiaomi",
-            dateRange = "15 мая 2026, 12:00 — 18:00",
-            totalPrice = "900 ₽",
-            depositAmount = null,
-            status = DealStatus.Active,
-            pricingMode = DealPricingMode.Hour,
-            imageResId = null
-        )
-    )
 }
