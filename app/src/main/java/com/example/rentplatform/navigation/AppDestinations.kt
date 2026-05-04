@@ -41,3 +41,11 @@ object FavoritesEntryDestination
 
 @Serializable
 object DealsEntryDestination
+
+@Serializable
+object MarketplaceSearchInputDestination
+
+@Serializable
+data class MarketplaceSearchResultsDestination(
+    val query: String
+)

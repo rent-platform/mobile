@@ -26,7 +26,7 @@ fun AppBottomBar(
     onFavoriteClick: () -> Unit,
     onDealsClick: () -> Unit,
 ) {
-    NavigationBar(modifier = Modifier.height(70.dp),
+    NavigationBar(modifier = Modifier.height(75.dp),
 
         ) {
         NavigationBarItem(

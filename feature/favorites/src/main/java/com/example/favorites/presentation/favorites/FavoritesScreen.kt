@@ -69,7 +69,6 @@ private fun FavoritesContent(
             style = MaterialTheme.typography.headlineSmall,
             modifier = Modifier.padding(
                 start = 16.dp,
-                top = 20.dp,
                 end = 16.dp,
                 bottom = 12.dp
             )

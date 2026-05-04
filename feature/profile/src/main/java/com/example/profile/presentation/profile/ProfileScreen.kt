@@ -78,7 +78,7 @@ fun ProfileScreen(
             .fillMaxSize()
             .background(WhiteBackground)
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = 20.dp, vertical = 20.dp),
+            .padding(horizontal = 20.dp, vertical = 10.dp),
         verticalArrangement = Arrangement.spacedBy(25.dp)
     ) {
         ProfileHeader(

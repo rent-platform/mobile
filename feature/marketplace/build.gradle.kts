@@ -51,6 +51,13 @@ dependencies {
     //Иконки
     implementation("androidx.compose.material:material-icons-extended")
 
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
+
+    //DI
+    implementation(platform(libs.koin.bom))
+    implementation(libs.koin.core)
+    implementation(libs.koin.compose)
+
     implementation(libs.androidx.core.ktx)
 
     debugImplementation(libs.androidx.ui.tooling)

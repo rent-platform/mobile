@@ -3,6 +3,7 @@ package com.example.rentplatform
 import android.app.Application
 import com.example.auth.data.local.authStorageModule
 import com.example.auth.di.authModule
+import com.example.marketplace.di.marketplaceModule
 import com.example.network.di.networkModule
 import com.example.profile.di.profileModule
 import org.koin.android.ext.koin.androidContext
@@ -21,7 +22,8 @@ class RentPlatformApp : Application() {
                 networkModule,
                 authStorageModule,
                 authModule,
-                profileModule
+                profileModule,
+                marketplaceModule
             )
         }
     }

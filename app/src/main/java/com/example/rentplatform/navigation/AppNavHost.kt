@@ -23,6 +23,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.deals.presentation.DealsEntryRoute
 import com.example.favorites.presentation.FavoritesEntryRoute
 import com.example.marketplace.presentation.rentrequest.RentRequestRoute
+import com.example.marketplace.presentation.search.input.SearchInputRoute
 import com.example.profile.presentation.changepassword.ChangePasswordRoute
 import com.example.profile.presentation.editprofile.EditProfileRoute
 import com.example.profile.presentation.profilesettings.ProfileSettingsRoute
@@ -87,7 +88,6 @@ fun AppNavHost() {
                 },
                 onSimilarSeeMoreClick = { categoryId ->
                     // позже: rootNavController.navigate(SearchDestination(categoryId))
-                    // Сейчас SearchDestination ещё нет
                 },
                 onOwnerClick = { ownerId ->
                     // позже: rootNavController.navigate(OwnerProfileDestination(ownerId))
@@ -206,12 +206,26 @@ private fun MainShell(
             ) {
                 composable<CatalogDestination> {
                     CatalogRoute(
-                        onNavigateToSearch = {},
+                        onNavigateToSearch = {
+                            navController.navigate(MarketplaceSearchInputDestination)
+                        },
                         onNavigateToFilters = {},
                         onNavigateToNotifications = {},
                         onNavigateToItemDetails = { itemId ->
                             onNavigateToItemDetails(itemId)
                         }
+                    )
+                }
+
+                composable<MarketplaceSearchInputDestination>{
+                    SearchInputRoute(
+                        onNavigateBack = {
+                            navController.popBackStack()
+                        },
+                        onNavigateToSearchResults = { query ->
+                            navController.navigate(
+                                MarketplaceSearchResultsDestination(query = query))
+                        },
                     )
                 }
 

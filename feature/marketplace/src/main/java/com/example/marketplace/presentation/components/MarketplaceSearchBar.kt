@@ -24,6 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -32,11 +33,14 @@ fun MarketplaceSearchBar(
     onSearchClick: () -> Unit,
     onFilterClick: () -> Unit,
     onNotificationsClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    placeholder: String = "Поиск вещей рядом",
+    showNotifications: Boolean = true
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Surface(
             modifier = Modifier
@@ -67,13 +71,11 @@ fun MarketplaceSearchBar(
                     Spacer(modifier = Modifier.width(12.dp))
 
                     Text(
-                        text = if (searchText.isBlank()) {
-                            "Поиск вещей рядом"
-                        } else {
-                            searchText
-                        },
+                        text = searchText.ifBlank { placeholder },
                         style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
 
@@ -94,13 +96,16 @@ fun MarketplaceSearchBar(
             }
         }
 
-        MarketplaceActionButton(
-            onClick = onNotificationsClick
-        ) {
-            Icon(
-                imageVector = Icons.Default.NotificationsNone,
-                contentDescription = "Уведомления"
-            )
+        if (showNotifications) {
+            MarketplaceActionButton(
+                onClick = onNotificationsClick
+            ) {
+                Icon(
+                    imageVector = Icons.Default.NotificationsNone,
+                    contentDescription = "Уведомления",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
         }
     }
 }
@@ -118,6 +123,7 @@ private fun MarketplaceActionButton(
         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
     ) {
         Box(
+            modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
             content()
