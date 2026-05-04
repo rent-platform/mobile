@@ -1,4 +1,12 @@
 package com.example.marketplace.presentation.search.results
 
-interface SearchResultsAction {
+sealed interface SearchResultsAction {
+
+    data object NavigateToSearchInput : SearchResultsAction
+
+    data object NavigateToFilters : SearchResultsAction
+
+    data class NavigateToItemDetails(
+        val itemId: String
+    ) : SearchResultsAction
 }

@@ -24,6 +24,7 @@ import com.example.deals.presentation.DealsEntryRoute
 import com.example.favorites.presentation.FavoritesEntryRoute
 import com.example.marketplace.presentation.rentrequest.RentRequestRoute
 import com.example.marketplace.presentation.search.input.SearchInputRoute
+import com.example.marketplace.presentation.search.results.SearchResultsRoute
 import com.example.profile.presentation.changepassword.ChangePasswordRoute
 import com.example.profile.presentation.editprofile.EditProfileRoute
 import com.example.profile.presentation.profilesettings.ProfileSettingsRoute
@@ -226,6 +227,25 @@ private fun MainShell(
                             navController.navigate(
                                 MarketplaceSearchResultsDestination(query = query))
                         },
+                    )
+                }
+
+                composable<MarketplaceSearchResultsDestination> { backStackEntry ->
+                    val destination = backStackEntry.toRoute<MarketplaceSearchResultsDestination>()
+
+                    SearchResultsRoute(
+                        query = destination.query,
+                        onNavigateToSearchInput = {
+                            navController.navigate(MarketplaceSearchInputDestination){
+                                launchSingleTop = true
+                            }
+                        },
+                        onNavigateToFilters = {
+                            // navController.navigate(MarketplaceFiltersDestination)
+                        },
+                        onNavigateToItemDetails = { itemId ->
+                            onNavigateToItemDetails(itemId)
+                        }
                     )
                 }
 
