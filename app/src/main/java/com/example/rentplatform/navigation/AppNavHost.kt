@@ -23,6 +23,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.deals.presentation.DealsEntryRoute
 import com.example.favorites.presentation.FavoritesEntryRoute
 import com.example.marketplace.presentation.rentrequest.RentRequestRoute
+import com.example.marketplace.presentation.search.filters.SearchFiltersRoute
+import com.example.marketplace.presentation.search.filters.SearchFiltersUiState
 import com.example.marketplace.presentation.search.input.SearchInputRoute
 import com.example.marketplace.presentation.search.results.SearchResultsRoute
 import com.example.profile.presentation.changepassword.ChangePasswordRoute
@@ -230,18 +232,38 @@ private fun MainShell(
                     )
                 }
 
+                composable<MarketplaceSearchFiltersDestination> {
+                    SearchFiltersRoute(
+                        onNavigateBack = {
+                            navController.popBackStack()
+                        },
+                        onApplyFilters = { filters ->
+                            navController.previousBackStackEntry
+                                ?.savedStateHandle
+                                ?.set("search_filters", filters)
+
+                            navController.popBackStack()
+                        }
+                    )
+                }
+
                 composable<MarketplaceSearchResultsDestination> { backStackEntry ->
                     val destination = backStackEntry.toRoute<MarketplaceSearchResultsDestination>()
 
+                    val filters = backStackEntry
+                        .savedStateHandle
+                        .get<SearchFiltersUiState>("search_filters")
+
                     SearchResultsRoute(
                         query = destination.query,
+                        //initialFilters = filters,
                         onNavigateToSearchInput = {
                             navController.navigate(MarketplaceSearchInputDestination){
                                 launchSingleTop = true
                             }
                         },
                         onNavigateToFilters = {
-                            // navController.navigate(MarketplaceFiltersDestination)
+                            navController.navigate(MarketplaceSearchFiltersDestination)
                         },
                         onNavigateToItemDetails = { itemId ->
                             onNavigateToItemDetails(itemId)

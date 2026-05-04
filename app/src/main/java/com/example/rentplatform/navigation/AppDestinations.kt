@@ -49,3 +49,6 @@ object MarketplaceSearchInputDestination
 data class MarketplaceSearchResultsDestination(
     val query: String
 )
+
+@Serializable
+data object MarketplaceSearchFiltersDestination

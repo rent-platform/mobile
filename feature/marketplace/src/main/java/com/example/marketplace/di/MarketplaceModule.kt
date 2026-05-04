@@ -2,6 +2,7 @@ package com.example.marketplace.di
 
 import com.example.marketplace.data.search.SearchHistoryRepository
 import com.example.marketplace.data.search.SearchHistoryRepositoryImpl
+import com.example.marketplace.presentation.search.filters.SearchFiltersViewModel
 import com.example.marketplace.presentation.search.input.SearchInputViewModel
 import com.example.marketplace.presentation.search.results.SearchResultsViewModel
 import org.koin.android.ext.koin.androidContext
@@ -26,5 +27,8 @@ val marketplaceModule = module {
         SearchResultsViewModel(
             initialQuery = parameters.get()
         )
+    }
+    viewModel {
+        SearchFiltersViewModel()
     }
 }
