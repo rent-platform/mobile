@@ -22,6 +22,7 @@ import com.example.profile.presentation.ProfileEntryRoute
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.deals.presentation.DealsEntryRoute
 import com.example.favorites.presentation.FavoritesEntryRoute
+import com.example.marketplace.presentation.listing.CreateListingRoute
 import com.example.marketplace.presentation.rentrequest.RentRequestRoute
 import com.example.marketplace.presentation.search.filters.SearchFiltersRoute
 import com.example.marketplace.presentation.search.filters.SearchFiltersUiState
@@ -63,7 +64,11 @@ fun AppNavHost() {
                     // rootNavController.navigate(DealDetailsDestination(dealId))
                 },
                 onNavigateToCreateListing = {
-                    // rootNavController.navigate(CreateListingDestination)
+                    if (isAuthorized) {
+                        rootNavController.navigate(CreateListingDestination)
+                    } else {
+                        rootNavController.navigate(AuthorizationDestination)
+                    }
                 },
             )
         }
@@ -179,6 +184,16 @@ fun AppNavHost() {
                 }
             )
         }
+        composable<CreateListingDestination> {
+            CreateListingRoute(
+                onNavigateBack = {
+                    rootNavController.popBackStack()
+                },
+                onListingPublished = { itemId ->
+                    rootNavController.popBackStack()
+                }
+            )
+        }
     }
 }
 
@@ -212,7 +227,13 @@ private fun MainShell(
                         onNavigateToSearch = {
                             navController.navigate(MarketplaceSearchInputDestination)
                         },
-                        onNavigateToFilters = {},
+                        onNavigateToFilters = {
+                            navController.navigate(
+                                MarketplaceSearchFiltersDestination(
+                                    source = MarketplaceSearchFiltersSource.CATALOG
+                                )
+                            )
+                        },
                         onNavigateToNotifications = {},
                         onNavigateToItemDetails = { itemId ->
                             onNavigateToItemDetails(itemId)
@@ -232,17 +253,36 @@ private fun MainShell(
                     )
                 }
 
-                composable<MarketplaceSearchFiltersDestination> {
+                composable<MarketplaceSearchFiltersDestination> { backStackEntry ->
+                    val destination = backStackEntry.toRoute<MarketplaceSearchFiltersDestination>()
                     SearchFiltersRoute(
                         onNavigateBack = {
                             navController.popBackStack()
                         },
                         onApplyFilters = { filters ->
-                            navController.previousBackStackEntry
-                                ?.savedStateHandle
-                                ?.set("search_filters", filters)
+                            when (destination.source) {
+                                MarketplaceSearchFiltersSource.CATALOG -> {
+                                    navController.navigate(
+                                        MarketplaceSearchResultsDestination(query = "")
+                                    ) {
+                                        popUpTo(MarketplaceSearchFiltersDestination::class) {
+                                            inclusive = true
+                                        }
+                                    }
 
-                            navController.popBackStack()
+                                    navController.currentBackStackEntry
+                                        ?.savedStateHandle
+                                        ?.set("search_filters", filters)
+                                }
+
+                                MarketplaceSearchFiltersSource.SEARCH_RESULTS -> {
+                                    navController.previousBackStackEntry
+                                        ?.savedStateHandle
+                                        ?.set("search_filters", filters)
+
+                                    navController.popBackStack()
+                                }
+                            }
                         }
                     )
                 }
@@ -263,7 +303,11 @@ private fun MainShell(
                             }
                         },
                         onNavigateToFilters = {
-                            navController.navigate(MarketplaceSearchFiltersDestination)
+                            navController.navigate(
+                                MarketplaceSearchFiltersDestination(
+                                    source = MarketplaceSearchFiltersSource.SEARCH_RESULTS
+                                )
+                            )
                         },
                         onNavigateToItemDetails = { itemId ->
                             onNavigateToItemDetails(itemId)
@@ -305,17 +349,11 @@ private fun MainShell(
                         },
 
                         onCreateItemClick = {
-                            //navController.navigate(CreateItemDestination)
+                            onNavigateToCreateListing()
                         },
 
                         onLogoutClick = {
-                            navController.navigate(ProfileEntryDestination) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = false
-                                }
-                                launchSingleTop = true
-                                restoreState = false
-                            }
+                            navController.navigateToTopLevel(ProfileEntryDestination)
                         }
                     )
                 }

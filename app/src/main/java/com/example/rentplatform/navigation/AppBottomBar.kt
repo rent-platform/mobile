@@ -31,7 +31,11 @@ fun AppBottomBar(
         NavigationBarItem(
             selected = currentDestination
                 ?.hierarchy
-                ?.any { it.hasRoute<CatalogDestination>() } == true,
+                ?.any { it.hasRoute<CatalogDestination>() ||
+                        it.hasRoute<MarketplaceSearchInputDestination>() ||
+                        it.hasRoute<MarketplaceSearchResultsDestination>() ||
+                        it.hasRoute<MarketplaceSearchFiltersDestination>()
+                } == true,
             onClick = onCatalogClick,
             icon = {
                 Icon(

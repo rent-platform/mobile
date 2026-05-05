@@ -51,4 +51,15 @@ data class MarketplaceSearchResultsDestination(
 )
 
 @Serializable
-data object MarketplaceSearchFiltersDestination
+data class MarketplaceSearchFiltersDestination(
+    val source: MarketplaceSearchFiltersSource
+)
+
+@Serializable
+enum class MarketplaceSearchFiltersSource {
+    CATALOG,
+    SEARCH_RESULTS
+}
+
+@Serializable
+object CreateListingDestination
