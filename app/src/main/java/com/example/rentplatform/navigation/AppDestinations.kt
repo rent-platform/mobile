@@ -63,3 +63,6 @@ enum class MarketplaceSearchFiltersSource {
 
 @Serializable
 object CreateListingDestination
+
+@Serializable
+object ChatEntryDestination

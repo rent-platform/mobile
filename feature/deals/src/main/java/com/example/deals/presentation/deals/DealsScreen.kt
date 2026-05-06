@@ -1,13 +1,11 @@
 package com.example.deals.presentation
 
 import androidx.annotation.DrawableRes
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,17 +13,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.ReceiptLong
 import androidx.compose.material.icons.outlined.Refresh
-import androidx.compose.material.icons.outlined.ShoppingBag
-import androidx.compose.material.icons.outlined.Storefront
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -42,7 +35,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.ui.components.RentFilterItem
+import com.example.ui.components.RentFilterRow
 import com.example.ui.components.RentPrimaryButton
+import com.example.ui.components.RentSegmentSwitcher
+import com.example.ui.components.renterOwnerSegmentItems
 
 @Composable
 fun DealsScreen(
@@ -90,16 +87,27 @@ fun DealsScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            DealRoleSwitcher(
-                selectedRole = uiState.selectedRole,
-                onRoleClick = onRoleClick
+            RentSegmentSwitcher(
+                items = renterOwnerSegmentItems(
+                    renterValue = DealRole.Renter,
+                    ownerValue = DealRole.Owner
+                ),
+                selectedValue = uiState.selectedRole,
+                onValueClick = onRoleClick
             )
 
             Spacer(modifier = Modifier.height(14.dp))
 
-            DealsFilterRow(
-                selectedFilter = uiState.selectedFilter,
-                onFilterClick = onFilterClick
+            RentFilterRow(
+                items = DealFilter.entries.map { filter ->
+                    RentFilterItem(
+                        value = filter,
+                        title = filter.title
+                    )
+                },
+                selectedValue = uiState.selectedFilter,
+                onValueClick = onFilterClick,
+                modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -122,155 +130,6 @@ fun DealsScreen(
                     onDealClick = onDealClick
                 )
             }
-        }
-    }
-}
-
-@Composable
-private fun DealRoleSwitcher(
-    selectedRole: DealRole,
-    onRoleClick: (DealRole) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(10.dp)
-    ) {
-        DealRole.entries.forEach { role ->
-            val selected = selectedRole == role
-
-            Surface(
-                modifier = Modifier
-                    .weight(1f)
-                    .height(48.dp)
-                    .clickable { onRoleClick(role) },
-                shape = RoundedCornerShape(16.dp),
-                color = if (selected) {
-                    MaterialTheme.colorScheme.primary.copy(alpha = 0.10f)
-                } else {
-                    MaterialTheme.colorScheme.surface
-                },
-                border = BorderStroke(
-                    width = if (selected) 2.dp else 1.dp,
-                    color = if (selected) {
-                        MaterialTheme.colorScheme.primary
-                    } else {
-                        MaterialTheme.colorScheme.outlineVariant
-                    }
-                )
-            ) {
-                Row(
-                    modifier = Modifier.padding(horizontal = 12.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Icon(
-                        imageVector = when (role) {
-                            DealRole.Owner -> Icons.Outlined.Storefront
-                            DealRole.Renter -> Icons.Outlined.ShoppingBag
-                        },
-                        contentDescription = null,
-                        tint = if (selected) {
-                            MaterialTheme.colorScheme.primary
-                        } else {
-                            MaterialTheme.colorScheme.onSurfaceVariant
-                        },
-                        modifier = Modifier.size(20.dp)
-                    )
-
-                    Spacer(modifier = Modifier.width(8.dp))
-
-                    Text(
-                        text = role.title,
-                        style = MaterialTheme.typography.titleSmall,
-                        fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
-                        color = if (selected) {
-                            MaterialTheme.colorScheme.primary
-                        } else {
-                            MaterialTheme.colorScheme.onSurface
-                        }
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun DealsFilterRow(
-    selectedFilter: DealFilter,
-    onFilterClick: (DealFilter) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    LazyRow(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(horizontal = 1.dp)
-    ) {
-        items(
-            items = DealFilter.entries,
-            key = { filter -> filter.name }
-        ) { filter ->
-            DealFilterChip(
-                filter = filter,
-                selected = selectedFilter == filter,
-                onClick = { onFilterClick(filter) }
-            )
-        }
-    }
-}
-
-@Composable
-private fun DealFilterChip(
-    filter: DealFilter,
-    selected: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Surface(
-        modifier = modifier
-            .height(38.dp)
-            .clickable(onClick = onClick),
-        shape = RoundedCornerShape(999.dp),
-        color = if (selected) {
-            MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
-        } else {
-            MaterialTheme.colorScheme.surface
-        },
-        border = BorderStroke(
-            width = if (selected) 2.dp else 1.dp,
-            color = if (selected) {
-                MaterialTheme.colorScheme.primary
-            } else {
-                MaterialTheme.colorScheme.outlineVariant
-            }
-        )
-    ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 12.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            if (selected) {
-                Icon(
-                    imageVector = Icons.Outlined.CheckCircle,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(16.dp)
-                )
-
-                Spacer(modifier = Modifier.width(6.dp))
-            }
-
-            Text(
-                text = filter.title,
-                style = MaterialTheme.typography.labelLarge,
-                fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
-                color = if (selected) {
-                    MaterialTheme.colorScheme.primary
-                } else {
-                    MaterialTheme.colorScheme.onSurfaceVariant
-                }
-            )
         }
     }
 }

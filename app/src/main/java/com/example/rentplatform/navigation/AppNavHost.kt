@@ -3,31 +3,32 @@ package com.example.rentplatform.navigation
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.NavHostController
 import androidx.navigation.toRoute
 import com.example.auth.presentation.authorization.AuthorizationRoute
 import com.example.auth.presentation.registration.RegistrationRoute
-import com.example.marketplace.presentation.catalog.CatalogRoute
-import com.example.marketplace.presentation.itemdetails.ItemDetailsRoute
-import com.example.profile.presentation.ProfileEntryRoute
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.chat.presentation.ChatEntryRoute
 import com.example.deals.presentation.DealsEntryRoute
 import com.example.favorites.presentation.FavoritesEntryRoute
+import com.example.marketplace.presentation.catalog.CatalogRoute
+import com.example.marketplace.presentation.itemdetails.ItemDetailsRoute
 import com.example.marketplace.presentation.listing.CreateListingRoute
 import com.example.marketplace.presentation.rentrequest.RentRequestRoute
 import com.example.marketplace.presentation.search.filters.SearchFiltersRoute
 import com.example.marketplace.presentation.search.filters.SearchFiltersUiState
 import com.example.marketplace.presentation.search.input.SearchInputRoute
 import com.example.marketplace.presentation.search.results.SearchResultsRoute
+import com.example.profile.presentation.ProfileEntryRoute
 import com.example.profile.presentation.changepassword.ChangePasswordRoute
 import com.example.profile.presentation.editprofile.EditProfileRoute
 import com.example.profile.presentation.profilesettings.ProfileSettingsRoute
@@ -365,6 +366,13 @@ private fun MainShell(
                         onNavigateToCreateListing = onNavigateToCreateListing
                     )
                 }
+                composable<ChatEntryDestination> {
+                    ChatEntryRoute(
+                        isAuthorized = isAuthorized,
+                        onLoginClick = onOpenAuthFlow,
+                        onNavigateToChatDetails = {},
+                    )
+                }
             }
 
             AppBottomBar(
@@ -380,6 +388,9 @@ private fun MainShell(
                 },
                 onDealsClick = {
                     navController.navigateToTopLevel(DealsEntryDestination)
+                },
+                onChatsClick = {
+                    navController.navigateToTopLevel(ChatEntryDestination)
                 }
             )
         }

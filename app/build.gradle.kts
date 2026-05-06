@@ -49,6 +49,7 @@ dependencies {
     implementation(project(":feature:deals"))
     implementation(project(":core:network"))
     implementation(project(":core:session"))
+    implementation(project(":feature:chat"))
 
     // Dependency Injection
     implementation(platform(libs.koin.bom))

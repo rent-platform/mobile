@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.ui"
+    namespace = "com.example.chat"
     compileSdk = 36
 
     defaultConfig {
@@ -31,24 +31,30 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
-    buildFeatures {
+    buildFeatures{
         compose = true
     }
 }
 
 dependencies {
-    implementation(libs.androidx.core.ktx)
-
+    implementation(project(":core:ui"))
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
-    implementation("androidx.compose.foundation:foundation")
     implementation(libs.androidx.material3)
+    debugImplementation(libs.androidx.ui.tooling)
 
-    //Иконки
+    implementation("androidx.compose.foundation:foundation")
     implementation("androidx.compose.material:material-icons-extended")
 
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.4")
+
+    implementation("io.coil-kt:coil-compose:2.7.0")
+
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
