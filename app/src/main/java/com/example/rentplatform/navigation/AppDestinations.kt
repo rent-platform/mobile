@@ -66,3 +66,8 @@ object CreateListingDestination
 
 @Serializable
 object ChatEntryDestination
+
+@Serializable
+data class ChatDetailsDestination(
+    val chatId: String
+)

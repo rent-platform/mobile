@@ -18,6 +18,7 @@ import androidx.navigation.toRoute
 import com.example.auth.presentation.authorization.AuthorizationRoute
 import com.example.auth.presentation.registration.RegistrationRoute
 import com.example.chat.presentation.ChatEntryRoute
+import com.example.chat.presentation.chatdetails.ChatDetailsRoute
 import com.example.deals.presentation.DealsEntryRoute
 import com.example.favorites.presentation.FavoritesEntryRoute
 import com.example.marketplace.presentation.catalog.CatalogRoute
@@ -62,7 +63,7 @@ fun AppNavHost() {
                 },
                 onSettingClick = {rootNavController.navigate(ProfileSettingDestination)},
                 onNavigateToDealDetails = { dealId ->
-                    // rootNavController.navigate(DealDetailsDestination(dealId))
+       //              rootNavController.navigate(DealDetailsDestination(dealId))
                 },
                 onNavigateToCreateListing = {
                     if (isAuthorized) {
@@ -71,6 +72,9 @@ fun AppNavHost() {
                         rootNavController.navigate(AuthorizationDestination)
                     }
                 },
+                onNavigateToChatDetails = { chatId ->
+                    rootNavController.navigate(ChatDetailsDestination(chatId))
+                }
             )
         }
 
@@ -195,6 +199,22 @@ fun AppNavHost() {
                 }
             )
         }
+        composable<ChatDetailsDestination> { backStackEntry ->
+            val destination = backStackEntry.toRoute<ChatDetailsDestination>()
+            ChatDetailsRoute(
+                chatId = destination.chatId,
+                onNavigateBack = {
+                    rootNavController.popBackStack()
+                },
+                onNavigateToProfile = { userId ->
+                    //rootNavController.navigate(PublicProfileDestination(userId))
+                },
+                onOpenAttachmentPicker = {},
+                onShowMessage = { message ->
+                    //snackbarHostState.showSnackbar(message)
+                }
+            )
+        }
     }
 }
 
@@ -207,6 +227,7 @@ private fun MainShell(
     onSettingClick: () -> Unit,
     onNavigateToDealDetails: (String) -> Unit,
     onNavigateToCreateListing: () -> Unit,
+    onNavigateToChatDetails: (String) -> Unit,
 ) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -370,7 +391,7 @@ private fun MainShell(
                     ChatEntryRoute(
                         isAuthorized = isAuthorized,
                         onLoginClick = onOpenAuthFlow,
-                        onNavigateToChatDetails = {},
+                        onNavigateToChatDetails = onNavigateToChatDetails,
                     )
                 }
             }
