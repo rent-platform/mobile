@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.lifecycle.viewmodel.compose.viewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun CatalogRoute(
@@ -13,7 +13,7 @@ fun CatalogRoute(
     onNavigateToNotifications: () -> Unit,
     onNavigateToItemDetails: (String) -> Unit
 ) {
-    val viewModel: CatalogViewModel = viewModel()
+    val viewModel: CatalogViewModel = koinViewModel()
     val uiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(Unit) {

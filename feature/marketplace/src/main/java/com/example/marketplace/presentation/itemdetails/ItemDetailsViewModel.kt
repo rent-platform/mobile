@@ -2,7 +2,8 @@ package com.example.marketplace.presentation.itemdetails
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.marketplace.data.mock.ItemDetailsMockData
+import com.example.marketplace.presentation.mapper.toUi
+import com.example.marketplace.domain.repository.CatalogRepository
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -11,7 +12,9 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class ItemDetailsViewModel : ViewModel() {
+class ItemDetailsViewModel(
+    private val catalogRepository: CatalogRepository
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ItemDetailsUiState(isLoading = false))
     val uiState: StateFlow<ItemDetailsUiState> = _uiState.asStateFlow()
@@ -20,11 +23,26 @@ class ItemDetailsViewModel : ViewModel() {
     val actions = _actions.receiveAsFlow()
 
     fun loadItem(itemId: String) {
-        _uiState.value = ItemDetailsMockData.getById(itemId)
-            ?: ItemDetailsUiState(
-                isLoading = false,
-                errorMessage = "Товар не найден"
-            )
+        viewModelScope.launch {
+            _uiState.value = ItemDetailsUiState(isLoading = true)
+
+            runCatching {
+                catalogRepository.getItemDetails(itemId)
+            }.onSuccess { item ->
+                _uiState.value = item?.toUi()
+                    ?: ItemDetailsUiState(
+                        isLoading = false,
+                        errorMessage = "Товар не найден"
+                    )
+            }.onFailure { error ->
+                error.printStackTrace()
+
+                _uiState.value = ItemDetailsUiState(
+                    isLoading = false,
+                    errorMessage = "Не удалось загрузить товар"
+                )
+            }
+        }
     }
 
     fun onEvent(event: ItemDetailsEvent, itemId: String) {
@@ -46,9 +64,7 @@ class ItemDetailsViewModel : ViewModel() {
             }
 
             ItemDetailsEvent.OnFavoriteClick -> {
-                _uiState.update { state ->
-                    state.copy(isFavorite = !state.isFavorite)
-                }
+                toggleCurrentItemFavorite()
             }
 
             ItemDetailsEvent.OnRetryClick -> {
@@ -60,17 +76,7 @@ class ItemDetailsViewModel : ViewModel() {
             }
 
             is ItemDetailsEvent.OnSimilarFavoriteClick -> {
-                _uiState.update { state ->
-                    state.copy(
-                        similarItems = state.similarItems.map { item ->
-                            if (item.id == event.itemId) {
-                                item.copy(isFavorite = !item.isFavorite)
-                            } else {
-                                item
-                            }
-                        }
-                    )
-                }
+                toggleSimilarItemFavorite(event.itemId)
             }
 
             ItemDetailsEvent.OnSimilarSeeMoreClick -> {
@@ -80,6 +86,7 @@ class ItemDetailsViewModel : ViewModel() {
                     )
                 )
             }
+
             ItemDetailsEvent.OnOwnerClick -> {
                 val ownerId = _uiState.value.ownerId
 
@@ -99,6 +106,45 @@ class ItemDetailsViewModel : ViewModel() {
                         )
                     )
                 }
+            }
+        }
+    }
+
+    private fun toggleCurrentItemFavorite() {
+        viewModelScope.launch {
+            val itemId = _uiState.value.id
+            if (itemId.isBlank()) return@launch
+
+            runCatching {
+                catalogRepository.toggleFavorite(itemId)
+            }.onSuccess { isFavorite ->
+                _uiState.update { state ->
+                    state.copy(isFavorite = isFavorite)
+                }
+            }.onFailure { error ->
+                error.printStackTrace()
+            }
+        }
+    }
+
+    private fun toggleSimilarItemFavorite(itemId: String) {
+        viewModelScope.launch {
+            runCatching {
+                catalogRepository.toggleFavorite(itemId)
+            }.onSuccess { isFavorite ->
+                _uiState.update { state ->
+                    state.copy(
+                        similarItems = state.similarItems.map { item ->
+                            if (item.id == itemId) {
+                                item.copy(isFavorite = isFavorite)
+                            } else {
+                                item
+                            }
+                        }
+                    )
+                }
+            }.onFailure { error ->
+                error.printStackTrace()
             }
         }
     }

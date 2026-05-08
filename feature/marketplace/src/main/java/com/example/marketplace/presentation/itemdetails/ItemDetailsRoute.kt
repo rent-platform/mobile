@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ItemDetailsRoute(
@@ -16,8 +16,8 @@ fun ItemDetailsRoute(
     onSimilarSeeMoreClick: (Long?) -> Unit,
     onOwnerClick: (String) -> Unit,
     onAskOwnerClick: (itemId: String, ownerId: String) -> Unit,
-    viewModel: ItemDetailsViewModel = viewModel()
 ) {
+    val viewModel: ItemDetailsViewModel = koinViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(itemId) {

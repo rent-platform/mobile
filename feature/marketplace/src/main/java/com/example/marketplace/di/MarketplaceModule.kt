@@ -1,7 +1,11 @@
 package com.example.marketplace.di
 
+import com.example.marketplace.data.repository.FakeCatalogRepositoryImpl
 import com.example.marketplace.data.search.SearchHistoryRepository
 import com.example.marketplace.data.search.SearchHistoryRepositoryImpl
+import com.example.marketplace.domain.repository.CatalogRepository
+import com.example.marketplace.presentation.catalog.CatalogViewModel
+import com.example.marketplace.presentation.itemdetails.ItemDetailsViewModel
 import com.example.marketplace.presentation.search.filters.SearchFiltersViewModel
 import com.example.marketplace.presentation.search.input.SearchInputViewModel
 import com.example.marketplace.presentation.search.results.SearchResultsViewModel
@@ -14,6 +18,22 @@ val marketplaceModule = module {
     single<SearchHistoryRepository> {
         SearchHistoryRepositoryImpl(
             context = androidContext()
+        )
+    }
+
+    single<CatalogRepository> {
+        FakeCatalogRepositoryImpl()
+    }
+
+    viewModel {
+        CatalogViewModel(
+            catalogRepository = get()
+        )
+    }
+
+    viewModel {
+        ItemDetailsViewModel(
+            catalogRepository = get()
         )
     }
 

@@ -196,10 +196,7 @@ class CreateListingViewModel : ViewModel() {
         }
     }
 
-    /**
-     * Пока здесь заглушка.
-     * Когда подключишь Photo Picker, вместо этого будешь открывать выбор фото в Route.
-     */
+    //Когда Photo Picker, вместо этого будет открывать выбор фото в Route.
     private fun onAddPhotoClick() {
         val currentState = _state.value
 
@@ -262,13 +259,9 @@ class CreateListingViewModel : ViewModel() {
     }
 
     /**
-     * Пока имитация сохранения черновика.
-     *
-     * По твоей логике backend сможет сохранять черновик после:
+     * По логике backend сможет сохранять черновик после:
      * - title
      * - selectedCategory
-     *
-     * Фото для черновика необязательны.
      */
     private suspend fun saveDraftIfPossible() {
         val currentState = _state.value
@@ -301,8 +294,6 @@ class CreateListingViewModel : ViewModel() {
     }
 
     /**
-     * Пока имитация публикации.
-     *
      * Позже здесь будет:
      * 1. saveDraftIfPossible()
      * 2. upload photos, если нужно
