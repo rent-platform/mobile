@@ -177,7 +177,7 @@ private fun DealCard(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(170.dp)
+                    .height(250.dp)
             ) {
                 DealItemImage(
                     title = deal.title,

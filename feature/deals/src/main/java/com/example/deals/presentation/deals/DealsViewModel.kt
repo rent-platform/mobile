@@ -2,6 +2,8 @@ package com.example.deals.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.deals.data.FakeDealsRepositoryImpl
+import com.example.deals.domain.DealsRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,7 +12,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class DealsViewModel : ViewModel() {
+class DealsViewModel(private val dealsRepository: DealsRepository = FakeDealsRepositoryImpl()) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
         DealsUiState(
@@ -26,7 +28,11 @@ class DealsViewModel : ViewModel() {
     fun onAuthorized() {
         val state = _uiState.value
 
-        if (state.ownerDeals.isEmpty() && state.renterDeals.isEmpty() && !state.isLoading) {
+        if (
+            state.ownerDeals.isEmpty() &&
+            state.renterDeals.isEmpty() &&
+            !state.isLoading
+        ) {
             loadDeals()
         }
     }
@@ -94,10 +100,10 @@ class DealsViewModel : ViewModel() {
             }
 
             runCatching {
-                delay(500)
-                // val ownerDeals = dealsRepository.getOwnerDeals()
-                // val renterDeals = dealsRepository.getRenterDeals()
-                MockDealsData.ownerDeals to MockDealsData.renterDeals
+                val ownerDeals = dealsRepository.getOwnerDeals()
+                val renterDeals = dealsRepository.getRenterDeals()
+
+                ownerDeals to renterDeals
             }.onSuccess { (ownerDeals, renterDeals) ->
                 _uiState.update { state ->
                     state.copy(
@@ -117,68 +123,4 @@ class DealsViewModel : ViewModel() {
             }
         }
     }
-}
-
-private object MockDealsData {
-
-    val ownerDeals = listOf(
-        DealListItemUi(
-            id = "owner-deal-1",
-            itemId = "item-1",
-            title = "Дрель Bosch Professional",
-            dateRange = "03 мая 2026 — 06 мая 2026",
-            totalPrice = "1 500 ₽",
-            depositAmount = "3 000 ₽",
-            status = DealStatus.Pending,
-            pricingMode = DealPricingMode.Day,
-            imageResId = null
-        ),
-        DealListItemUi(
-            id = "owner-deal-2",
-            itemId = "item-2",
-            title = "Проектор Xiaomi",
-            dateRange = "10 мая 2026 — 12 мая 2026",
-            totalPrice = "2 800 ₽",
-            depositAmount = "5 000 ₽",
-            status = DealStatus.Active,
-            pricingMode = DealPricingMode.Day,
-            imageResId = null
-        ),
-        DealListItemUi(
-            id = "owner-deal-3",
-            itemId = "item-3",
-            title = "Фотоаппарат Canon EOS",
-            dateRange = "15 мая 2026 — 18 мая 2026",
-            totalPrice = "4 500 ₽",
-            depositAmount = "7 000 ₽",
-            status = DealStatus.Completed,
-            pricingMode = DealPricingMode.Day,
-            imageResId = null
-        )
-    )
-
-    val renterDeals = listOf(
-        DealListItemUi(
-            id = "renter-deal-1",
-            itemId = "item-4",
-            title = "Шуруповёрт Makita",
-            dateRange = "20 мая 2026 — 21 мая 2026",
-            totalPrice = "900 ₽",
-            depositAmount = "2 000 ₽",
-            status = DealStatus.Confirmed,
-            pricingMode = DealPricingMode.Day,
-            imageResId = null
-        ),
-        DealListItemUi(
-            id = "renter-deal-2",
-            itemId = "item-5",
-            title = "Камера GoPro Hero",
-            dateRange = "24 мая 2026, 12:00 — 18:00",
-            totalPrice = "1 200 ₽",
-            depositAmount = null,
-            status = DealStatus.Rejected,
-            pricingMode = DealPricingMode.Hour,
-            imageResId = null
-        )
-    )
 }

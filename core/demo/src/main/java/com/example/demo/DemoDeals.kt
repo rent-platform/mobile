@@ -21,9 +21,10 @@ object DemoDeals {
             depositAmount = 15000,
             status = DemoDealStatus.CONFIRMED,
             rejectionReason = null,
-            createdAt = "2026-04-22T16:30:00.000Z",
-            updatedAt = "2026-04-22T17:20:00.000Z"
+            createdAt = "2026-04-22T13:09:00.000Z",
+            updatedAt = "2026-04-22T13:12:00.000Z"
         ),
+
         DemoDeal(
             id = DemoIds.DEAL_DRILL_ID,
             itemId = DemoIds.ITEM_DRILL_ID,
@@ -38,9 +39,28 @@ object DemoDeals {
             depositAmount = 6000,
             status = DemoDealStatus.ACTIVE,
             rejectionReason = null,
-            createdAt = "2026-04-23T12:00:00.000Z",
+            createdAt = "2026-04-23T12:20:00.000Z",
             updatedAt = "2026-04-24T18:00:00.000Z"
         ),
+
+        DemoDeal(
+            id = DemoIds.DEAL_BIKE_ID,
+            itemId = DemoIds.ITEM_BIKE_ID,
+            renterId = DemoIds.CURRENT_USER_ID,
+            ownerId = DemoIds.OWNER_DMITRY_ID,
+            startDate = "2026-04-29T10:00:00.000Z",
+            endDate = "2026-04-29T20:00:00.000Z",
+            pricingMode = DemoPricingMode.DAY,
+            pricePerDaySnapshot = 700,
+            pricePerHourSnapshot = null,
+            totalPrice = 700,
+            depositAmount = 3000,
+            status = DemoDealStatus.PENDING,
+            rejectionReason = null,
+            createdAt = "2026-04-28T18:35:00.000Z",
+            updatedAt = "2026-04-28T18:35:00.000Z"
+        ),
+
         DemoDeal(
             id = DemoIds.DEAL_TENT_ID,
             itemId = DemoIds.ITEM_TENT_ID,
@@ -55,9 +75,10 @@ object DemoDeals {
             depositAmount = 5000,
             status = DemoDealStatus.COMPLETED,
             rejectionReason = null,
-            createdAt = "2026-04-17T09:00:00.000Z",
-            updatedAt = "2026-04-21T18:00:00.000Z"
+            createdAt = "2026-04-17T09:30:00.000Z",
+            updatedAt = "2026-04-21T18:10:00.000Z"
         ),
+
         DemoDeal(
             id = DemoIds.DEAL_MAKITA_ID,
             itemId = DemoIds.ITEM_MAKITA_ID,
@@ -74,23 +95,6 @@ object DemoDeals {
             rejectionReason = null,
             createdAt = "2026-04-26T10:42:00.000Z",
             updatedAt = "2026-04-26T10:42:00.000Z"
-        ),
-        DemoDeal(
-            id = DemoIds.DEAL_BIKE_ID,
-            itemId = DemoIds.ITEM_BIKE_ID,
-            renterId = DemoIds.CURRENT_USER_ID,
-            ownerId = DemoIds.OWNER_DMITRY_ID,
-            startDate = "2026-04-29T10:00:00.000Z",
-            endDate = "2026-04-29T20:00:00.000Z",
-            pricingMode = DemoPricingMode.DAY,
-            pricePerDaySnapshot = 700,
-            pricePerHourSnapshot = null,
-            totalPrice = 700,
-            depositAmount = 3000,
-            status = DemoDealStatus.PENDING,
-            rejectionReason = null,
-            createdAt = "2026-04-28T18:20:00.000Z",
-            updatedAt = "2026-04-28T18:35:00.000Z"
         )
     )
 }

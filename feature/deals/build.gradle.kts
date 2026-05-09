@@ -38,6 +38,7 @@ android {
 
 dependencies {
     implementation(project(":core:ui"))
+    implementation(project(":core:demo"))
     //compoose
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))

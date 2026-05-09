@@ -16,6 +16,10 @@ fun DealsRoute(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    LaunchedEffect(Unit) {
+        viewModel.onAuthorized()
+    }
+
     LaunchedEffect(viewModel) {
         viewModel.actions.collect { action ->
             when (action) {
