@@ -86,6 +86,7 @@ fun CreateListingScreen(
     onPickupLocationChange: (String) -> Unit,
 
     modifier: Modifier = Modifier
+
 ) {
     val listState = rememberLazyListState()
 
@@ -143,6 +144,7 @@ fun CreateListingScreen(
                             DescriptionStepContent(
                                 title = state.title,
                                 description = state.description,
+                                categories = state.categories,
                                 selectedCategory = state.selectedCategory,
                                 onTitleChange = onTitleChange,
                                 onDescriptionChange = onDescriptionChange,
@@ -529,6 +531,7 @@ private fun AddPhotoItem(
 private fun DescriptionStepContent(
     title: String,
     description: String,
+    categories: List<ListingCategory>,
     selectedCategory: ListingCategory?,
     onTitleChange: (String) -> Unit,
     onDescriptionChange: (String) -> Unit,
@@ -553,6 +556,7 @@ private fun DescriptionStepContent(
             label = "Категория *"
         ) {
             ListingCategoryDropdown(
+                categories = categories,
                 selectedCategory = selectedCategory,
                 onCategorySelected = onCategorySelected
             )
@@ -661,6 +665,7 @@ private fun LabeledField(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ListingCategoryDropdown(
+    categories: List<ListingCategory>,
     selectedCategory: ListingCategory?,
     onCategorySelected: (ListingCategory) -> Unit
 ) {
@@ -698,7 +703,7 @@ private fun ListingCategoryDropdown(
                 expanded = false
             }
         ) {
-            ListingCategory.entries.forEach { category ->
+            categories.forEach { category ->
                 DropdownMenuItem(
                     text = {
                         Text(text = category.displayName)
@@ -899,130 +904,4 @@ private fun CreateListingBottomBar(
             )
         }
     }
-}
-
-@Preview(
-    name = "CreateListing - Photos",
-    showBackground = true
-)
-@Composable
-private fun CreateListingPhotosPreview() {
-    RentPlatformTheme{
-       CreateListingScreen(
-           state = CreateListingPreviewData.photos,
-           onBackClick = {},
-           onNextClick = {},
-           onPublishClick = {},
-           onAddPhotoClick = {},
-           onRemovePhotoClick = {},
-           onTitleChange = {},
-           onDescriptionChange = {},
-           onPricePerDayChange = {},
-           onPricePerHourChange = {},
-           onCategorySelected = {},
-           onDepositEnabledChange = {},
-           onDepositAmountChange = {},
-           onCityChange = {},
-           onPickupLocationChange = {}
-       )
-   }
-}
-
-@Preview(
-    name = "CreateListing - Description",
-    showBackground = true
-)
-@Composable
-private fun CreateListingDescriptionPreview() {
-    RentPlatformTheme {
-        CreateListingScreen(
-            state = CreateListingPreviewData.description,
-            onBackClick = {},
-            onNextClick = {},
-            onPublishClick = {},
-            onAddPhotoClick = {},
-            onRemovePhotoClick = {},
-            onTitleChange = {},
-            onDescriptionChange = {},
-            onPricePerDayChange = {},
-            onCategorySelected = {},
-            onDepositEnabledChange = {},
-            onPricePerHourChange = {},
-            onDepositAmountChange = {},
-            onCityChange = {},
-            onPickupLocationChange = {}
-        )
-    }
-}
-
-@Preview(
-    name = "CreateListing - Terms",
-    showBackground = true
-)
-@Composable
-private fun CreateListingTermsPreview() {
-    RentPlatformTheme {
-        CreateListingScreen(
-            state = CreateListingPreviewData.terms,
-            onBackClick = {},
-            onNextClick = {},
-            onPublishClick = {},
-            onAddPhotoClick = {},
-            onRemovePhotoClick = {},
-            onTitleChange = {},
-            onDescriptionChange = {},
-            onPricePerDayChange = {},
-            onPricePerHourChange = {},
-            onCategorySelected = {},
-            onDepositEnabledChange = {},
-            onDepositAmountChange = {},
-            onCityChange = {},
-            onPickupLocationChange = {}
-        )
-    }
-}
-
-private object CreateListingPreviewData {
-    private val photosList = listOf(
-        ListingPhotoUi(
-            id = "1",
-            sortOrder = 0
-        ),
-        ListingPhotoUi(
-            id = "2",
-            sortOrder = 1
-        )
-    )
-
-    val photos = CreateListingUiState(
-        currentStep = ListingStep.Photos,
-        photos = photosList
-    )
-
-    val description = CreateListingUiState(
-        currentStep = ListingStep.Description,
-        photos = photosList,
-        title = "Шуруповёрт Bosch",
-        description = "Мощный шуруповёрт в хорошем состоянии. В комплекте кейс, зарядка и два аккумулятора.",
-        selectedCategory = ListingCategory.Tools
-    )
-
-    val terms = CreateListingUiState(
-        currentStep = ListingStep.Terms,
-        photos = photosList,
-        title = "Шуруповёрт Bosch",
-        description = "Мощный шуруповёрт в хорошем состоянии.",
-        selectedCategory = ListingCategory.Tools,
-        pricePerDay = "700",
-        pricePerHour = "150",
-        hasDeposit = true,
-        depositAmount = "3000",
-        city = "Москва",
-        pickupLocation = "м. Алексеевская"
-    )
-
-    val termsWithoutDeposit = terms.copy(
-        hasDeposit = false,
-        depositAmount = ""
-    )
 }

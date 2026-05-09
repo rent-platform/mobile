@@ -2,19 +2,46 @@ package com.example.marketplace.presentation.search.filters
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.marketplace.domain.repository.CatalogRepository
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class SearchFiltersViewModel(
-    initialFilters: SearchFiltersUiState = SearchFiltersUiState()
+    private val catalogRepository: CatalogRepository
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(initialFilters)
-    val uiState: StateFlow<SearchFiltersUiState> = _uiState
+    private val _uiState = MutableStateFlow(SearchFiltersUiState())
+    val uiState = _uiState.asStateFlow()
+
+    init {
+        loadCategories()
+    }
+    private fun loadCategories() {
+        viewModelScope.launch {
+            runCatching {
+                catalogRepository.getCatalog().categories
+            }.onSuccess { categories ->
+                _uiState.update { state ->
+                    state.copy(
+                        categories = categories.map { category ->
+                            SearchFilterCategory(
+                                id = category.id,
+                                 title = category.name
+                            )
+                        }
+                    )
+                }
+            }.onFailure { error ->
+                error.printStackTrace()
+            }
+        }
+    }
+
 
     private val _action = Channel<SearchFiltersAction>(Channel.BUFFERED)
     val action = _action.receiveAsFlow()
@@ -120,14 +147,30 @@ class SearchFiltersViewModel(
     }
 
     private fun resetFilters() {
-        _uiState.value = SearchFiltersUiState()
+        _uiState.update { state ->
+            SearchFiltersUiState(
+                categories = state.categories,
+                cities = state.cities
+            )
+        }
     }
 
     private fun applyFilters() {
+        val state = _uiState.value
+
         viewModelScope.launch {
             _action.send(
                 SearchFiltersAction.ApplyFilters(
-                    filters = _uiState.value
+                    filters = SearchFiltersResult(
+                        categoryId = state.selectedCategory?.id,
+                        categoryTitle = state.selectedCategory?.title,
+                        city = state.selectedCity?.title,
+                        minPricePerDay = state.minPricePerDay.toLongOrNull(),
+                        maxPricePerDay = state.maxPricePerDay.toLongOrNull(),
+                        minPricePerHour = state.minPricePerHour.toLongOrNull(),
+                        maxPricePerHour = state.maxPricePerHour.toLongOrNull(),
+                        onlyAvailableNow = state.onlyAvailableNow
+                    )
                 )
             )
         }

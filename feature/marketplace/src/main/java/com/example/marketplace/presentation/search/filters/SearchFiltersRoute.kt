@@ -10,7 +10,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun SearchFiltersRoute(
     onNavigateBack: () -> Unit,
-    onApplyFilters: (SearchFiltersUiState) -> Unit,
+    onApplyFilters: (SearchFiltersResult) -> Unit,
     viewModel: SearchFiltersViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()

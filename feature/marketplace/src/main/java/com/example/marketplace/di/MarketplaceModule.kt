@@ -6,6 +6,7 @@ import com.example.marketplace.data.search.SearchHistoryRepositoryImpl
 import com.example.marketplace.domain.repository.CatalogRepository
 import com.example.marketplace.presentation.catalog.CatalogViewModel
 import com.example.marketplace.presentation.itemdetails.ItemDetailsViewModel
+import com.example.marketplace.presentation.rentrequest.RentRequestViewModel
 import com.example.marketplace.presentation.search.filters.SearchFiltersViewModel
 import com.example.marketplace.presentation.search.input.SearchInputViewModel
 import com.example.marketplace.presentation.search.results.SearchResultsViewModel
@@ -45,10 +46,18 @@ val marketplaceModule = module {
 
     viewModel { parameters ->
         SearchResultsViewModel(
-            initialQuery = parameters.get()
+            initialQuery = parameters.get(),
+            catalogRepository = get()
         )
     }
     viewModel {
-        SearchFiltersViewModel()
+        SearchFiltersViewModel(
+            catalogRepository = get()
+        )
+    }
+    viewModel {
+        RentRequestViewModel(
+            catalogRepository = get()
+        )
     }
 }

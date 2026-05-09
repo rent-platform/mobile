@@ -9,6 +9,7 @@ data class CreateListingUiState(
     val title: String = "",
     val description: String = "",
 
+    val categories: List<ListingCategory> = emptyList(),
     val selectedCategory: ListingCategory? = null,
 
     val pricePerDay: String = "",
@@ -94,3 +95,8 @@ data class ListingPhotoUi(
     val isCover: Boolean
         get() = sortOrder == 0
 }
+
+data class ListingCategory(
+    val id: Long,
+    val displayName: String
+)

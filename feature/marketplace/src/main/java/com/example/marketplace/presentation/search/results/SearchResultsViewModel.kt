@@ -2,9 +2,10 @@ package com.example.marketplace.presentation.search.results
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.marketplace.data.mock.CatalogMockData
+import com.example.marketplace.domain.model.CatalogSearchParams
+import com.example.marketplace.domain.repository.CatalogRepository
+import com.example.marketplace.presentation.mapper.toUi
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -12,7 +13,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class SearchResultsViewModel(
-    private val initialQuery: String
+    private val initialQuery: String,
+    private val catalogRepository: CatalogRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
@@ -65,30 +67,38 @@ class SearchResultsViewModel(
         val query = _uiState.value.query.trim()
 
         viewModelScope.launch {
-            _uiState.update {
-                it.copy(
+            _uiState.update { state ->
+                state.copy(
                     isLoading = true,
                     errorMessage = null
                 )
             }
 
-            delay(300)
-
-            val results = if (query.isBlank()) {
-                CatalogMockData.recommendedItems
-            } else {
-                CatalogMockData.recommendedItems.filter { item ->
-                    item.title.contains(query, ignoreCase = true) ||
-                            item.location.contains(query, ignoreCase = true)
-                }
-            }
-
-            _uiState.update {
-                it.copy(
-                    isLoading = false,
-                    errorMessage = null,
-                    items = results
+            runCatching {
+                catalogRepository.searchItems(
+                    CatalogSearchParams(
+                        query = query
+                    )
                 )
+            }.onSuccess { items ->
+                _uiState.update { state ->
+                    state.copy(
+                        isLoading = false,
+                        errorMessage = null,
+                        items = items.map { item ->
+                            item.toUi()
+                        }
+                    )
+                }
+            }.onFailure { error ->
+                error.printStackTrace()
+
+                _uiState.update { state ->
+                    state.copy(
+                        isLoading = false,
+                        errorMessage = "Не удалось загрузить результаты поиска"
+                    )
+                }
             }
         }
     }
@@ -106,18 +116,24 @@ class SearchResultsViewModel(
     }
 
     private fun toggleFavorite(itemId: String) {
-        _uiState.update { currentState ->
-            currentState.copy(
-                items = currentState.items.map { item ->
-                    if (item.id == itemId) {
-                        item.copy(
-                            isFavorite = !item.isFavorite
-                        )
-                    } else {
-                        item
-                    }
+        viewModelScope.launch {
+            runCatching {
+                catalogRepository.toggleFavorite(itemId)
+            }.onSuccess { isFavorite ->
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        items = currentState.items.map { item ->
+                            if (item.id == itemId) {
+                                item.copy(isFavorite = isFavorite)
+                            } else {
+                                item
+                            }
+                        }
+                    )
                 }
-            )
+            }.onFailure { error ->
+                error.printStackTrace()
+            }
         }
     }
 

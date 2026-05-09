@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun RentRequestRoute(
@@ -16,7 +16,7 @@ fun RentRequestRoute(
         startDate: String,
         endDate: String
     ) -> Unit,
-    viewModel: RentRequestViewModel = viewModel()
+    viewModel: RentRequestViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 

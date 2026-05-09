@@ -25,6 +25,7 @@ import com.example.marketplace.presentation.catalog.CatalogRoute
 import com.example.marketplace.presentation.itemdetails.ItemDetailsRoute
 import com.example.marketplace.presentation.listing.CreateListingRoute
 import com.example.marketplace.presentation.rentrequest.RentRequestRoute
+import com.example.marketplace.presentation.search.filters.SearchFiltersResult
 import com.example.marketplace.presentation.search.filters.SearchFiltersRoute
 import com.example.marketplace.presentation.search.filters.SearchFiltersUiState
 import com.example.marketplace.presentation.search.input.SearchInputRoute
@@ -282,29 +283,11 @@ private fun MainShell(
                             navController.popBackStack()
                         },
                         onApplyFilters = { filters ->
-                            when (destination.source) {
-                                MarketplaceSearchFiltersSource.CATALOG -> {
-                                    navController.navigate(
-                                        MarketplaceSearchResultsDestination(query = "")
-                                    ) {
-                                        popUpTo(MarketplaceSearchFiltersDestination::class) {
-                                            inclusive = true
-                                        }
-                                    }
+                            navController.previousBackStackEntry
+                                ?.savedStateHandle
+                                ?.set("filters", filters)
 
-                                    navController.currentBackStackEntry
-                                        ?.savedStateHandle
-                                        ?.set("search_filters", filters)
-                                }
-
-                                MarketplaceSearchFiltersSource.SEARCH_RESULTS -> {
-                                    navController.previousBackStackEntry
-                                        ?.savedStateHandle
-                                        ?.set("search_filters", filters)
-
-                                    navController.popBackStack()
-                                }
-                            }
+                            navController.popBackStack()
                         }
                     )
                 }
@@ -314,7 +297,7 @@ private fun MainShell(
 
                     val filters = backStackEntry
                         .savedStateHandle
-                        .get<SearchFiltersUiState>("search_filters")
+                        .get<SearchFiltersResult>("search_filters")
 
                     SearchResultsRoute(
                         query = destination.query,

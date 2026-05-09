@@ -7,6 +7,7 @@ import com.example.core.demo.model.DemoItemStatus
 import com.example.marketplace.domain.model.CatalogCategory
 import com.example.marketplace.domain.model.CatalogData
 import com.example.marketplace.domain.model.CatalogItem
+import com.example.marketplace.domain.model.CatalogSearchParams
 import com.example.marketplace.domain.model.ItemAvailabilityDay
 import com.example.marketplace.domain.model.ItemDetails
 import com.example.marketplace.domain.repository.CatalogRepository
@@ -23,15 +24,7 @@ class FakeCatalogRepositoryImpl : CatalogRepository {
         delay(250)
 
         return CatalogData(
-            categories = DemoScenario.categories
-                .filter { category -> category.isActive }
-                .sortedBy { category -> category.sortOrder }
-                .map { category ->
-                    CatalogCategory(
-                        id = category.id,
-                        name = category.name
-                    )
-                },
+            categories = getCategories(),
             recommendedItems = DemoScenario.items
                 .filter { item -> item.status == DemoItemStatus.ACTIVE }
                 .map { item -> item.toCatalogItem() }
@@ -84,6 +77,60 @@ class FakeCatalogRepositoryImpl : CatalogRepository {
         }
     }
 
+    override suspend fun searchItems(
+        params: CatalogSearchParams
+    ): List<CatalogItem> {
+        delay(250)
+
+        val normalizedQuery = params.query.trim()
+
+        return DemoScenario.items
+            .filter { item -> item.status == DemoItemStatus.ACTIVE }
+            .filter { item ->
+                normalizedQuery.isBlank() ||
+                        item.title.contains(normalizedQuery, ignoreCase = true) ||
+                        item.city.contains(normalizedQuery, ignoreCase = true) ||
+                        item.description.contains(normalizedQuery, ignoreCase = true) ||
+                        item.pickupLocation.contains(normalizedQuery, ignoreCase = true)
+            }
+            .filter { item ->
+                params.categoryId == null || item.categoryId == params.categoryId
+            }
+            .filter { item ->
+                params.city == null || item.city.equals(params.city, ignoreCase = true)
+            }
+            .filter { item ->
+                item.pricePerDay.matchesMin(params.minPricePerDay)
+            }
+            .filter { item ->
+                item.pricePerDay.matchesMax(params.maxPricePerDay)
+            }
+            .filter { item ->
+                item.pricePerHour.matchesMin(params.minPricePerHour)
+            }
+            .filter { item ->
+                item.pricePerHour.matchesMax(params.maxPricePerHour)
+            }
+            .filter { item ->
+                !params.onlyAvailableNow || item.availability.any { day -> day.isAvailable }
+            }
+            .map { item ->
+                item.toCatalogItem()
+            }
+    }
+
+    override suspend fun getCategories(): List<CatalogCategory> {
+        return DemoScenario.categories
+            .filter { it.isActive }
+            .sortedBy { it.sortOrder }
+            .map { category ->
+                CatalogCategory(
+                    id = category.id,
+                    name = category.name
+                )
+            }
+    }
+
     private fun DemoItem.toCatalogItem(): CatalogItem {
         return CatalogItem(
             id = id,
@@ -103,4 +150,12 @@ class FakeCatalogRepositoryImpl : CatalogRepository {
             isAvailable = isAvailable
         )
     }
+    private fun Long?.matchesMin(min: Long?): Boolean {
+        return min == null || (this != null && this >= min)
+    }
+
+    private fun Long?.matchesMax(max: Long?): Boolean {
+        return max == null || (this != null && this <= max)
+    }
+
 }

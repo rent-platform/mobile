@@ -5,6 +5,6 @@ sealed interface SearchFiltersAction {
     data object NavigateBack : SearchFiltersAction
 
     data class ApplyFilters(
-        val filters: SearchFiltersUiState
+        val filters: SearchFiltersResult
     ) : SearchFiltersAction
 }

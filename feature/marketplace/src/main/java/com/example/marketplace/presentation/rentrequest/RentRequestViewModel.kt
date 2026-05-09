@@ -2,8 +2,9 @@ package com.example.marketplace.presentation.rentrequest
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.marketplace.data.mock.ItemDetailsMockData
+import com.example.marketplace.domain.repository.CatalogRepository
 import com.example.marketplace.presentation.components.RentCalendarDayUi
+import com.example.marketplace.presentation.mapper.toDrawableRes
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,7 +15,7 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class RentRequestViewModel : ViewModel() {
+class RentRequestViewModel(private val catalogRepository: CatalogRepository) : ViewModel() {
 
     private val _uiState = MutableStateFlow(RentRequestUiState(isLoading = false))
     val uiState: StateFlow<RentRequestUiState> = _uiState.asStateFlow()
@@ -23,33 +24,48 @@ class RentRequestViewModel : ViewModel() {
     val actions = _actions.receiveAsFlow()
 
     fun loadItem(itemId: String) {
-        val item = ItemDetailsMockData.getById(itemId)
+        viewModelScope.launch {
+            _uiState.value = RentRequestUiState(isLoading = true)
 
-        _uiState.value = item?.let {
-            RentRequestUiState(
-                isLoading = false,
-                itemId = it.id,
-                ownerId = it.ownerId,
-                title = it.title,
-                imageResId = it.imageResIds.firstOrNull(),
-                city = it.city,
-                pickupLocation = it.pickupLocation,
-                pricePerDay = it.pricePerDay,
-                pricePerHour = it.pricePerHour,
-                depositAmount = it.depositAmount ?: 0L,
-                startDateInput = "",
-                endDateInput = "",
-                availability = it.availability.map { day ->
-                    RentCalendarDayUi(
-                        date = day.date,
-                        isAvailable = day.isAvailable
+            runCatching {
+                catalogRepository.getItemDetails(itemId)
+            }.onSuccess { item ->
+                _uiState.value = item?.let {
+                    RentRequestUiState(
+                        isLoading = false,
+                        itemId = it.id,
+                        ownerId = it.ownerId,
+                        title = it.title,
+                        imageResId = it.imageKeys
+                            .firstOrNull()
+                            ?.toDrawableRes(),
+                        city = it.city,
+                        pickupLocation = it.pickupLocation,
+                        pricePerDay = it.pricePerDay,
+                        pricePerHour = it.pricePerHour,
+                        depositAmount = it.depositAmount,
+                        startDateInput = "",
+                        endDateInput = "",
+                        availability = it.availability.map { day ->
+                            RentCalendarDayUi(
+                                date = day.date,
+                                isAvailable = day.isAvailable
+                            )
+                        }
                     )
-                }
-            )
-        } ?: RentRequestUiState(
-            isLoading = false,
-            errorMessage = "Товар не найден"
-        )
+                } ?: RentRequestUiState(
+                    isLoading = false,
+                    errorMessage = "Товар не найден"
+                )
+            }.onFailure { error ->
+                error.printStackTrace()
+
+                _uiState.value = RentRequestUiState(
+                    isLoading = false,
+                    errorMessage = "Не удалось загрузить товар"
+                )
+            }
+        }
     }
 
     fun onEvent(event: RentRequestEvent) {

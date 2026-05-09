@@ -47,3 +47,14 @@ data class ItemAvailabilityDay(
     val date: String,
     val isAvailable: Boolean
 )
+
+data class CatalogSearchParams(
+    val query: String = "",
+    val categoryId: Long? = null,
+    val city: String? = null,
+    val minPricePerDay: Long? = null,
+    val maxPricePerDay: Long? = null,
+    val minPricePerHour: Long? = null,
+    val maxPricePerHour: Long? = null,
+    val onlyAvailableNow: Boolean = false
+)

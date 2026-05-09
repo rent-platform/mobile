@@ -1,9 +1,7 @@
 package com.example.marketplace.presentation.search.filters
 
-import java.io.Serializable
-
 data class SearchFiltersUiState(
-    val categories: List<SearchFilterCategory> = SearchFilterCategory.entries,
+    val categories: List<SearchFilterCategory> = emptyList(),
     val selectedCategory: SearchFilterCategory? = null,
 
     val cities: List<SearchFilterCity> = SearchFilterCity.entries,
@@ -16,7 +14,7 @@ data class SearchFiltersUiState(
     val maxPricePerHour: String = "",
 
     val onlyAvailableNow: Boolean = false
-):Serializable {
+) {
     val hasHourlyPriceFilter: Boolean
         get() = minPricePerHour.isNotBlank() || maxPricePerHour.isNotBlank()
 
@@ -30,3 +28,8 @@ data class SearchFiltersUiState(
                 hasHourlyPriceFilter ||
                 onlyAvailableNow
 }
+
+data class SearchFilterCategory(
+    val id: Long,
+    val title: String
+)
