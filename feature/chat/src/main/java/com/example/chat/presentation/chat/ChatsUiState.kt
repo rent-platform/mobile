@@ -40,7 +40,7 @@ enum class ChatFilter(
 @Immutable
 data class ChatItemUi(
     val id: String,
-    val imageUrl: String?,
+    val imageResId: Int?,
     val authorNickname: String,
     val authorAvatarUrl: String?,
     val announcementTitle: String,

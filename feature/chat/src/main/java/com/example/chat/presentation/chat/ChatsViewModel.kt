@@ -2,8 +2,9 @@ package com.example.chat.presentation.chat
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.chat.data.FakeChatRepositoryImpl
+import com.example.chat.domain.ChatRepository
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -11,7 +12,9 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class ChatsViewModel : ViewModel() {
+class ChatsViewModel(
+    private val repository: ChatRepository = FakeChatRepositoryImpl()
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ChatsUiState())
     val uiState: StateFlow<ChatsUiState> = _uiState.asStateFlow()
@@ -71,10 +74,7 @@ class ChatsViewModel : ViewModel() {
             }
 
             runCatching {
-                // getChatsUseCase(role = role)
-
-                delay(300)
-                mockChats(role)
+                repository.getChats(role)
             }.onSuccess { chats ->
                 _uiState.update {
                     it.copy(
@@ -93,61 +93,4 @@ class ChatsViewModel : ViewModel() {
             }
         }
     }
-
-    private fun mockChats(role: ChatRole): List<ChatItemUi> {
-        return when (role) {
-            ChatRole.RENTER -> renterChats
-            ChatRole.OWNER -> ownerChats
-        }
-    }
 }
-
-private val renterChats = listOf(
-    ChatItemUi(
-        id = "renter_chat_1",
-        imageUrl = null,
-        authorNickname = "Александра с очень длинным никнеймом",
-        authorAvatarUrl = null,
-        announcementTitle = "Фотоаппарат Canon EOS 250D",
-        lastMessage = "Здравствуйте! Можно арендовать на выходные?",
-        lastMessageTime = "13:09",
-        unreadCount = 2,
-        orderStatus = ChatOrderStatus.REQUEST
-    ),
-    ChatItemUi(
-        id = "renter_chat_2",
-        imageUrl = null,
-        authorNickname = "Дмитрий",
-        authorAvatarUrl = null,
-        announcementTitle = "Перфоратор Bosch",
-        lastMessage = "Да, забрать можно сегодня после 18:00",
-        lastMessageTime = "Вчера",
-        unreadCount = 0,
-        orderStatus = ChatOrderStatus.IN_RENT
-    )
-)
-
-private val ownerChats = listOf(
-    ChatItemUi(
-        id = "owner_chat_1",
-        imageUrl = null,
-        authorNickname = "Мария",
-        authorAvatarUrl = null,
-        announcementTitle = "Палатка туристическая на 4 места",
-        lastMessage = "Спасибо, всё вернула в хорошем состоянии",
-        lastMessageTime = "21 апр.",
-        unreadCount = 1,
-        orderStatus = ChatOrderStatus.COMPLETED
-    ),
-    ChatItemUi(
-        id = "owner_chat_2",
-        imageUrl = null,
-        authorNickname = "Иван",
-        authorAvatarUrl = null,
-        announcementTitle = "Шуруповёрт Makita",
-        lastMessage = "Готов подтвердить аренду",
-        lastMessageTime = "10:42",
-        unreadCount = 3,
-        orderStatus = ChatOrderStatus.CONFIRMED
-    )
-)

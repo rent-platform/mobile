@@ -1,5 +1,6 @@
 package com.example.chat.presentation.chat
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -173,7 +175,7 @@ private fun ChatCard(
             verticalAlignment = Alignment.Top
         ) {
             ChatItemImage(
-                imageUrl = chat.imageUrl,
+                imageResId = chat.imageResId,
                 title = chat.announcementTitle,
                 modifier = Modifier.size(72.dp)
             )
@@ -300,7 +302,7 @@ private fun AuthorAvatar(
 
 @Composable
 private fun ChatItemImage(
-    imageUrl: String?,
+    imageResId: Int?,
     title: String,
     modifier: Modifier = Modifier
 ) {
@@ -309,7 +311,7 @@ private fun ChatItemImage(
             .clip(RoundedCornerShape(16.dp)),
         contentAlignment = Alignment.Center
     ) {
-        if (imageUrl.isNullOrBlank()) {
+        if (imageResId == null) {
             Surface(
                 modifier = Modifier.fillMaxSize(),
                 shape = RoundedCornerShape(16.dp),
@@ -325,8 +327,8 @@ private fun ChatItemImage(
                 }
             }
         } else {
-            AsyncImage(
-                model = imageUrl,
+            Image(
+                painter = painterResource(id = imageResId),
                 contentDescription = title,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
@@ -513,57 +515,3 @@ private fun ChatsEmptyContent(
         }
     }
 }
-
-@Preview(showBackground = true)
-@Composable
-private fun ChatsScreenPreview() {
-    RentPlatformTheme {
-        ChatsScreen(
-            uiState = ChatsUiState(
-                selectedRole = ChatRole.RENTER,
-                selectedFilter = ChatFilter.ALL,
-                chats = previewChats
-            ),
-            onRoleClick = {},
-            onFilterClick = {},
-            onChatClick = {},
-            onRetryClick = {}
-        )
-    }
-}
-
-private val previewChats = listOf(
-    ChatItemUi(
-        id = "1",
-        imageUrl = null,
-        authorNickname = "Александра с очень длинным никнеймом",
-        authorAvatarUrl = null,
-        announcementTitle = "Фотоаппарат Canon EOS 250D",
-        lastMessage = "Здравствуйте! Можно арендовать на выходные?",
-        lastMessageTime = "13:09",
-        unreadCount = 2,
-        orderStatus = ChatOrderStatus.REQUEST
-    ),
-    ChatItemUi(
-        id = "2",
-        imageUrl = null,
-        authorNickname = "Дмитрий",
-        authorAvatarUrl = null,
-        announcementTitle = "Перфоратор Bosch",
-        lastMessage = "Да, забрать можно сегодня после 18:00",
-        lastMessageTime = "Вчера",
-        unreadCount = 0,
-        orderStatus = ChatOrderStatus.IN_RENT
-    ),
-    ChatItemUi(
-        id = "3",
-        imageUrl = null,
-        authorNickname = "Мария",
-        authorAvatarUrl = null,
-        announcementTitle = "Палатка туристическая на 4 места",
-        lastMessage = "Спасибо, всё вернула в хорошем состоянии",
-        lastMessageTime = "21 апр.",
-        unreadCount = 1,
-        orderStatus = ChatOrderStatus.COMPLETED
-    )
-)

@@ -74,6 +74,23 @@ object DemoDeals {
             rejectionReason = null,
             createdAt = "2026-04-26T10:42:00.000Z",
             updatedAt = "2026-04-26T10:42:00.000Z"
+        ),
+        DemoDeal(
+            id = DemoIds.DEAL_BIKE_ID,
+            itemId = DemoIds.ITEM_BIKE_ID,
+            renterId = DemoIds.CURRENT_USER_ID,
+            ownerId = DemoIds.OWNER_DMITRY_ID,
+            startDate = "2026-04-29T10:00:00.000Z",
+            endDate = "2026-04-29T20:00:00.000Z",
+            pricingMode = DemoPricingMode.DAY,
+            pricePerDaySnapshot = 700,
+            pricePerHourSnapshot = null,
+            totalPrice = 700,
+            depositAmount = 3000,
+            status = DemoDealStatus.PENDING,
+            rejectionReason = null,
+            createdAt = "2026-04-28T18:20:00.000Z",
+            updatedAt = "2026-04-28T18:35:00.000Z"
         )
     )
 }

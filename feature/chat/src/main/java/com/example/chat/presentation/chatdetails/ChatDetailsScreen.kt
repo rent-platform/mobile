@@ -1,5 +1,6 @@
 package com.example.chat.presentation.chatdetails
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -54,10 +55,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 
@@ -297,7 +298,7 @@ private fun ChatItemSummary(
             verticalAlignment = Alignment.CenterVertically
         ) {
             ChatItemImage(
-                imageUrl = item.imageUrl,
+                imageResId = item.imageResId,
                 title = item.title,
                 modifier = Modifier.size(56.dp)
             )
@@ -362,7 +363,7 @@ private fun ChatItemSummary(
 
 @Composable
 private fun ChatItemImage(
-    imageUrl: String?,
+    imageResId: Int?,
     title: String,
     modifier: Modifier = Modifier
 ) {
@@ -370,7 +371,7 @@ private fun ChatItemImage(
         modifier = modifier.clip(RoundedCornerShape(10.dp)),
         contentAlignment = Alignment.Center
     ) {
-        if (imageUrl.isNullOrBlank()) {
+        if (imageResId == null) {
             Surface(
                 modifier = Modifier.fillMaxSize(),
                 shape = RoundedCornerShape(10.dp),
@@ -386,8 +387,8 @@ private fun ChatItemImage(
                 }
             }
         } else {
-            AsyncImage(
-                model = imageUrl,
+            Image(
+                painter = painterResource(id = imageResId),
                 contentDescription = title,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
@@ -898,115 +899,4 @@ private fun ChatDetailsDealStatus.contentColor(): Color {
         ChatDetailsDealStatus.COMPLETED -> MaterialTheme.colorScheme.onSurface
         ChatDetailsDealStatus.CANCELLED -> MaterialTheme.colorScheme.onErrorContainer
     }
-}
-
-@Preview(
-    name = "Chat details",
-    showBackground = true
-)
-@Composable
-private fun ChatDetailsScreenPreview() {
-    com.example.ui.theme.RentPlatformTheme {
-        ChatDetailsScreen(
-            uiState = previewChatDetailsUiState(
-                isMenuVisible = false
-            ),
-            onBackClick = {},
-            onMenuClick = {},
-            onDismissMenu = {},
-            onMoveToTrashClick = {},
-            onRetryClick = {},
-            onProfileClick = {},
-            onDealActionClick = {},
-            onInputChanged = {},
-            onSendClick = {},
-            onAttachClick = {}
-        )
-    }
-}
-
-@Preview(
-    name = "Chat details with menu",
-    showBackground = true
-)
-@Composable
-private fun ChatDetailsScreenWithMenuPreview() {
-    com.example.ui.theme.RentPlatformTheme {
-        ChatDetailsScreen(
-            uiState = previewChatDetailsUiState(
-                isMenuVisible = true
-            ),
-            onBackClick = {},
-            onMenuClick = {},
-            onDismissMenu = {},
-            onMoveToTrashClick = {},
-            onRetryClick = {},
-            onProfileClick = {},
-            onDealActionClick = {},
-            onInputChanged = {},
-            onSendClick = {},
-            onAttachClick = {}
-        )
-    }
-}
-
-private fun previewChatDetailsUiState(
-    isMenuVisible: Boolean = false
-): ChatDetailsUiState {
-    return ChatDetailsUiState(
-        currentUserId = "me",
-        isMenuVisible = isMenuVisible,
-        chat = ChatDetailsHeaderUi(
-            chatId = "chat_1",
-            companionUserId = "user_1",
-            companionNickname = "Алексей Иванов",
-            companionAvatarUrl = null,
-            companionOnlineStatus = ChatOnlineStatus.TYPING
-        ),
-        item = ChatDetailsItemUi(
-            itemId = "item_1",
-            imageUrl = null,
-            title = "Canon EOS R5 + RF 24-70mm f/2.8L",
-            priceText = "4 500 ₽/сутки",
-            dateRangeText = "23 апр. — 25 апр.",
-            depositText = "Залог 15 000 ₽",
-            status = ChatDetailsDealStatus.CONFIRMED
-        ),
-        availableActions = listOf(
-            ChatDealActionUi.TRANSFER_ITEM,
-            ChatDealActionUi.CANCEL
-        ),
-        messages = listOf(
-            ChatMessageUi.UserMessage(
-                id = "1",
-                senderId = "user_1",
-                text = "Супер! А залог какой?",
-                time = "16:15",
-                isMine = false
-            ),
-            ChatMessageUi.UserMessage(
-                id = "2",
-                senderId = "me",
-                text = "Залог 15 000 ₽, возвращается при сдаче в целости. Цена аренды 4 500 ₽ за 3 дня.",
-                time = "16:20",
-                isMine = true,
-                isRead = true
-            ),
-            ChatMessageUi.SystemMessage(
-                id = "3",
-                text = "Вы подтвердили заявку"
-            ),
-            ChatMessageUi.DateDivider(
-                id = "4",
-                title = "22 апреля 2025 г."
-            ),
-            ChatMessageUi.UserMessage(
-                id = "5",
-                senderId = "user_1",
-                text = "Мне удобнее всего у метро Парк Культуры. Можно завтра в 14:00?",
-                time = "19:30",
-                isMine = false
-            )
-        )
-    )
 }

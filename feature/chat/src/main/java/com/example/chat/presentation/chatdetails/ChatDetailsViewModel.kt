@@ -2,6 +2,8 @@ package com.example.chat.presentation.chatdetails
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.chat.data.FakeChatRepositoryImpl
+import com.example.chat.domain.ChatRepository
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,7 +14,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.UUID
 
-class ChatDetailsViewModel : ViewModel() {
+class ChatDetailsViewModel(
+    private val repository: ChatRepository = FakeChatRepositoryImpl()
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ChatDetailsUiState())
     val uiState: StateFlow<ChatDetailsUiState> = _uiState.asStateFlow()
@@ -87,9 +91,7 @@ class ChatDetailsViewModel : ViewModel() {
             }
 
             runCatching {
-                // getChatDetailsUseCase(chatId)
-                delay(300)
-                mockChatDetails(chatId)
+                repository.getChatDetails(chatId)
             }.onSuccess { state ->
                 _uiState.value = state
             }.onFailure { throwable ->
@@ -126,12 +128,10 @@ class ChatDetailsViewModel : ViewModel() {
             _uiState.update {
                 it.copy(isMenuVisible = false)
             }
-            // moveChatToTrashUseCase(chatId = currentChatId)
 
             _events.send(
                 ChatDetailsEvent.ShowMessage("Чат перемещён в корзину")
             )
-
             _events.send(ChatDetailsEvent.NavigateBack)
         }
     }
@@ -144,6 +144,7 @@ class ChatDetailsViewModel : ViewModel() {
 
     private fun sendMessage() {
         val text = _uiState.value.inputText.trim()
+
         if (text.isBlank() || _uiState.value.isSending) return
 
         viewModelScope.launch {
@@ -152,8 +153,6 @@ class ChatDetailsViewModel : ViewModel() {
             }
 
             runCatching {
-                // sendMessageUseCase(chatId = currentChatId, text = text)
-
                 delay(200)
 
                 ChatMessageUi.UserMessage(
@@ -198,8 +197,6 @@ class ChatDetailsViewModel : ViewModel() {
         viewModelScope.launch {
             when (action) {
                 ChatDealActionUi.TRANSFER_ITEM -> {
-                    // startDealUseCase(dealId)
-
                     _uiState.update {
                         it.copy(
                             item = it.item?.copy(
@@ -221,8 +218,6 @@ class ChatDetailsViewModel : ViewModel() {
                 }
 
                 ChatDealActionUi.CANCEL -> {
-                    //cancelDealUseCase(dealId, reason)
-
                     _uiState.update {
                         it.copy(
                             item = it.item?.copy(
@@ -242,8 +237,6 @@ class ChatDetailsViewModel : ViewModel() {
                 }
 
                 ChatDealActionUi.COMPLETE_RENT -> {
-                    //completeDealUseCase(dealId)
-
                     _uiState.update {
                         it.copy(
                             item = it.item?.copy(
@@ -281,87 +274,5 @@ class ChatDetailsViewModel : ViewModel() {
                 ChatDetailsEvent.OpenAttachmentPicker(chatId)
             )
         }
-    }
-
-    private fun mockChatDetails(chatId: String): ChatDetailsUiState {
-        return ChatDetailsUiState(
-            isLoading = false,
-            errorMessage = null,
-            currentUserId = "me",
-            isMenuVisible = false,
-            inputText = "",
-            isSending = false,
-            chat = ChatDetailsHeaderUi(
-                chatId = chatId,
-                companionUserId = "user_alexey",
-                companionNickname = "Алексей Иванов",
-                companionAvatarUrl = null,
-                companionOnlineStatus = ChatOnlineStatus.TYPING
-            ),
-            item = ChatDetailsItemUi(
-                itemId = "item_camera_1",
-                imageUrl = null,
-                title = "Canon EOS R5 + RF 24-70mm f/2.8L",
-                priceText = "4 500 ₽/сутки",
-                dateRangeText = "23 апр. — 25 апр.",
-                depositText = "Залог 15 000 ₽",
-                status = ChatDetailsDealStatus.CONFIRMED
-            ),
-            availableActions = listOf(
-                ChatDealActionUi.TRANSFER_ITEM,
-                ChatDealActionUi.CANCEL
-            ),
-            messages = listOf(
-                ChatMessageUi.UserMessage(
-                    id = "message_1",
-                    senderId = "user_alexey",
-                    text = "Супер! А залог какой?",
-                    time = "16:15",
-                    isMine = false
-                ),
-                ChatMessageUi.UserMessage(
-                    id = "message_2",
-                    senderId = "me",
-                    text = "Залог 15 000 ₽, возвращается при сдаче в целости. Цена аренды 4 500 ₽ за 3 дня.",
-                    time = "16:20",
-                    isMine = true,
-                    isRead = true
-                ),
-                ChatMessageUi.UserMessage(
-                    id = "message_3",
-                    senderId = "user_alexey",
-                    text = "Отлично, оформляю заявку!",
-                    time = "16:25",
-                    isMine = false
-                ),
-                ChatMessageUi.SystemMessage(
-                    id = "message_4",
-                    text = "Алексей Иванов создал заявку на аренду"
-                ),
-                ChatMessageUi.SystemMessage(
-                    id = "message_5",
-                    text = "Вы подтвердили заявку"
-                ),
-                ChatMessageUi.UserMessage(
-                    id = "message_6",
-                    senderId = "me",
-                    text = "Принял заявку ✅ Где вам удобно забрать?",
-                    time = "17:20",
-                    isMine = true,
-                    isRead = true
-                ),
-                ChatMessageUi.DateDivider(
-                    id = "date_1",
-                    title = "22 апреля 2025 г."
-                ),
-                ChatMessageUi.UserMessage(
-                    id = "message_7",
-                    senderId = "user_alexey",
-                    text = "Мне удобнее всего у метро Парк Культуры. Можно завтра в 14:00?",
-                    time = "19:30",
-                    isMine = false
-                )
-            )
-        )
     }
 }

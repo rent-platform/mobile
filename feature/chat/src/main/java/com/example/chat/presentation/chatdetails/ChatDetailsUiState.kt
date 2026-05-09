@@ -36,7 +36,7 @@ enum class ChatOnlineStatus(
 @Immutable
 data class ChatDetailsItemUi(
     val itemId: String,
-    val imageUrl: String?,
+    val imageResId: Int?,
     val title: String,
     val priceText: String?,
     val dateRangeText: String?,
