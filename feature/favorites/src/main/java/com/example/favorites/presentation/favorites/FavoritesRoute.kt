@@ -21,7 +21,7 @@ fun FavoritesRoute(
                 }
 
                 is FavoritesEvent.ShowMessage -> {
-                    // TODO: snackbar
+                    // snackbar
                 }
             }
         }

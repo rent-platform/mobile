@@ -2,6 +2,8 @@ package com.example.favorites.presentation.favorites
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.favorites.data.FakeFavoritesRepositoryImpl
+import com.example.favorites.domain.FavoritesRepository
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -9,7 +11,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
-class FavoritesViewModel : ViewModel() {
+class FavoritesViewModel(
+    private val repository: FavoritesRepository = FakeFavoritesRepositoryImpl()
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow<FavoritesUiState>(FavoritesUiState.Loading)
     val uiState: StateFlow<FavoritesUiState> = _uiState.asStateFlow()
@@ -41,28 +45,15 @@ class FavoritesViewModel : ViewModel() {
         viewModelScope.launch {
             _uiState.value = FavoritesUiState.Loading
 
-            try {
-                val favorites = listOf(
-                    FavoriteItemUi(
-                        id = "1",
-                        title = "Дрель Bosch Professional",
-                        location = "Алматы",
-                        pricePerDay = "2 000 ₽/день"
-                    ),
-                    FavoriteItemUi(
-                        id = "2",
-                        title = "Фотоаппарат Canon EOS",
-                        location = "Астана",
-                        pricePerDay = "5 000 ₽/день"
-                    )
-                )
-
+            runCatching {
+                repository.getFavorites()
+            }.onSuccess { favorites ->
                 _uiState.value = if (favorites.isEmpty()) {
                     FavoritesUiState.Empty
                 } else {
                     FavoritesUiState.Content(favorites)
                 }
-            } catch (exception: Exception) {
+            }.onFailure { exception ->
                 _uiState.value = FavoritesUiState.Error(
                     message = exception.message ?: "Не удалось загрузить избранное"
                 )
@@ -77,23 +68,19 @@ class FavoritesViewModel : ViewModel() {
 
             val previousItems = currentState.items
 
-            val updatedItems = previousItems.filterNot { item ->
-                item.id == itemId
-            }
-
-            _uiState.value = if (updatedItems.isEmpty()) {
-                FavoritesUiState.Empty
-            } else {
-                FavoritesUiState.Content(updatedItems)
-            }
-
-            try {
-                // TODO заменить на removeFavorite(itemId)
+            runCatching {
+                repository.removeFromFavorites(itemId)
+            }.onSuccess { updatedItems ->
+                _uiState.value = if (updatedItems.isEmpty()) {
+                    FavoritesUiState.Empty
+                } else {
+                    FavoritesUiState.Content(updatedItems)
+                }
 
                 _event.send(
                     FavoritesEvent.ShowMessage("Удалено из избранного")
                 )
-            } catch (exception: Exception) {
+            }.onFailure { exception ->
                 _uiState.value = FavoritesUiState.Content(previousItems)
 
                 _event.send(

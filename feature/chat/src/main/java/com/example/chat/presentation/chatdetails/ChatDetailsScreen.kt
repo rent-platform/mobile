@@ -61,6 +61,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import androidx.compose.material.icons.outlined.Done
+import androidx.compose.material.icons.outlined.DoneAll
 
 @Composable
 fun ChatDetailsScreen(
@@ -587,16 +589,36 @@ private fun UserMessageBubble(
 
                     if (message.isMine) {
                         Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = if (message.isRead) "✓✓" else "✓",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.82f)
+
+                        MessageReadStatus(
+                            isRead = message.isRead
                         )
                     }
                 }
             }
         }
     }
+}
+
+@Composable
+private fun MessageReadStatus(
+    isRead: Boolean,
+    modifier: Modifier = Modifier
+) {
+    Icon(
+        imageVector = if (isRead) {
+            Icons.Outlined.DoneAll
+        } else {
+            Icons.Outlined.Done
+        },
+        contentDescription = if (isRead) {
+            "Прочитано"
+        } else {
+            "Отправлено"
+        },
+        modifier = modifier.size(15.dp),
+        tint = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.82f)
+    )
 }
 
 @Composable
