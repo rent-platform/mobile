@@ -49,6 +49,7 @@ enum class ChatDetailsDealStatus(
 ) {
     REQUEST("Запрос"),
     CONFIRMED("Подтверждена"),
+    PAYMENT_PENDING("Ожидает оплаты"),
     ACTIVE("Активна"),
     COMPLETED("Завершена"),
     CANCELLED("Отменена")
@@ -58,10 +59,14 @@ enum class ChatDealActionUi(
     val title: String,
     val type: ChatDealActionType
 ) {
-    TRANSFER_ITEM("Передать вещь", ChatDealActionType.PRIMARY),
+    CONFIRM_REQUEST("Подтвердить заявку", ChatDealActionType.PRIMARY),
     CANCEL("Отменить", ChatDealActionType.DANGER),
+    CREATE_PAYMENT("Создать оплату", ChatDealActionType.PRIMARY),
+    PAY("Оплатить", ChatDealActionType.PRIMARY),
+    CONFIRM_START("Подтвердить передачу", ChatDealActionType.PRIMARY),
     COMPLETE_RENT("Завершить аренду", ChatDealActionType.PRIMARY),
-    LEAVE_REVIEW("Оставить отзыв", ChatDealActionType.SECONDARY)
+    LEAVE_REVIEW("Оставить отзыв", ChatDealActionType.SECONDARY),
+    REJECT_REQUEST("Отклонить", ChatDealActionType.DANGER),
 }
 
 enum class ChatDealActionType {

@@ -71,3 +71,8 @@ object ChatEntryDestination
 data class ChatDetailsDestination(
     val chatId: String
 )
+
+@Serializable
+data class DealDetailsDestination(
+    val dealId: String
+)

@@ -196,7 +196,90 @@ class ChatDetailsViewModel(
     private fun onDealActionClick(action: ChatDealActionUi) {
         viewModelScope.launch {
             when (action) {
-                ChatDealActionUi.TRANSFER_ITEM -> {
+                ChatDealActionUi.CONFIRM_REQUEST -> {
+                    _uiState.update {
+                        it.copy(
+                            item = it.item?.copy(
+                                status = ChatDetailsDealStatus.CONFIRMED
+                            ),
+                            availableActions = listOf(
+                                ChatDealActionUi.CREATE_PAYMENT,
+                                ChatDealActionUi.CANCEL
+                            ),
+                            messages = it.messages + ChatMessageUi.SystemMessage(
+                                id = UUID.randomUUID().toString(),
+                                text = "Заявка подтверждена"
+                            )
+                        )
+                    }
+
+                    _events.send(
+                        ChatDetailsEvent.ShowMessage("Заявка подтверждена")
+                    )
+                }
+
+                ChatDealActionUi.REJECT_REQUEST -> {
+                    _uiState.update {
+                        it.copy(
+                            item = it.item?.copy(
+                                status = ChatDetailsDealStatus.CANCELLED
+                            ),
+                            availableActions = emptyList(),
+                            messages = it.messages + ChatMessageUi.SystemMessage(
+                                id = UUID.randomUUID().toString(),
+                                text = "Заявка отклонена"
+                            )
+                        )
+                    }
+
+                    _events.send(
+                        ChatDetailsEvent.ShowMessage("Заявка отклонена")
+                    )
+                }
+
+                ChatDealActionUi.CREATE_PAYMENT -> {
+                    _uiState.update {
+                        it.copy(
+                            item = it.item?.copy(
+                                status = ChatDetailsDealStatus.PAYMENT_PENDING
+                            ),
+                            availableActions = listOf(
+                                ChatDealActionUi.CANCEL
+                            ),
+                            messages = it.messages + ChatMessageUi.SystemMessage(
+                                id = UUID.randomUUID().toString(),
+                                text = "Создан счёт на оплату"
+                            )
+                        )
+                    }
+
+                    _events.send(
+                        ChatDetailsEvent.ShowMessage("Счёт на оплату создан")
+                    )
+                }
+
+                ChatDealActionUi.PAY -> {
+                    _uiState.update {
+                        it.copy(
+                            item = it.item?.copy(
+                                status = ChatDetailsDealStatus.PAYMENT_PENDING
+                            ),
+                            availableActions = listOf(
+                                ChatDealActionUi.CONFIRM_START
+                            ),
+                            messages = it.messages + ChatMessageUi.SystemMessage(
+                                id = UUID.randomUUID().toString(),
+                                text = "Оплата прошла. Подтвердите передачу вещи"
+                            )
+                        )
+                    }
+
+                    _events.send(
+                        ChatDetailsEvent.ShowMessage("Оплата прошла")
+                    )
+                }
+
+                ChatDealActionUi.CONFIRM_START -> {
                     _uiState.update {
                         it.copy(
                             item = it.item?.copy(
@@ -226,13 +309,13 @@ class ChatDetailsViewModel(
                             availableActions = emptyList(),
                             messages = it.messages + ChatMessageUi.SystemMessage(
                                 id = UUID.randomUUID().toString(),
-                                text = "Заявка отменена"
+                                text = "Сделка отменена"
                             )
                         )
                     }
 
                     _events.send(
-                        ChatDetailsEvent.ShowMessage("Заявка отменена")
+                        ChatDetailsEvent.ShowMessage("Сделка отменена")
                     )
                 }
 

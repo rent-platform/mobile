@@ -5,6 +5,7 @@ import com.example.core.demo.model.DemoDeal
 import com.example.core.demo.model.DemoDealStatus
 import com.example.core.demo.model.DemoPricingMode
 import com.example.core.ui.toDemoDrawableRes
+import com.example.deals.domain.model.DealStatus
 
 fun DemoDeal.toDealListItemUi(): DealListItemUi {
     val item = DemoScenario.findItemById(itemId)
@@ -29,12 +30,13 @@ fun DemoDeal.toDealListItemUi(): DealListItemUi {
 
 private fun DemoDealStatus.toUi(): DealStatus {
     return when (this) {
-        DemoDealStatus.PENDING -> DealStatus.Pending
-        DemoDealStatus.CONFIRMED -> DealStatus.Confirmed
-        DemoDealStatus.ACTIVE -> DealStatus.Active
-        DemoDealStatus.COMPLETED -> DealStatus.Completed
-        DemoDealStatus.REJECTED -> DealStatus.Rejected
-        DemoDealStatus.CANCELLED -> DealStatus.Cancelled
+        DemoDealStatus.PENDING -> DealStatus.PENDING
+        DemoDealStatus.CONFIRMED -> DealStatus.CONFIRMED
+        DemoDealStatus.PAYMENT_PENDING -> DealStatus.PAYMENT_PENDING
+        DemoDealStatus.ACTIVE -> DealStatus.ACTIVE
+        DemoDealStatus.COMPLETED -> DealStatus.COMPLETED
+        DemoDealStatus.REJECTED -> DealStatus.REJECTED
+        DemoDealStatus.CANCELLED -> DealStatus.CANCELLED
     }
 }
 

@@ -1,5 +1,8 @@
 package com.example.deals.presentation
 
+import com.example.deals.domain.model.DealRole
+import com.example.deals.domain.model.DealStatus
+
 data class DealsUiState(
     val selectedRole: DealRole = DealRole.Renter,
     val selectedFilter: DealFilter = DealFilter.All,
@@ -33,7 +36,7 @@ data class DealsUiState(
         }
 
     val isEmpty: Boolean
-        get() = !isLoading && errorMessage == null && currentDeals.isEmpty()
+        get() = !isLoading && errorMessage == null && filteredDeals.isEmpty()
 }
 data class DealListItemUi(
     val id: String,
@@ -47,24 +50,6 @@ data class DealListItemUi(
     val imageUrl: String? = null,
     val imageResId: Int? = null
 )
-
-enum class DealRole(
-    val title: String
-) {
-    Owner("Я сдаю"),
-    Renter("Я арендую")
-}
-
-enum class DealStatus(
-    val title: String
-) {
-    Pending("Ожидает"),
-    Confirmed("Подтверждена"),
-    Active("В аренде"),
-    Completed("Завершена"),
-    Rejected("Отклонена"),
-    Cancelled("Отменена")
-}
 
 enum class DealPricingMode(
     val title: String
@@ -81,20 +66,41 @@ enum class DealFilter(
         title = "Все",
         statuses = emptySet()
     ),
+
+    Requests(
+        title = "Заявки",
+        statuses = setOf(
+            DealStatus.PENDING
+        )
+    ),
+
+    Payment(
+        title = "Оплата",
+        statuses = setOf(
+            DealStatus.CONFIRMED,
+            DealStatus.PAYMENT_PENDING
+        )
+    ),
+
     Active(
-        title = "Активные",
-        statuses = setOf(DealStatus.Active)
+        title = "В аренде",
+        statuses = setOf(
+            DealStatus.ACTIVE
+        )
     ),
-    Confirmed(
-        title = "Подтверждённые",
-        statuses = setOf(DealStatus.Confirmed)
-    ),
+
     Completed(
         title = "Завершённые",
-        statuses = setOf(DealStatus.Completed)
+        statuses = setOf(
+            DealStatus.COMPLETED
+        )
     ),
-    Rejected(
-        title = "Отклонённые",
-        statuses = setOf(DealStatus.Rejected, DealStatus.Cancelled)
+
+    Closed(
+        title = "Закрытые",
+        statuses = setOf(
+            DealStatus.REJECTED,
+            DealStatus.CANCELLED
+        )
     )
 }

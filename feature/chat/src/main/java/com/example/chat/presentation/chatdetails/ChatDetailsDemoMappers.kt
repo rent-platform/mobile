@@ -102,6 +102,7 @@ private fun DemoDealStatus?.toChatDetailsDealStatus(): ChatDetailsDealStatus? {
     return when (this) {
         DemoDealStatus.PENDING -> ChatDetailsDealStatus.REQUEST
         DemoDealStatus.CONFIRMED -> ChatDetailsDealStatus.CONFIRMED
+        DemoDealStatus.PAYMENT_PENDING -> ChatDetailsDealStatus.PAYMENT_PENDING
         DemoDealStatus.ACTIVE -> ChatDetailsDealStatus.ACTIVE
         DemoDealStatus.COMPLETED -> ChatDetailsDealStatus.COMPLETED
         DemoDealStatus.REJECTED,
@@ -116,7 +117,10 @@ private fun DemoDealStatus?.toAvailableActions(
     return when (this) {
         DemoDealStatus.PENDING -> {
             if (isCurrentUserOwner) {
-                listOf(ChatDealActionUi.CANCEL)
+                listOf(
+                    ChatDealActionUi.CONFIRM_REQUEST,
+                    ChatDealActionUi.REJECT_REQUEST
+                )
             } else {
                 listOf(ChatDealActionUi.CANCEL)
             }
@@ -125,7 +129,7 @@ private fun DemoDealStatus?.toAvailableActions(
         DemoDealStatus.CONFIRMED -> {
             if (isCurrentUserOwner) {
                 listOf(
-                    ChatDealActionUi.TRANSFER_ITEM,
+                    ChatDealActionUi.CREATE_PAYMENT,
                     ChatDealActionUi.CANCEL
                 )
             } else {
@@ -133,12 +137,19 @@ private fun DemoDealStatus?.toAvailableActions(
             }
         }
 
-        DemoDealStatus.ACTIVE -> {
+        DemoDealStatus.PAYMENT_PENDING -> {
             if (isCurrentUserOwner) {
-                listOf(ChatDealActionUi.COMPLETE_RENT)
+                listOf(ChatDealActionUi.CANCEL)
             } else {
-                emptyList()
+                listOf(
+                    ChatDealActionUi.PAY,
+                    ChatDealActionUi.CANCEL
+                )
             }
+        }
+
+        DemoDealStatus.ACTIVE -> {
+            listOf(ChatDealActionUi.COMPLETE_RENT)
         }
 
         DemoDealStatus.COMPLETED -> {

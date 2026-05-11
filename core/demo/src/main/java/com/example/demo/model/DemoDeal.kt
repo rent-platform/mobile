@@ -26,6 +26,7 @@ enum class DemoPricingMode {
 enum class DemoDealStatus {
     PENDING,
     CONFIRMED,
+    PAYMENT_PENDING,
     ACTIVE,
     COMPLETED,
     REJECTED,

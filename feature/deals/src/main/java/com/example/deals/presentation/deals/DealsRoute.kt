@@ -6,6 +6,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.deals.presentation.deals.DealsEvent
+import com.example.deals.presentation.deals.DealsScreen
 
 @Composable
 fun DealsRoute(

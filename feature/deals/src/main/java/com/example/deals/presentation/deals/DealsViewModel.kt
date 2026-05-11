@@ -4,7 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.deals.data.FakeDealsRepositoryImpl
 import com.example.deals.domain.DealsRepository
-import kotlinx.coroutines.delay
+import com.example.deals.domain.model.DealRole
+import com.example.deals.presentation.deals.DealsEvent
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow

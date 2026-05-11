@@ -19,7 +19,7 @@ object DemoDeals {
             pricePerHourSnapshot = null,
             totalPrice = 15000,
             depositAmount = 15000,
-            status = DemoDealStatus.CONFIRMED,
+            status = DemoDealStatus.PAYMENT_PENDING,
             rejectionReason = null,
             createdAt = "2026-04-22T13:09:00.000Z",
             updatedAt = "2026-04-22T13:12:00.000Z"

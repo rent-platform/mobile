@@ -1,4 +1,4 @@
-package com.example.deals.presentation
+package com.example.deals.presentation.deals
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
@@ -35,6 +35,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.deals.domain.model.DealRole
+import com.example.deals.domain.model.DealStatus
+import com.example.deals.presentation.DealFilter
+import com.example.deals.presentation.DealListItemUi
+import com.example.deals.presentation.DealsUiState
 import com.example.ui.components.RentFilterItem
 import com.example.ui.components.RentFilterRow
 import com.example.ui.components.RentPrimaryButton
@@ -311,24 +316,26 @@ private fun DealStatusBadge(
 @Composable
 private fun DealStatus.containerColor(): Color {
     return when (this) {
-        DealStatus.Pending -> MaterialTheme.colorScheme.tertiaryContainer
-        DealStatus.Confirmed -> MaterialTheme.colorScheme.primaryContainer
-        DealStatus.Active -> MaterialTheme.colorScheme.secondaryContainer
-        DealStatus.Completed -> MaterialTheme.colorScheme.surface
-        DealStatus.Rejected,
-        DealStatus.Cancelled -> MaterialTheme.colorScheme.errorContainer
+        DealStatus.PENDING -> MaterialTheme.colorScheme.tertiaryContainer
+        DealStatus.CONFIRMED -> MaterialTheme.colorScheme.primaryContainer
+        DealStatus.PAYMENT_PENDING -> MaterialTheme.colorScheme.primaryContainer
+        DealStatus.ACTIVE -> MaterialTheme.colorScheme.secondaryContainer
+        DealStatus.COMPLETED -> MaterialTheme.colorScheme.surface
+        DealStatus.REJECTED,
+        DealStatus.CANCELLED -> MaterialTheme.colorScheme.errorContainer
     }
 }
 
 @Composable
 private fun DealStatus.contentColor(): Color {
     return when (this) {
-        DealStatus.Pending -> MaterialTheme.colorScheme.onTertiaryContainer
-        DealStatus.Confirmed -> MaterialTheme.colorScheme.onPrimaryContainer
-        DealStatus.Active -> MaterialTheme.colorScheme.onSecondaryContainer
-        DealStatus.Completed -> MaterialTheme.colorScheme.onSurface
-        DealStatus.Rejected,
-        DealStatus.Cancelled -> MaterialTheme.colorScheme.onErrorContainer
+        DealStatus.PENDING -> MaterialTheme.colorScheme.onTertiaryContainer
+        DealStatus.CONFIRMED -> MaterialTheme.colorScheme.onPrimaryContainer
+        DealStatus.PAYMENT_PENDING -> MaterialTheme.colorScheme.onPrimaryContainer
+        DealStatus.ACTIVE -> MaterialTheme.colorScheme.onSecondaryContainer
+        DealStatus.COMPLETED -> MaterialTheme.colorScheme.onSurface
+        DealStatus.REJECTED,
+        DealStatus.CANCELLED -> MaterialTheme.colorScheme.onErrorContainer
     }
 }
 

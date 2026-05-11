@@ -1,5 +1,6 @@
 package com.example.deals.domain
 
+import com.example.deals.domain.model.DealDetails
 import com.example.deals.presentation.DealListItemUi
 
 interface DealsRepository {
@@ -7,4 +8,6 @@ interface DealsRepository {
     suspend fun getRenterDeals(): List<DealListItemUi>
 
     suspend fun getOwnerDeals(): List<DealListItemUi>
+
+    suspend fun getDealDetails(dealId: String): DealDetails
 }

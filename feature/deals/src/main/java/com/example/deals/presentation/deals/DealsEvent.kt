@@ -1,4 +1,7 @@
-package com.example.deals.presentation
+package com.example.deals.presentation.deals
+
+import com.example.deals.domain.model.DealRole
+import com.example.deals.presentation.DealFilter
 
 sealed interface DealsEvent {
 

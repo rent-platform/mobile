@@ -33,6 +33,7 @@ private fun DemoDealStatus?.toChatOrderStatus(): ChatOrderStatus {
     return when (this) {
         DemoDealStatus.PENDING -> ChatOrderStatus.REQUEST
         DemoDealStatus.CONFIRMED -> ChatOrderStatus.CONFIRMED
+        DemoDealStatus.PAYMENT_PENDING -> ChatOrderStatus.PAYMENT_PENDING
         DemoDealStatus.ACTIVE -> ChatOrderStatus.IN_RENT
         DemoDealStatus.COMPLETED -> ChatOrderStatus.COMPLETED
         DemoDealStatus.REJECTED,
