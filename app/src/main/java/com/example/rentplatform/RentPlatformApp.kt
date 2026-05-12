@@ -3,6 +3,7 @@ package com.example.rentplatform
 import android.app.Application
 import com.example.auth.data.local.authStorageModule
 import com.example.auth.di.authModule
+import com.example.deals.di.dealsModule
 import com.example.marketplace.di.marketplaceModule
 import com.example.network.di.networkModule
 import com.example.profile.di.profileModule
@@ -23,7 +24,8 @@ class RentPlatformApp : Application() {
                 authStorageModule,
                 authModule,
                 profileModule,
-                marketplaceModule
+                marketplaceModule,
+                dealsModule
             )
         }
     }

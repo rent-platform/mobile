@@ -79,15 +79,16 @@ class FakeDealsRepositoryImpl : DealsRepository {
             counterpartyAvatarResId = null,
             startDate = deal.startDate,
             endDate = deal.endDate,
-            totalPrice = deal.totalPrice.toInt(),
-            depositAmount = deal.depositAmount.toInt(),
+            totalPrice = deal.totalPrice,
+            depositAmount = deal.depositAmount,
             rejectionReason = deal.rejectionReason,
             chatId = chatId,
             startConfirmedByMe = deal.status == DemoDealStatus.ACTIVE || deal.status == DemoDealStatus.COMPLETED,
             startConfirmedByOther = deal.status == DemoDealStatus.ACTIVE || deal.status == DemoDealStatus.COMPLETED,
             completeConfirmedByMe = deal.status == DemoDealStatus.COMPLETED,
             completeConfirmedByOther = deal.status == DemoDealStatus.COMPLETED,
-            reviewLeftByMe = false
+            reviewLeftByMe = false,
+            isPaymentPaid = deal.status == DemoDealStatus.ACTIVE || deal.status == DemoDealStatus.COMPLETED,
         )
     }
 }

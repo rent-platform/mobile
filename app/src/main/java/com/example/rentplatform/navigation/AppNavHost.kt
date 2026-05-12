@@ -20,6 +20,7 @@ import com.example.auth.presentation.registration.RegistrationRoute
 import com.example.chat.presentation.ChatEntryRoute
 import com.example.chat.presentation.chatdetails.ChatDetailsRoute
 import com.example.deals.presentation.DealsEntryRoute
+import com.example.deals.presentation.dealdetails.DealDetailsRoute
 import com.example.favorites.presentation.FavoritesEntryRoute
 import com.example.marketplace.presentation.catalog.CatalogRoute
 import com.example.marketplace.presentation.itemdetails.ItemDetailsRoute
@@ -64,7 +65,13 @@ fun AppNavHost() {
                 },
                 onSettingClick = {rootNavController.navigate(ProfileSettingDestination)},
                 onNavigateToDealDetails = { dealId ->
-       //              rootNavController.navigate(DealDetailsDestination(dealId))
+                    if (isAuthorized) {
+                        rootNavController.navigate(
+                            DealDetailsDestination(dealId = dealId)
+                        )
+                    } else {
+                        rootNavController.navigate(AuthorizationDestination)
+                    }
                 },
                 onNavigateToCreateListing = {
                     if (isAuthorized) {
@@ -213,6 +220,27 @@ fun AppNavHost() {
                 onOpenAttachmentPicker = {},
                 onShowMessage = { message ->
                     //snackbarHostState.showSnackbar(message)
+                }
+            )
+        }
+        composable<DealDetailsDestination> { backStackEntry ->
+            val destination = backStackEntry.toRoute<DealDetailsDestination>()
+
+            DealDetailsRoute(
+                dealId = destination.dealId,
+                onBackClick = {
+                    rootNavController.popBackStack()
+                },
+                onNavigateToChat = { chatId ->
+                    rootNavController.navigate(
+                        ChatDetailsDestination(chatId = chatId)
+                    )
+                },
+                onNavigateToReview = { dealId ->
+                    // rootNavController.navigate(ReviewDestination(dealId))
+                },
+                onShowMessage = { message ->
+                    // snackbarHostState.showSnackbar(message)
                 }
             )
         }
