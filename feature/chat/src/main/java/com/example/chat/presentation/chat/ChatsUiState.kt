@@ -12,8 +12,8 @@ data class ChatsUiState(
 ) {
     val description: String
         get() = when (selectedRole) {
-            ChatRole.RENTER -> "Переписки по вещам, которые вы арендуете"
-            ChatRole.OWNER -> "Переписки по вещам, которые вы сдаёте"
+            ChatRole.RENTER -> "Переписки по сделкам, где вы арендатор"
+            ChatRole.OWNER -> "Переписки по сделкам, где вы владелец вещи"
         }
 
     val visibleChats: List<ChatItemUi>
@@ -53,10 +53,10 @@ data class ChatItemUi(
 enum class ChatOrderStatus(
     val title: String
 ) {
-    REQUEST("Запрос"),
-    CONFIRMED("Подтверждено"),
+    REQUEST("Ожидает подтверждения"),
+    CONFIRMED("Подтверждена"),
     PAYMENT_PENDING("Ожидает оплаты"),
     IN_RENT("В аренде"),
-    COMPLETED("Завершено"),
-    CANCELLED("Отменено")
+    COMPLETED("Завершена"),
+    CANCELLED("Отменена")
 }

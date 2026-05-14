@@ -1,5 +1,6 @@
 package com.example.marketplace.presentation.mapper
 
+import com.example.core.ui.toDemoDrawableRes
 import com.example.marketplace.R
 import com.example.marketplace.domain.model.CatalogCategory
 import com.example.marketplace.domain.model.CatalogItem
@@ -19,18 +20,7 @@ fun CatalogItem.toUi(): CatalogItemUi {
         title = title,
         pricePerDay = pricePerDay,
         location = location,
-        imageUrl = imageKey?.toDrawableRes(),
+        imageUrl = imageKey?.toDemoDrawableRes(),
         isFavorite = isFavorite
     )
-}
-
-fun String.toDrawableRes(): Int? {
-    return when (this) {
-        "pocofon" -> R.drawable.pocofon
-        "isu152" -> R.drawable.isu152
-        "wolksvagencar" -> R.drawable.wolksvagencar
-        "soup" -> R.drawable.soup
-        "bike" -> R.drawable.bike
-        else -> null
-    }
 }
