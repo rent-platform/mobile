@@ -2,9 +2,9 @@ package com.example.marketplace.presentation.rentrequest
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.core.ui.toDemoDrawableRes
 import com.example.marketplace.domain.repository.CatalogRepository
 import com.example.marketplace.presentation.components.RentCalendarDayUi
-import com.example.marketplace.presentation.mapper.toDrawableRes
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -38,7 +38,7 @@ class RentRequestViewModel(private val catalogRepository: CatalogRepository) : V
                         title = it.title,
                         imageResId = it.imageKeys
                             .firstOrNull()
-                            ?.toDrawableRes(),
+                            ?.toDemoDrawableRes(),
                         city = it.city,
                         pickupLocation = it.pickupLocation,
                         pricePerDay = it.pricePerDay,

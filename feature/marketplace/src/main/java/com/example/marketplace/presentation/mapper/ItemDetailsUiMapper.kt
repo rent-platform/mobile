@@ -1,5 +1,6 @@
 package com.example.marketplace.presentation.mapper
 
+import com.example.core.ui.toDemoDrawableRes
 import com.example.marketplace.domain.model.ItemAvailabilityDay
 import com.example.marketplace.domain.model.ItemDetails
 import com.example.marketplace.presentation.itemdetails.ItemAvailabilityDayUiState
@@ -24,7 +25,7 @@ fun ItemDetails.toUi(): ItemDetailsUiState {
         reviewsCount = reviewsCount,
         createdAt = createdAt,
         imageResIds = imageKeys.mapNotNull { imageKey ->
-            imageKey.toDrawableRes()
+            imageKey.toDemoDrawableRes()
         },
         availability = availability.map { day ->
             day.toUi()
