@@ -25,37 +25,9 @@ val networkModule = module {
         }
     }
 
-    single<HttpLoggingInterceptor> {
-        provideHttpLoggingInterceptor()
-    }
-
-    single {
-        UserAgentInterceptor()
-    }
-
-    single {
-        AuthInterceptor(
-            tokenStorage = get<TokenStorage>()
-        )
-    }
-
-    //Отдельный клиент для refresh
-    single(named("refreshOkHttp")) {
-        OkHttpClient.Builder()
-            .addInterceptor(get<UserAgentInterceptor>())
-            .addInterceptor(get<HttpLoggingInterceptor>())
-            .build()
-    }
-
-    single(named("refreshRetrofit")) {
-        Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:8181/")
-            .client(get<OkHttpClient>(named("refreshOkHttp")))
-            .addConverterFactory(
-                get<Json>().asConverterFactory("application/json".toMediaType())
-            )
-            .build()
-    }
+    single<HttpLoggingInterceptor> { provideHttpLoggingInterceptor() }
+    single { UserAgentInterceptor() }
+    single { AuthInterceptor(tokenStorage = get<TokenStorage>()) }
 
     single(named("refreshAuthApi")) {
         get<Retrofit>(named("refreshRetrofit")).create(AuthApi::class.java)
@@ -73,17 +45,27 @@ val networkModule = module {
             .addInterceptor(get<UserAgentInterceptor>())
             .addInterceptor(get<AuthInterceptor>())
             .addInterceptor(get<HttpLoggingInterceptor>())
-            .authenticator(get<TokenAuthenticator>())
-            .build()
+            .authenticator(get<TokenAuthenticator>()).build()
     }
-
+    single(named("refreshOkHttp")) {
+        OkHttpClient.Builder()
+            .addInterceptor(get<UserAgentInterceptor>())
+            .addInterceptor(get<HttpLoggingInterceptor>()).build()
+    }
     single(named("mainRetrofit")) {
         Retrofit.Builder()
             .baseUrl("http://10.0.2.2:8181/")
             .client(get<OkHttpClient>(named("mainOkHttp")))
             .addConverterFactory(
                 get<Json>().asConverterFactory("application/json".toMediaType())
-            )
-            .build()
+            ).build()
+    }
+    single(named("refreshRetrofit")) {
+        Retrofit.Builder()
+            .baseUrl("http://10.0.2.2:8181/")
+            .client(get<OkHttpClient>(named("refreshOkHttp")))
+            .addConverterFactory(
+                get<Json>().asConverterFactory("application/json".toMediaType())
+            ).build()
     }
 }

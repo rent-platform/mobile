@@ -27,9 +27,7 @@ fun AppBottomBar(
     onDealsClick: () -> Unit,
     onChatsClick: () -> Unit,
 ) {
-    NavigationBar(modifier = Modifier.height(75.dp),
-
-        ) {
+    NavigationBar(modifier = Modifier.height(75.dp)) {
         NavigationBarItem(
             selected = currentDestination
                 ?.hierarchy
@@ -40,12 +38,8 @@ fun AppBottomBar(
                 } == true,
             onClick = onCatalogClick,
             icon = {
-                Icon(
-                    imageVector = Icons.Outlined.Home,
-                    contentDescription = "Каталог"
-                )
-            },
-            label = { Text("Каталог") }
+                Icon(imageVector = Icons.Outlined.Home, contentDescription = "Каталог")
+            }, label = { Text("Каталог") }
         )
 
         NavigationBarItem(

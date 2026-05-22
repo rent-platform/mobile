@@ -2,6 +2,7 @@ package com.example.marketplace.presentation.listing
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.marketplace.domain.repository.CatalogRepository
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,13 +13,39 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.UUID
 
-class CreateListingViewModel : ViewModel() {
+class CreateListingViewModel(private val catalogRepository: CatalogRepository) : ViewModel() {
 
     private val _state = MutableStateFlow(CreateListingUiState())
     val state: StateFlow<CreateListingUiState> = _state.asStateFlow()
 
     private val _events = Channel<CreateListingEvent>(Channel.BUFFERED)
     val events = _events.receiveAsFlow()
+
+    init {
+        loadCreateListing()
+    }
+
+    fun loadCreateListing(){
+        viewModelScope.launch {
+            runCatching { catalogRepository.getCatalog()
+            }.onSuccess { catalog ->
+                _state.update { state ->
+                    state.copy(
+                        categories = catalog.categories.map { category ->
+                            ListingCategory(
+                                id = category.id,
+                                displayName = category.name
+                            )
+                        },
+                        isLoading = false,
+                        errorMessage = null
+                    )
+                }
+            }.onFailure { error ->
+                error.printStackTrace()
+            }
+        }
+    }
 
     fun onAction(action: CreateListingAction) {
         when (action) {

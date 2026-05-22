@@ -9,7 +9,6 @@ import com.example.profile.presentation.profile.ProfileRoute
 fun ProfileEntryRoute(
     isAuthorized: Boolean,
     onLoginClick: () -> Unit,
-
     onEditProfileClick: () -> Unit = {},
     onRatingClick: () -> Unit = {},
     onMyItemsClick: (ProfileItemsStatus) -> Unit = {},

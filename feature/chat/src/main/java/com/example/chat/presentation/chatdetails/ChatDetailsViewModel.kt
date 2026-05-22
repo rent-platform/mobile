@@ -199,9 +199,7 @@ class ChatDetailsViewModel(
                 ChatDealActionUi.CONFIRM_REQUEST -> {
                     _uiState.update {
                         it.copy(
-                            item = it.item?.copy(
-                                status = ChatDetailsDealStatus.CONFIRMED
-                            ),
+                            item = it.item?.copy(status = ChatDetailsDealStatus.CONFIRMED),
                             availableActions = listOf(
                                 ChatDealActionUi.CREATE_PAYMENT,
                                 ChatDealActionUi.CANCEL
@@ -212,18 +210,11 @@ class ChatDetailsViewModel(
                             )
                         )
                     }
-
-                    _events.send(
-                        ChatDetailsEvent.ShowMessage("Заявка подтверждена")
-                    )
+                    _events.send(ChatDetailsEvent.ShowMessage("Заявка подтверждена"))
                 }
-
                 ChatDealActionUi.REJECT_REQUEST -> {
                     _uiState.update {
-                        it.copy(
-                            item = it.item?.copy(
-                                status = ChatDetailsDealStatus.CANCELLED
-                            ),
+                        it.copy(item = it.item?.copy(status = ChatDetailsDealStatus.CANCELLED),
                             availableActions = emptyList(),
                             messages = it.messages + ChatMessageUi.SystemMessage(
                                 id = UUID.randomUUID().toString(),
@@ -231,81 +222,48 @@ class ChatDetailsViewModel(
                             )
                         )
                     }
-
-                    _events.send(
-                        ChatDetailsEvent.ShowMessage("Заявка отклонена")
-                    )
+                    _events.send(ChatDetailsEvent.ShowMessage("Заявка отклонена"))
                 }
-
                 ChatDealActionUi.CREATE_PAYMENT -> {
                     _uiState.update {
-                        it.copy(
-                            item = it.item?.copy(
-                                status = ChatDetailsDealStatus.PAYMENT_PENDING
-                            ),
-                            availableActions = listOf(
-                                ChatDealActionUi.CANCEL
-                            ),
+                        it.copy(item = it.item?.copy(status = ChatDetailsDealStatus.PAYMENT_PENDING),
+                            availableActions = listOf(ChatDealActionUi.CANCEL),
                             messages = it.messages + ChatMessageUi.SystemMessage(
                                 id = UUID.randomUUID().toString(),
                                 text = "Создан счёт на оплату"
                             )
                         )
                     }
-
-                    _events.send(
-                        ChatDetailsEvent.ShowMessage("Счёт на оплату создан")
-                    )
+                    _events.send(ChatDetailsEvent.ShowMessage("Счёт на оплату создан"))
                 }
-
                 ChatDealActionUi.PAY -> {
                     _uiState.update {
                         it.copy(
-                            item = it.item?.copy(
-                                status = ChatDetailsDealStatus.PAYMENT_PENDING
-                            ),
-                            availableActions = listOf(
-                                ChatDealActionUi.CONFIRM_START
-                            ),
+                            item = it.item?.copy(status = ChatDetailsDealStatus.PAYMENT_PENDING),
+                            availableActions = listOf(ChatDealActionUi.CONFIRM_START),
                             messages = it.messages + ChatMessageUi.SystemMessage(
                                 id = UUID.randomUUID().toString(),
                                 text = "Оплата прошла. Подтвердите передачу вещи"
                             )
                         )
                     }
-
-                    _events.send(
-                        ChatDetailsEvent.ShowMessage("Оплата прошла")
-                    )
+                    _events.send(ChatDetailsEvent.ShowMessage("Оплата прошла"))
                 }
-
                 ChatDealActionUi.CONFIRM_START -> {
                     _uiState.update {
-                        it.copy(
-                            item = it.item?.copy(
-                                status = ChatDetailsDealStatus.ACTIVE
-                            ),
-                            availableActions = listOf(
-                                ChatDealActionUi.COMPLETE_RENT
-                            ),
+                        it.copy(item = it.item?.copy(status = ChatDetailsDealStatus.ACTIVE),
+                            availableActions = listOf(ChatDealActionUi.COMPLETE_RENT),
                             messages = it.messages + ChatMessageUi.SystemMessage(
                                 id = UUID.randomUUID().toString(),
                                 text = "Аренда началась"
                             )
                         )
                     }
-
-                    _events.send(
-                        ChatDetailsEvent.ShowMessage("Аренда началась")
-                    )
+                    _events.send(ChatDetailsEvent.ShowMessage("Аренда началась"))
                 }
-
                 ChatDealActionUi.CANCEL -> {
                     _uiState.update {
-                        it.copy(
-                            item = it.item?.copy(
-                                status = ChatDetailsDealStatus.CANCELLED
-                            ),
+                        it.copy(item = it.item?.copy(status = ChatDetailsDealStatus.CANCELLED),
                             availableActions = emptyList(),
                             messages = it.messages + ChatMessageUi.SystemMessage(
                                 id = UUID.randomUUID().toString(),
@@ -313,37 +271,23 @@ class ChatDetailsViewModel(
                             )
                         )
                     }
-
-                    _events.send(
-                        ChatDetailsEvent.ShowMessage("Сделка отменена")
-                    )
+                    _events.send(ChatDetailsEvent.ShowMessage("Сделка отменена"))
                 }
 
                 ChatDealActionUi.COMPLETE_RENT -> {
                     _uiState.update {
-                        it.copy(
-                            item = it.item?.copy(
-                                status = ChatDetailsDealStatus.COMPLETED
-                            ),
-                            availableActions = listOf(
-                                ChatDealActionUi.LEAVE_REVIEW
-                            ),
+                        it.copy(item = it.item?.copy(status = ChatDetailsDealStatus.COMPLETED),
+                            availableActions = listOf(ChatDealActionUi.LEAVE_REVIEW),
                             messages = it.messages + ChatMessageUi.SystemMessage(
                                 id = UUID.randomUUID().toString(),
                                 text = "Аренда завершена"
                             )
                         )
                     }
-
-                    _events.send(
-                        ChatDetailsEvent.ShowMessage("Аренда завершена")
-                    )
+                    _events.send(ChatDetailsEvent.ShowMessage("Аренда завершена"))
                 }
-
                 ChatDealActionUi.LEAVE_REVIEW -> {
-                    _events.send(
-                        ChatDetailsEvent.ShowMessage("Экран отзыва будет добавлен позже")
-                    )
+                    _events.send(ChatDetailsEvent.ShowMessage("Экран отзыва будет добавлен позже"))
                 }
             }
         }

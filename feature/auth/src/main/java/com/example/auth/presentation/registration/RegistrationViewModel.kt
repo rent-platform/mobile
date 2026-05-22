@@ -124,7 +124,7 @@ class RegistrationViewModel(private val authRepository: AuthRepository) : ViewMo
 
         val passwordError =
             when{
-                state.password.length < 6 -> "Пароль должен быть не менее 6 символов"
+                state.password.length < 6 -> "Пароль должен быть не менее 8 символов"
                 !passwordRegex.matches(state.password) -> "Пароль может содержать только латинские буквы и спец.символы"
                 else -> null
             }

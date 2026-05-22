@@ -68,11 +68,7 @@ object CreateListingDestination
 object ChatEntryDestination
 
 @Serializable
-data class ChatDetailsDestination(
-    val chatId: String
-)
+data class ChatDetailsDestination(val chatId: String)
 
 @Serializable
-data class DealDetailsDestination(
-    val dealId: String
-)
+data class DealDetailsDestination(val dealId: String)

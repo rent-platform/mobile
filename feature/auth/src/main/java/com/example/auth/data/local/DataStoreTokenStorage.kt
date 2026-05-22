@@ -11,21 +11,17 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 class DataStoreTokenStorage(
-    private val dataStore: DataStore<Preferences>
-) : TokenStorage {
-
+    private val dataStore: DataStore<Preferences>) : TokenStorage {
     private companion object {
         val ACCESS_TOKEN = stringPreferencesKey("access_token")
         val REFRESH_TOKEN = stringPreferencesKey("refresh_token")
         val TOKEN_TYPE = stringPreferencesKey("token_type")
     }
-
     override val isAuthorized: Flow<Boolean> = dataStore.data
         .map { prefs ->
             !prefs[REFRESH_TOKEN].isNullOrBlank()
         }
         .distinctUntilChanged()
-
     override suspend fun saveTokens(tokens: AuthTokens) {
         dataStore.edit { prefs ->
             prefs[ACCESS_TOKEN] = tokens.accessToken
@@ -37,11 +33,9 @@ class DataStoreTokenStorage(
     override suspend fun getAccessToken(): String? {
         return dataStore.data.map { it[ACCESS_TOKEN] }.first()
     }
-
     override suspend fun getRefreshToken(): String? {
         return dataStore.data.map { it[REFRESH_TOKEN] }.first()
     }
-
     override suspend fun clear() {
         dataStore.edit { prefs ->
             prefs.remove(ACCESS_TOKEN)

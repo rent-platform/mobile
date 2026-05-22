@@ -17,23 +17,15 @@ class AuthInterceptor(
                 path.startsWith("/api/auth/register") ||
                 path.startsWith("/api/auth/refresh") ||
                 path.startsWith("/api/auth/logout")
+        if (shouldSkipAuth) return chain.proceed(originalRequest)
 
-        if (shouldSkipAuth) {
-            return chain.proceed(originalRequest)
-        }
+        val accessToken = runBlocking { tokenStorage.getAccessToken() }
 
-        val accessToken = runBlocking {
-            tokenStorage.getAccessToken()
-        }
-
-        val newRequest = if (accessToken.isNullOrBlank()) {
-            originalRequest
-        } else {
+        val newRequest = if (accessToken.isNullOrBlank()) { originalRequest } else {
             originalRequest.newBuilder()
                 .header("Authorization", "Bearer $accessToken")
                 .build()
         }
-
         return chain.proceed(newRequest)
     }
 }

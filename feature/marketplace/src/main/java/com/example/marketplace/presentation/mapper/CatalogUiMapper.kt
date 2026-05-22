@@ -24,3 +24,4 @@ fun CatalogItem.toUi(): CatalogItemUi {
         isFavorite = isFavorite
     )
 }
+

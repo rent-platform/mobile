@@ -7,14 +7,14 @@ import com.example.core.demo.model.DemoItemStatus
 object DemoItems {
 
     private val defaultAvailability = listOf(
-        DemoAvailabilityDay(date = "2026-05-08", isAvailable = true),
-        DemoAvailabilityDay(date = "2026-05-09", isAvailable = true),
-        DemoAvailabilityDay(date = "2026-05-10", isAvailable = false),
-        DemoAvailabilityDay(date = "2026-05-11", isAvailable = false),
-        DemoAvailabilityDay(date = "2026-05-12", isAvailable = true),
-        DemoAvailabilityDay(date = "2026-05-13", isAvailable = true),
-        DemoAvailabilityDay(date = "2026-05-14", isAvailable = false),
-        DemoAvailabilityDay(date = "2026-05-15", isAvailable = true)
+        DemoAvailabilityDay(date = "2026-05-14", isAvailable = true),
+        DemoAvailabilityDay(date = "2026-05-15", isAvailable = true),
+        DemoAvailabilityDay(date = "2026-05-16", isAvailable = false),
+        DemoAvailabilityDay(date = "2026-05-17", isAvailable = false),
+        DemoAvailabilityDay(date = "2026-05-18", isAvailable = true),
+        DemoAvailabilityDay(date = "2026-05-19", isAvailable = true),
+        DemoAvailabilityDay(date = "2026-05-20", isAvailable = false),
+        DemoAvailabilityDay(date = "2026-05-21", isAvailable = true)
     )
 
     val all = listOf(
@@ -128,12 +128,12 @@ object DemoItems {
             ownerId = DemoIds.OWNER_MARIA_ID,
             categoryId = DemoIds.CATEGORY_PHOTO_VIDEO_ID,
             title = "Фотоаппарат Canon EOS 250D",
-            description = "Фотоаппарат для съёмки мероприятий, прогулок и контента.",
+            description = "Фотоаппарат для съёмки мероприятий, прогулок и контента, вместе с универсальным объективом Kit 15-55",
             pricePerDay = 5000,
             pricePerHour = 900,
             depositAmount = 15000,
-            city = "Астана",
-            pickupLocation = "центр города",
+            city = "Новосибирск",
+            pickupLocation = "ул. Блюхера 32/1",
             status = DemoItemStatus.ACTIVE,
             moderationComment = null,
             viewsCount = 91,

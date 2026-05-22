@@ -17,11 +17,9 @@ class TokenAuthenticator(
 
     override fun authenticate(route: Route?, response: Response): Request? {
         if (responseCount(response) >= 2) return null
-
         val refreshToken = runBlocking {
             tokenStorage.getRefreshToken()
         } ?: return null
-
         val newTokens = runBlocking {
             try {
                 refreshAuthApi.refresh(
@@ -34,7 +32,6 @@ class TokenAuthenticator(
             runBlocking { tokenStorage.clear() }
             return null
         }
-
         runBlocking {
             tokenStorage.saveTokens(
                 AuthTokens(

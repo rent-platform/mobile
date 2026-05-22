@@ -10,49 +10,16 @@ data class DealDetailsUiState(
     val details: DealDetails? = null
 )
 
-enum class DealDetailsActionUi(
-    val title: String,
-    val type: DealDetailsActionType
-) {
-    CONFIRM_REQUEST(
-        title = "Подтвердить заявку",
-        type = DealDetailsActionType.PRIMARY
-    ),
-
-    REJECT_REQUEST(
-        title = "Отклонить заявку",
-        type = DealDetailsActionType.DANGER
-    ),
-
-    CREATE_PAYMENT(
-        title = "Создать оплату",
-        type = DealDetailsActionType.PRIMARY
-    ),
-
-    PAY(
-        title = "Оплатить",
-        type = DealDetailsActionType.PRIMARY
-    ),
-
-    CONFIRM_START(
-        title = "Подтвердить передачу",
-        type = DealDetailsActionType.PRIMARY
-    ),
-
-    CONFIRM_COMPLETE(
-        title = "Подтвердить возврат",
-        type = DealDetailsActionType.PRIMARY
-    ),
-
-    LEAVE_REVIEW(
-        title = "Оставить отзыв",
-        type = DealDetailsActionType.SECONDARY
-    ),
-
-    CANCEL(
-        title = "Отменить сделку",
-        type = DealDetailsActionType.DANGER
-    )
+enum class DealDetailsActionUi(val title: String, val type: DealDetailsActionType)
+{
+    CONFIRM_REQUEST(title = "Подтвердить заявку", type = DealDetailsActionType.PRIMARY),
+    REJECT_REQUEST(title = "Отклонить заявку", type = DealDetailsActionType.DANGER),
+    CREATE_PAYMENT(title = "Создать оплату", type = DealDetailsActionType.PRIMARY),
+    PAY(title = "Оплатить", type = DealDetailsActionType.PRIMARY),
+    CONFIRM_START(title = "Подтвердить передачу", type = DealDetailsActionType.PRIMARY),
+    CONFIRM_COMPLETE(title = "Подтвердить возврат", type = DealDetailsActionType.PRIMARY),
+    LEAVE_REVIEW(title = "Оставить отзыв", type = DealDetailsActionType.SECONDARY),
+    CANCEL(title = "Отменить сделку", type = DealDetailsActionType.DANGER)
 }
 
 enum class DealDetailsActionType {

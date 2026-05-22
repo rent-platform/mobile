@@ -41,16 +41,10 @@ import org.koin.compose.koinInject
 @Composable
 fun AppNavHost() {
     val sessionManager: SessionManager = koinInject()
-
-    val isAuthorized by sessionManager.isAuthorized.collectAsStateWithLifecycle(
-        initialValue = false
-    )
+    val isAuthorized by sessionManager.isAuthorized.collectAsStateWithLifecycle(initialValue = false)
     val rootNavController = rememberNavController()
 
-    NavHost(
-        navController = rootNavController,
-        startDestination = MainShellDestination
-    ) {
+    NavHost(navController = rootNavController, startDestination = MainShellDestination) {
         composable<MainShellDestination> {
             MainShell(
                 isAuthorized = isAuthorized,
@@ -66,9 +60,7 @@ fun AppNavHost() {
                 onSettingClick = {rootNavController.navigate(ProfileSettingDestination)},
                 onNavigateToDealDetails = { dealId ->
                     if (isAuthorized) {
-                        rootNavController.navigate(
-                            DealDetailsDestination(dealId = dealId)
-                        )
+                        rootNavController.navigate(DealDetailsDestination(dealId = dealId))
                     } else {
                         rootNavController.navigate(AuthorizationDestination)
                     }
@@ -88,14 +80,13 @@ fun AppNavHost() {
 
         composable<ItemDetailsDestination> { backStackEntry ->
             val destination = backStackEntry.toRoute<ItemDetailsDestination>()
-
             ItemDetailsRoute(
                 itemId = destination.itemId,
                 onBackClick = {
                     rootNavController.popBackStack()
                 },
                 onShareClick = { itemTitle ->
-                    // share intent позже
+                    // share intent
                 },
                 onRentClick = { itemId ->
                     if (isAuthorized) {
@@ -108,15 +99,15 @@ fun AppNavHost() {
                     rootNavController.navigate(ItemDetailsDestination(similarItemId))
                 },
                 onSimilarSeeMoreClick = { categoryId ->
-                    // позже: rootNavController.navigate(SearchDestination(categoryId))
+                    //rootNavController.navigate(SearchDestination(categoryId))
                 },
                 onOwnerClick = { ownerId ->
-                    // позже: rootNavController.navigate(OwnerProfileDestination(ownerId))
+                    //rootNavController.navigate(OwnerProfileDestination(ownerId))
                 },
 
                 onAskOwnerClick = { itemId, ownerId ->
                     if (isAuthorized) {
-                        // позже: rootNavController.navigate(ChatDestination(itemId = itemId, ownerId = ownerId))
+                        //rootNavController.navigate(ChatDestination(itemId = itemId, ownerId = ownerId))
                     } else {
                         rootNavController.navigate(AuthorizationDestination)
                     }
@@ -140,8 +131,7 @@ fun AppNavHost() {
                 onNavigateBack = {
                     rootNavController.popBackStack()
                 },
-                onAuthSuccess = {
-                    //Возврат пользователя до auth
+                onAuthSuccess = { //Возврат пользователя до auth
                     rootNavController.popBackStack<AuthorizationDestination>(inclusive = true)
                 }
             )
@@ -329,7 +319,6 @@ private fun MainShell(
 
                     SearchResultsRoute(
                         query = destination.query,
-                        //initialFilters = filters,
                         onNavigateToSearchInput = {
                             navController.navigate(MarketplaceSearchInputDestination){
                                 launchSingleTop = true

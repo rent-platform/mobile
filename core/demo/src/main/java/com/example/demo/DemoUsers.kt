@@ -7,7 +7,7 @@ object DemoUsers {
     val currentUser = DemoUser(
         id = DemoIds.CURRENT_USER_ID,
         fullName = "Сергей Иванов",
-        nickname = "sergey_rent",
+        nickname = "sergey",
         avatarUrl = null,
         bio = "Сдаю технику и иногда арендую вещи для поездок",
         phone = "+7 900 123 45 67",
@@ -25,7 +25,7 @@ object DemoUsers {
     val ivan = DemoUser(
         id = DemoIds.OWNER_IVAN_ID,
         fullName = "Иван Петров",
-        nickname = "ivan_phone",
+        nickname = "ivan",
         avatarUrl = null,
         bio = "Сдаю электронику в хорошем состоянии",
         phone = null,
@@ -39,7 +39,7 @@ object DemoUsers {
     val alexey = DemoUser(
         id = DemoIds.OWNER_ALEXEY_ID,
         fullName = "Алексей Иванов",
-        nickname = "alexey_events",
+        nickname = "Alexey",
         avatarUrl = null,
         bio = "Техника для мероприятий и фотосессий",
         phone = null,
@@ -67,7 +67,7 @@ object DemoUsers {
     val maria = DemoUser(
         id = DemoIds.OWNER_MARIA_ID,
         fullName = "Мария Волкова",
-        nickname = "maria_home",
+        nickname = "Maria",
         avatarUrl = null,
         bio = "Сдаю товары для дома и туризма",
         phone = null,
@@ -81,7 +81,7 @@ object DemoUsers {
     val dmitry = DemoUser(
         id = DemoIds.OWNER_DMITRY_ID,
         fullName = "Дмитрий Соколов",
-        nickname = "dmitry_bike",
+        nickname = "dmitry",
         avatarUrl = null,
         bio = "Велосипеды и спортинвентарь",
         phone = null,

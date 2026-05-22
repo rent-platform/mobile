@@ -4,14 +4,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.lifecycle.viewmodel.compose.viewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun CreateListingRoute(
     onNavigateBack: () -> Unit,
     onListingPublished: (itemId: String) -> Unit,
-    viewModel: CreateListingViewModel = viewModel()
 ) {
+    val viewModel: CreateListingViewModel = koinViewModel()
     val state by viewModel.state.collectAsState()
 
     LaunchedEffect(Unit) {
@@ -26,8 +26,7 @@ fun CreateListingRoute(
                 }
 
                 is CreateListingEvent.ShowMessage -> {
-                    // Сейчас можно ничего не делать.
-                    // Позже сюда можно подключить SnackbarHostState.
+                    // Позже SnackbarHostState.
                 }
             }
         }
