@@ -89,7 +89,6 @@ class DealDetailsViewModel(
                 updateDetails(
                     details.copy(
                         status = DealStatus.PAYMENT_PENDING,
-                        isPaymentPaid = false,
                         rejectionReason = null
                     )
                 )
@@ -111,8 +110,7 @@ class DealDetailsViewModel(
             DealDetailsActionUi.CREATE_PAYMENT -> {
                 updateDetails(
                     details.copy(
-                        status = DealStatus.PAYMENT_PENDING,
-                        isPaymentPaid = false
+                        status = DealStatus.PAYMENT_PENDING
                     )
                 )
 
@@ -122,11 +120,9 @@ class DealDetailsViewModel(
             DealDetailsActionUi.PAY -> {
                 updateDetails(
                     details.copy(
-                        status = DealStatus.PAYMENT_PENDING,
-                        isPaymentPaid = true
+                        status = DealStatus.PAID
                     )
                 )
-
                 showMessage("Оплата прошла")
             }
 
@@ -134,13 +130,11 @@ class DealDetailsViewModel(
                 val updatedDetails = if (details.startConfirmedByOther) {
                     details.copy(
                         status = DealStatus.ACTIVE,
-                        isPaymentPaid = true,
                         startConfirmedByMe = true,
                         startConfirmedByOther = true
                     )
                 } else {
                     details.copy(
-                        isPaymentPaid = true,
                         startConfirmedByMe = true
                     )
                 }

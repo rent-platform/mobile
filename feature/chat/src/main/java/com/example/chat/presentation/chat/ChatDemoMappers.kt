@@ -34,6 +34,7 @@ private fun DemoDealStatus?.toChatOrderStatus(): ChatOrderStatus {
         DemoDealStatus.PENDING -> ChatOrderStatus.REQUEST
         DemoDealStatus.CONFIRMED -> ChatOrderStatus.CONFIRMED
         DemoDealStatus.PAYMENT_PENDING -> ChatOrderStatus.PAYMENT_PENDING
+        DemoDealStatus.PAID -> ChatOrderStatus.PAID
         DemoDealStatus.ACTIVE -> ChatOrderStatus.IN_RENT
         DemoDealStatus.COMPLETED -> ChatOrderStatus.COMPLETED
         DemoDealStatus.REJECTED,

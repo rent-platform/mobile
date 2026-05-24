@@ -389,6 +389,7 @@ private fun ChatOrderStatus.containerColor(): Color {
         ChatOrderStatus.REQUEST -> MaterialTheme.colorScheme.tertiaryContainer
         ChatOrderStatus.CONFIRMED -> MaterialTheme.colorScheme.primaryContainer
         ChatOrderStatus.PAYMENT_PENDING -> MaterialTheme.colorScheme.primaryContainer
+        ChatOrderStatus.PAID -> MaterialTheme.colorScheme.primaryContainer
         ChatOrderStatus.IN_RENT -> MaterialTheme.colorScheme.secondaryContainer
         ChatOrderStatus.COMPLETED -> MaterialTheme.colorScheme.surface
         ChatOrderStatus.CANCELLED -> MaterialTheme.colorScheme.errorContainer
@@ -401,6 +402,7 @@ private fun ChatOrderStatus.contentColor(): Color {
         ChatOrderStatus.REQUEST -> MaterialTheme.colorScheme.onTertiaryContainer
         ChatOrderStatus.CONFIRMED -> MaterialTheme.colorScheme.onPrimaryContainer
         ChatOrderStatus.PAYMENT_PENDING -> MaterialTheme.colorScheme.onPrimaryContainer
+        ChatOrderStatus.PAID -> MaterialTheme.colorScheme.onPrimaryContainer
         ChatOrderStatus.IN_RENT -> MaterialTheme.colorScheme.onSecondaryContainer
         ChatOrderStatus.COMPLETED -> MaterialTheme.colorScheme.onSurface
         ChatOrderStatus.CANCELLED -> MaterialTheme.colorScheme.onErrorContainer

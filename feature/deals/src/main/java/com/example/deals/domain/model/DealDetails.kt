@@ -18,7 +18,6 @@ data class DealDetails(
 
     val totalPrice: Long,
     val depositAmount: Long,
-    val isPaymentPaid: Boolean = false,
 
     val rejectionReason: String? = null,
 

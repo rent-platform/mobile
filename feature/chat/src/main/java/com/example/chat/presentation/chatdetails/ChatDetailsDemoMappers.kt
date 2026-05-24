@@ -103,6 +103,7 @@ private fun DemoDealStatus?.toChatDetailsDealStatus(): ChatDetailsDealStatus? {
         DemoDealStatus.PENDING -> ChatDetailsDealStatus.REQUEST
         DemoDealStatus.CONFIRMED -> ChatDetailsDealStatus.CONFIRMED
         DemoDealStatus.PAYMENT_PENDING -> ChatDetailsDealStatus.PAYMENT_PENDING
+        DemoDealStatus.PAID -> ChatDetailsDealStatus.PAID
         DemoDealStatus.ACTIVE -> ChatDetailsDealStatus.ACTIVE
         DemoDealStatus.COMPLETED -> ChatDetailsDealStatus.COMPLETED
         DemoDealStatus.REJECTED,
@@ -146,6 +147,11 @@ private fun DemoDealStatus?.toAvailableActions(
                     ChatDealActionUi.CANCEL
                 )
             }
+        }
+        DemoDealStatus.PAID -> {
+            listOf(
+                ChatDealActionUi.CONFIRM_START
+            )
         }
 
         DemoDealStatus.ACTIVE -> {

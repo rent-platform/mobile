@@ -56,6 +56,7 @@ enum class ChatOrderStatus(
     REQUEST("Ожидает подтверждения"),
     CONFIRMED("Подтверждена"),
     PAYMENT_PENDING("Ожидает оплаты"),
+    PAID("Оплачено"),
     IN_RENT("В аренде"),
     COMPLETED("Завершена"),
     CANCELLED("Отменена")

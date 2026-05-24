@@ -50,6 +50,7 @@ enum class ChatDetailsDealStatus(
     REQUEST("Ожидает подтверждения"),
     CONFIRMED("Подтверждена"),
     PAYMENT_PENDING("Ожидает оплаты"),
+    PAID("Оплачено"),
     ACTIVE("В аренде"),
     COMPLETED("Завершена"),
     CANCELLED("Отменена")

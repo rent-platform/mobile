@@ -88,7 +88,6 @@ class FakeDealsRepositoryImpl : DealsRepository {
             completeConfirmedByMe = deal.status == DemoDealStatus.COMPLETED,
             completeConfirmedByOther = deal.status == DemoDealStatus.COMPLETED,
             reviewLeftByMe = false,
-            isPaymentPaid = deal.status == DemoDealStatus.ACTIVE || deal.status == DemoDealStatus.COMPLETED,
         )
     }
 }
@@ -98,6 +97,7 @@ private fun DemoDealStatus.toDomainStatus(): DealStatus {
         DemoDealStatus.PENDING -> DealStatus.PENDING
         DemoDealStatus.CONFIRMED -> DealStatus.CONFIRMED
         DemoDealStatus.PAYMENT_PENDING -> DealStatus.PAYMENT_PENDING
+        DemoDealStatus.PAID -> DealStatus.PAID
         DemoDealStatus.ACTIVE -> DealStatus.ACTIVE
         DemoDealStatus.COMPLETED -> DealStatus.COMPLETED
         DemoDealStatus.REJECTED -> DealStatus.REJECTED

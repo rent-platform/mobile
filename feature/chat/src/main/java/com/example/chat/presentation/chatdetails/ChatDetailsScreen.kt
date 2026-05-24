@@ -905,9 +905,8 @@ private fun ChatDetailsMenuItem(
 private fun ChatDetailsDealStatus.containerColor(): Color {
     return when (this) {
         ChatDetailsDealStatus.REQUEST -> MaterialTheme.colorScheme.tertiaryContainer
-        ChatDetailsDealStatus.PAYMENT_PENDING -> {
-            MaterialTheme.colorScheme.primaryContainer
-        }
+        ChatDetailsDealStatus.PAYMENT_PENDING -> MaterialTheme.colorScheme.primaryContainer
+        ChatDetailsDealStatus.PAID -> MaterialTheme.colorScheme.primaryContainer
         ChatDetailsDealStatus.CONFIRMED -> MaterialTheme.colorScheme.primaryContainer
         ChatDetailsDealStatus.ACTIVE -> MaterialTheme.colorScheme.secondaryContainer
         ChatDetailsDealStatus.COMPLETED -> MaterialTheme.colorScheme.surface
@@ -920,9 +919,8 @@ private fun ChatDetailsDealStatus.contentColor(): Color {
     return when (this) {
         ChatDetailsDealStatus.REQUEST -> MaterialTheme.colorScheme.onTertiaryContainer
         ChatDetailsDealStatus.CONFIRMED -> MaterialTheme.colorScheme.onPrimaryContainer
-        ChatDetailsDealStatus.PAYMENT_PENDING -> {
-            MaterialTheme.colorScheme.onPrimaryContainer
-        }
+        ChatDetailsDealStatus.PAYMENT_PENDING -> MaterialTheme.colorScheme.onPrimaryContainer
+        ChatDetailsDealStatus.PAID -> MaterialTheme.colorScheme.onPrimaryContainer
         ChatDetailsDealStatus.ACTIVE -> MaterialTheme.colorScheme.onSecondaryContainer
         ChatDetailsDealStatus.COMPLETED -> MaterialTheme.colorScheme.onSurface
         ChatDetailsDealStatus.CANCELLED -> MaterialTheme.colorScheme.onErrorContainer

@@ -319,6 +319,7 @@ private fun DealStatus.containerColor(): Color {
         DealStatus.PENDING -> MaterialTheme.colorScheme.tertiaryContainer
         DealStatus.CONFIRMED -> MaterialTheme.colorScheme.primaryContainer
         DealStatus.PAYMENT_PENDING -> MaterialTheme.colorScheme.primaryContainer
+        DealStatus.PAID -> MaterialTheme.colorScheme.primaryContainer
         DealStatus.ACTIVE -> MaterialTheme.colorScheme.secondaryContainer
         DealStatus.COMPLETED -> MaterialTheme.colorScheme.surface
         DealStatus.REJECTED,
@@ -332,6 +333,7 @@ private fun DealStatus.contentColor(): Color {
         DealStatus.PENDING -> MaterialTheme.colorScheme.onTertiaryContainer
         DealStatus.CONFIRMED -> MaterialTheme.colorScheme.onPrimaryContainer
         DealStatus.PAYMENT_PENDING -> MaterialTheme.colorScheme.onPrimaryContainer
+        DealStatus.PAID -> MaterialTheme.colorScheme.onPrimaryContainer
         DealStatus.ACTIVE -> MaterialTheme.colorScheme.onSecondaryContainer
         DealStatus.COMPLETED -> MaterialTheme.colorScheme.onSurface
         DealStatus.REJECTED,

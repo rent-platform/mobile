@@ -27,6 +27,7 @@ enum class DemoDealStatus {
     PENDING,
     CONFIRMED,
     PAYMENT_PENDING,
+    PAID,
     ACTIVE,
     COMPLETED,
     REJECTED,

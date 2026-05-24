@@ -33,6 +33,7 @@ private fun DemoDealStatus.toUi(): DealStatus {
         DemoDealStatus.PENDING -> DealStatus.PENDING
         DemoDealStatus.CONFIRMED -> DealStatus.CONFIRMED
         DemoDealStatus.PAYMENT_PENDING -> DealStatus.PAYMENT_PENDING
+        DemoDealStatus.PAID -> DealStatus.PAID
         DemoDealStatus.ACTIVE -> DealStatus.ACTIVE
         DemoDealStatus.COMPLETED -> DealStatus.COMPLETED
         DemoDealStatus.REJECTED -> DealStatus.REJECTED

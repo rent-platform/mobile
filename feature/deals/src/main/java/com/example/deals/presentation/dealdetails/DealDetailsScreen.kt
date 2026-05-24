@@ -877,59 +877,22 @@ private fun DealDetails.toProcessSteps(): List<DealProcessStepUi> {
         DealProcessStepUi(
             title = "Оплата",
             description = "Оплата аренды и залога перед передачей вещи.",
-            state = when {
-                status == DealStatus.PENDING -> {
-                    DealProcessStepState.Waiting
-                }
-
-                status == DealStatus.CONFIRMED -> {
-                    DealProcessStepState.Current
-                }
-
-                status == DealStatus.PAYMENT_PENDING && !isPaymentPaid -> {
-                    DealProcessStepState.Current
-                }
-
-                status == DealStatus.PAYMENT_PENDING && isPaymentPaid -> {
-                    DealProcessStepState.Done
-                }
-
-                status == DealStatus.ACTIVE || status == DealStatus.COMPLETED -> {
-                    DealProcessStepState.Done
-                }
-
-                status == DealStatus.REJECTED || status == DealStatus.CANCELLED -> {
-                    DealProcessStepState.Failed
-                }
-
-                else -> {
-                    DealProcessStepState.Waiting
-                }
+            state = when(status) {
+                DealStatus.PENDING -> DealProcessStepState.Waiting
+                DealStatus.CONFIRMED, DealStatus.PAYMENT_PENDING -> DealProcessStepState.Current
+                DealStatus.PAID, DealStatus.ACTIVE, DealStatus.COMPLETED -> DealProcessStepState.Done
+                DealStatus.REJECTED, DealStatus.CANCELLED -> DealProcessStepState.Failed
             }
         ),
         DealProcessStepUi(
             title = "Передача вещи",
             description = "Стороны подтверждают передачу вещи перед началом аренды.",
             state = when {
-                status == DealStatus.PAYMENT_PENDING && isPaymentPaid && !startConfirmedByMe -> {
-                    DealProcessStepState.Current
-                }
-
-                status == DealStatus.PAYMENT_PENDING && isPaymentPaid && startConfirmedByMe && !startConfirmedByOther -> {
-                    DealProcessStepState.Current
-                }
-
-                status == DealStatus.ACTIVE || status == DealStatus.COMPLETED -> {
-                    DealProcessStepState.Done
-                }
-
-                status == DealStatus.REJECTED || status == DealStatus.CANCELLED -> {
-                    DealProcessStepState.Failed
-                }
-
-                else -> {
-                    DealProcessStepState.Waiting
-                }
+                status == DealStatus.PAID && !startConfirmedByMe -> DealProcessStepState.Current
+                status == DealStatus.PAID && startConfirmedByMe && !startConfirmedByOther -> DealProcessStepState.Current
+                status == DealStatus.ACTIVE || status == DealStatus.COMPLETED -> DealProcessStepState.Done
+                status == DealStatus.REJECTED || status == DealStatus.CANCELLED -> DealProcessStepState.Failed
+                else -> DealProcessStepState.Waiting
             }
         ),
         DealProcessStepUi(
@@ -1038,48 +1001,31 @@ private fun DealDetails.statusDescription(): String {
         }
 
         DealStatus.PAYMENT_PENDING -> {
-            when {
-                !isPaymentPaid && role == DealRole.Owner -> {
-                    "Счёт создан. Ожидаем оплату от арендатора."
-                }
-
-                !isPaymentPaid && role == DealRole.Renter -> {
-                    "Оплатите аренду и залог, чтобы перейти к передаче вещи."
-                }
-
-                isPaymentPaid && !startConfirmedByMe && role == DealRole.Owner -> {
-                    "Оплата прошла. Передайте вещь арендатору и подтвердите передачу."
-                }
-
-                isPaymentPaid && !startConfirmedByMe && role == DealRole.Renter -> {
-                    "Оплата прошла. Получите вещь у владельца и подтвердите получение."
-                }
-
-                isPaymentPaid && startConfirmedByMe && !startConfirmedByOther -> {
-                    "Вы подтвердили передачу. Ожидаем подтверждения второй стороны."
-                }
-
-                else -> {
-                    "Оплата прошла. Ожидаем подтверждение передачи вещи."
-                }
+            when(role) {
+                DealRole.Owner -> "Счёт создан. Ожидаем оплату от арендатора."
+                DealRole.Renter -> "Оплатите аренду и залог, чтобы перейти к передаче вещи."
             }
         }
 
-        DealStatus.ACTIVE -> {
-            "Сделка активна. После возврата вещи стороны подтверждают завершение."
+        DealStatus.PAID -> {
+            when {
+                !startConfirmedByMe && !startConfirmedByOther -> {
+                    when (role) {
+                        DealRole.Owner -> "Оплата прошла. Передайте вещь арендатору и подтвердите передачу."
+                        DealRole.Renter -> "Оплата прошла. Получите вещь у владельца и подтвердите получение."
+                    }
+                }
+                startConfirmedByMe && !startConfirmedByOther -> {
+                    "Вы подтвердили передачу. Ожидаем подтверждения второй стороны."
+                }
+                else -> "Оплата прошла. Ожидаем подтверждение передачи вещи."
+            }
         }
 
-        DealStatus.COMPLETED -> {
-            "Аренда завершена. Теперь можно оставить отзыв по сделке."
-        }
-
-        DealStatus.REJECTED -> {
-            "Заявка была отклонена владельцем."
-        }
-
-        DealStatus.CANCELLED -> {
-            "Сделка была отменена одной из сторон."
-        }
+        DealStatus.ACTIVE -> "Сделка активна. После возврата вещи стороны подтверждают завершение."
+        DealStatus.COMPLETED -> "Аренда завершена. Теперь можно оставить отзыв по сделке."
+        DealStatus.REJECTED -> "Заявка была отклонена владельцем."
+        DealStatus.CANCELLED -> "Сделка была отменена одной из сторон."
     }
 }
 
@@ -1097,6 +1043,7 @@ private fun DealStatus.containerColor(): Color {
 
         DealStatus.CONFIRMED,
         DealStatus.PAYMENT_PENDING -> MaterialTheme.colorScheme.primaryContainer
+        DealStatus.PAID -> MaterialTheme.colorScheme.primaryContainer
 
         DealStatus.ACTIVE -> MaterialTheme.colorScheme.secondaryContainer
 
@@ -1114,6 +1061,7 @@ private fun DealStatus.contentColor(): Color {
 
         DealStatus.CONFIRMED,
         DealStatus.PAYMENT_PENDING -> MaterialTheme.colorScheme.onPrimaryContainer
+        DealStatus.PAID -> MaterialTheme.colorScheme.onPrimaryContainer
 
         DealStatus.ACTIVE -> MaterialTheme.colorScheme.onSecondaryContainer
 
@@ -1177,54 +1125,31 @@ private fun DealDetails.availableActions(): List<DealDetailsActionUi> {
             }
         }
 
-        DealStatus.CONFIRMED,
-        DealStatus.PAYMENT_PENDING -> {
-            when {
-                !isPaymentPaid && role == DealRole.Renter -> {
-                    listOf(
-                        DealDetailsActionUi.PAY,
-                        DealDetailsActionUi.CANCEL
-                    )
-                }
-
-                !isPaymentPaid && role == DealRole.Owner -> {
-                    listOf(DealDetailsActionUi.CANCEL)
-                }
-
-                isPaymentPaid && !startConfirmedByMe -> {
-                    listOf(DealDetailsActionUi.CONFIRM_START)
-                }
-
-                isPaymentPaid && startConfirmedByMe && !startConfirmedByOther -> {
-                    emptyList()
-                }
-
-                else -> {
-                    emptyList()
-                }
+        DealStatus.CONFIRMED, DealStatus.PAYMENT_PENDING -> {
+            when(role) {
+                DealRole.Renter -> listOf(DealDetailsActionUi.PAY, DealDetailsActionUi.CANCEL)
+                DealRole.Owner -> listOf(DealDetailsActionUi.CANCEL)
             }
+        }
+
+        DealStatus.PAID -> {
+            if (!startConfirmedByMe) {
+                listOf(DealDetailsActionUi.CONFIRM_START)
+            } else if (startConfirmedByMe && !startConfirmedByOther) {
+                emptyList()
+            } else emptyList()
         }
 
         DealStatus.ACTIVE -> {
-            if (!completeConfirmedByMe) {
-                listOf(DealDetailsActionUi.CONFIRM_COMPLETE)
-            } else {
-                emptyList()
-            }
+            if (!completeConfirmedByMe) listOf(DealDetailsActionUi.CONFIRM_COMPLETE)
+            else emptyList()
         }
 
         DealStatus.COMPLETED -> {
-            if (reviewLeftByMe) {
-                emptyList()
-            } else {
-                listOf(DealDetailsActionUi.LEAVE_REVIEW)
-            }
+            if (reviewLeftByMe) emptyList()
+            else listOf(DealDetailsActionUi.LEAVE_REVIEW)
         }
-
-        DealStatus.REJECTED,
-        DealStatus.CANCELLED -> {
-            emptyList()
-        }
+        DealStatus.REJECTED, DealStatus.CANCELLED -> emptyList()
     }
 }
 
@@ -1253,17 +1178,13 @@ private fun DealDetails.totalPaymentAmount(): Long {
 }
 private fun DealDetails.displayStatusTitle(): String {
     return when {
-        status == DealStatus.PAYMENT_PENDING && isPaymentPaid && !startConfirmedByMe -> {
+        !startConfirmedByMe -> {
             when (role) {
                 DealRole.Owner -> "Ожидает передачи"
                 DealRole.Renter -> "Ожидает получения"
             }
         }
-
-        status == DealStatus.PAYMENT_PENDING && isPaymentPaid && startConfirmedByMe && !startConfirmedByOther -> {
-            "Ожидает подтверждения"
-        }
-
+        startConfirmedByMe && !startConfirmedByOther -> "Ожидает подтверждения"
         else -> status.title
     }
 }
@@ -1618,7 +1539,6 @@ private fun previewDealDetails(
         startConfirmedByOther = startConfirmedByOther,
         completeConfirmedByMe = completeConfirmedByMe,
         completeConfirmedByOther = completeConfirmedByOther,
-        reviewLeftByMe = reviewLeftByMe,
-        isPaymentPaid = isPaymentPaid,
+        reviewLeftByMe = reviewLeftByMe
     )
 }
